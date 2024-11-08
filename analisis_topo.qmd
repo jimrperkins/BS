@@ -1,0 +1,800 @@
+---
+title: "Análisis de grafos y topología de redes: Topología; Coef clustering; Centralidad, Modularidad. Introducción al uso de igraph y otros paquetes para crear y analizar redes"
+---
+
+
+
+# Introducción
+
+La biología de sistemas se basa en el uso de redes para entender las interacciones complejas en sistemas biológicos. En este tutorial, exploraremos los conceptos fundamentales de grafos y redes utilizando el paquete `igraph` en R.
+
+Primero, aseguramos de tener instalado el paquete `igraph`:
+
+```{r setup, include=FALSE}
+# Instalación del paquete igraph
+if (!requireNamespace("igraph", quietly = TRUE)) {
+  install.packages("igraph")
+}
+library(igraph)
+```
+
+## ¿Qué es un grafo?
+
+Un grafo es una estructura matemática que se compone de un conjunto de nodos (o vértices) y un conjunto de aristas (o enlaces) que conectan pares de nodos. Los grafos son útiles en diversas disciplinas, incluida la biología, para modelar relaciones y interacciones entre diferentes entidades, como proteínas, genes y metabolitos.
+
+### Terminología Básica
+
+-   **Nodos (Vértices)**: Los elementos individuales de un grafo. Un grafo se puede definir como $G = (V, E)$, donde $V$ es el conjunto de nodos y $E$ es el conjunto de aristas. En biología, un nodo puede representar una proteína, un gen o cualquier otra entidad de interés.
+
+-   **Aristas (Enlaces)**: Las conexiones entre los nodos. En un grafo que representa interacciones proteína-proteína (como STRINGdb por ejemplo), una arista podría indicar que dos proteínas interactúan. Matemáticamente, cada arista se puede representar como un par ordenado de nodos: $e = (u, v)$, donde $u, v \in V$.
+
+-   **Grado (Degree)**: El grado de un nodo $v$ es el número de aristas que inciden en él. Por ejemplo en el siguiente red, los nodos 1, 2 y 4 tienen un grado de dos. El nodo 3 tiene un grado de tres. Esto es una red no-dirigida, o un grafo en el que las aristas no tienen dirección, lo que implica una relación simétrica entre nodos. Aquí, una arista se representa como un conjunto de nodos: $e = \{u, v\}$.
+
+Para el nodo $i$-ésimo en una red, denotaremos su grado como $k_i$. Por lo tanto, para el siguiente red, $k_1 = k_2 = k_4 = 2$ y $k_3 = 3$.
+
+```{r}
+par(mar = c(1, 1, 1, 1))
+g1 <- graph(edges = c(1, 2, 1, 3, 2, 3, 3, 4), n = 4, directed = FALSE)
+plot(g1)
+```
+
+Como se mencionó anteriormente, el número total de enlaces se denota como $E$. En una red no dirigida, es fácil entender que $L$ debería ser la mitad de la suma de todos los grados de los nodos. Esto es porque cada enlace pertenece a dos nodos y, por lo tanto, cada enlace se cuenta dos veces. Así tenemos:
+
+$$
+E = \frac{1}{2} \sum_{i=1}^{N} k_i
+$$
+
+En la red anterior, $E = 4$.
+
+El grado medio, denotado como $\langle k \rangle$, es simplemente la media de todos los grados de los nodos en una red. Para la red anterior (Figura 2.2), tenemos:
+
+$$
+\langle k \rangle = \frac{1}{4} \cdot (k_1 + k_2 + k_3 + k_4) = \frac{1}{4} \cdot (2 + 2 + 3 + 2) = 2.25
+$$
+
+Esto significa que, en promedio, cada nodo en la red tiene 2.25 enlaces.
+
+De acuerdo con su definición, sabemos que:
+
+$$
+\langle k \rangle = \frac{1}{N} \sum_{i=1}^{N} k_i
+$$
+
+Combinando esto con la Ecuación (2.1), obtenemos:
+
+$$
+\langle k \rangle = \frac{2E}{N}
+$$
+
+Un nodo con un alto grado tiene muchas conexiones, lo que puede indicar que es una proteína central o un hub en una red biológica.
+
+-   **Grafo dirigido (Directed Graph)**: Un grafo en el que las aristas tienen una dirección, es decir, indican una relación asimétrica entre dos nodos. En este caso, cada arista se representa como un par ordenado $e = (u, v)$, donde $u$ apunta a $v$. Por ejemplo:
+
+```{r}
+g2 <- graph(edges = c(1, 2, 1, 3, 2, 3, 3, 4), n = 4, directed = TRUE)
+par(mar = c(1, 1, 1, 1))
+plot(g2)
+```
+
+Cada enlace en la red anterior es dirigido. Si calculamos el grado medio de la red según la ecuación para redes no dirigdas, perderemos información.
+
+Por lo tanto, distinguimos entre el grado de entrada, denotado como $k_{\text{in}_i}$, y el grado de salida, denotado como $k_{\text{out}_i}$. $k_{\text{in}_i}$ representa el número de enlaces de otros nodos que apuntan al nodo $i$, y $k_{\text{out}_i}$ representa el número de enlaces que parten del nodo ( i ) y apuntan a otros nodos.
+
+Para un nodo $i$ en una red dirigida, su grado es la suma del grado de entrada y el grado de salida. Por lo tanto,
+
+$$
+k_i = k_{\text{in}_i} + k_{\text{out}_i}
+$$
+
+Y $E$, el número total de enlaces en una red dirigida, es:
+
+$$
+E = \sum_{i=1}^{N} k_{\text{in}_i} = \sum_{i=1}^{N} k_{\text{out}_i}
+$$
+
+Para un enlace dirigido entre el nodo $i$ y el nodo $j$, es decir, $(i, j)$, este constituye un grado de entrada para un nodo, pero un grado de salida para el otro. Por ejemplo, en la red dirigida, el enlace $(1,2)$ cuenta como un grado de entrada para el nodo 2, pero como un grado de salida para el nodo 1.
+
+¿Cuál es el grado medio en una red dirigida?
+
+$$
+\langle k_{\text{in}} \rangle = \frac{1}{N} \sum_{i=1}^{N} k_{\text{in}_i} = \langle k_{\text{out}} \rangle = \frac{1}{N} \sum_{i=1}^{N} k_{\text{out}_i} = \frac{E}{N}
+$$
+
+-   **Caminos y Ciclos**:
+
+    -   **Camino (Path)**: Una secuencia de nodos $v_1, v_2, \ldots, v_k$ donde cada par de nodos adyacentes está conectado por una arista. Matemáticamente, esto se expresa como: $$
+        P = (v_1, v_2, \ldots, v_k) \text{ tal que } (v_i, v_{i+1}) \in E \text{ para } 1 \leq i < k
+        $$
+    -   **Ciclo (Cycle)**: Un camino que comienza y termina en el mismo nodo sin repetir ninguna arista. Se define como: $$
+        C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ para } 1 \leq i < k \text{ y } (v_k, v_1) \in E
+        $$
+
+-   **Subgrafo (Subgraph)**: Un grafo que está compuesto por un subconjunto de los nodos y aristas de un grafo original $G$. Se puede denotar como $H = (V_H, E_H)$, donde $V_H \subseteq V$ y $E_H \subseteq E$.
+
+-   **Conectividad (Connectivity)**:
+
+En teoría de grafos, la **conectividad** es una medida de la robustez de una red y describe la densidad con la que los nodos están conectados entre sí. La conectividad puede analizarse tanto a nivel de **nodos** como de **aristas**:
+
+1.  **Conectividad de Nodos**: refiere al número mínimo de nodos que deben eliminarse para que el grafo se vuelva disconexo o para separar un componente del resto de la red. Un grafo con alta conectividad de nodos es más robusto, ya que no se desconecta fácilmente ante la eliminación de unos pocos nodos.
+
+2.  **Conectividad de Aristas**: refiere al número mínimo de aristas que deben eliminarse para que el grafo se vuelva disconexo. La eliminación de una sola arista en un grafo con baja conectividad puede hacer que la red se divida en componentes.
+
+### Ejemplo 1: Grafo con Alta Conectividad
+
+En este ejemplo, mostramos un **grafo completo** de 5 nodos. En un grafo completo, cada nodo está conectado a todos los demás, lo que genera múltiples caminos alternativos entre los nodos y, por tanto, una alta conectividad.
+
+```{r}
+# Grafo completo de 5 nodos (alta conectividad)
+g_high <- make_full_graph(5)
+plot(g_high, main = "Grafo con Alta Conectividad")
+
+# Verificamos la conectividad de nodos y aristas
+cat("Conectividad de nodos (g_high):", vertex_connectivity(g_high), "\n")
+cat("Conectividad de aristas (g_high):", edge_connectivity(g_high), "\n")
+cat("¿Es conexo (g_high)?", is_connected(g_high), "\n")
+```
+
+**FIGURA 1**: Grafo con alta conectividad.
+
+En este caso, la función `vertex_connectivity(g_high)` y `edge_connectivity(g_high)` muestran que el grafo tiene alta conectividad de nodos y de aristas, ya que ambos valores serán altos en un grafo completo. La función `is_connected(g_high)` devolverá `TRUE`, indicando que el grafo es conexo.
+
+### Ejemplo 2: Grafo con Baja Conectividad
+
+En el segundo ejemplo, tenemos un **grafo lineal** o en forma de cadena. Este grafo tiene baja conectividad de nodos y aristas, ya que la eliminación de un nodo o arista específico puede desconectar la red.
+
+```{r}
+# Grafo lineal de 5 nodos (baja conectividad)
+g_low <- graph(edges = c(1, 2, 2, 3, 3, 4, 4, 5), n = 5, directed = FALSE)
+plot(g_low, main = "Grafo con Baja Conectividad")
+
+# Verificamos la conectividad de nodos y aristas
+cat("Conectividad de nodos (g_low):", vertex_connectivity(g_low), "\n")
+cat("Conectividad de aristas (g_low):", edge_connectivity(g_low), "\n")
+cat("¿Es conexo (g_low)?", is_connected(g_low), "\n")
+```
+
+**FIGURA 2**: Grafo con baja conectividad.
+
+En este grafo lineal, la conectividad de nodos y de aristas es baja. La eliminación del nodo central (nodo 3) o cualquiera de sus aristas adyacentes desconectaría el grafo, dividiéndolo en dos componentes separados. En este caso, la función `is_connected(g_low)` devolverá `TRUE`, indicando que el grafo es conexo en su estado actual, pero su conectividad es débil.
+
+En redes grandes y complejas, la conectividad es crucial para determinar la robustez de la red frente a la eliminación de nodos o aristas. Un grafo con alta conectividad es menos susceptible a la desconexión, mientras que uno con baja conectividad puede dividirse fácilmente ante la pérdida de algunos elementos.
+
+# Ejemplos de Redes - mas igraph!
+
+Antes de generar redes aleatorias, exploraremos un ejemplo de una red que consta de cinco nodos y seis aristas. Este ejemplo nos ayudará a entender cómo se pueden visualizar diferentes aspectos de una red.
+
+### Definición de la Red
+
+```{r}
+# Crear un grafo con 5 nodos y 6 aristas
+g_vis_examples <- make_graph(c("A", "B", "A", "C", "B", "D", "C", "D", "C", "E", "D", "E"), directed = FALSE)
+
+# Visualizar la red básica
+plot(g_vis_examples, vertex.label = V(g_vis_examples)$name, main = "Red Compleja")
+```
+
+### Matriz de Adyacencia
+
+En una red cada arista se puede representar como un par ordenado de nodos: $e = (u, v)$. Una table de pares de nodos se puede llamar como un "from-to list".
+
+La matriz de adyacencia es otra representación que indica la conexión entre los nodos. Se define como una matriz cuadrada $A$ donde $A[i, j] = 1$ si hay una arista entre el nodo $i$ y el nodo $j$, y \$A\[i, j\] = \$ en caso contrario.
+
+```{r}
+# Convertir el grafo en data.frame con formato "from-to"
+
+# Convertir el grafo en una matriz de adyacencia
+adjacency_matrix <- as.matrix(as_adjacency_matrix(g_vis_examples))
+
+# Mostrar la matriz de adyacencia
+adjacency_matrix
+
+```
+
+Matrices de adjacencia estan en general mas facil trabajar con ellos: mas facil hacer operaciones matematicas (aplicación de álgebra matricial) Tambien ofrecen acceso rápido a conexiones - no hay que traversar una lista.
+
+Pero, sobre todo en redes grandes, pueden ser ineficiente - tienen $N x N$ dimensiones, y en redes biologicas, la gran mayoria pueden ser ceros
+
+Por ejemplo, Si una red tiene 1,000 nodos, una matriz de adyacencia requeriría 1,000\^2 =1,000,000 entradas, independientemente de cuántas conexiones realmente existan entre los nodos. Aunque solo una fracción de estas entradas podría representar enlaces reales, todas las celdas deben almacenarse en la memoria.
+
+Tambien existe representaciones sparse, por ejemplo en R:
+
+```{r}
+# Instala el paquete si aún no está instalado
+if (!requireNamespace("Matrix", quietly = TRUE)) {
+  install.packages("Matrix")
+}
+# Cargar el paquete Matrix
+library(Matrix)
+
+# Crear una matriz dispersa
+# Definimos una matriz de 5x5 con solo algunos enlaces
+adj_matrix <- Matrix(c(0, 1, 0, 0, 1,
+                       1, 0, 1, 0, 0,
+                       0, 1, 0, 1, 0,
+                       0, 0, 1, 0, 1,
+                       1, 0, 0, 1, 0), 
+                     nrow = 5, ncol = 5, sparse = TRUE)
+
+# Mostrar la matriz dispersa
+print(adj_matrix)
+
+# igraph ahora usa matrices sparse por definicion:
+print(as_adjacency_matrix(g_vis_examples))
+```
+
+Porque usa menos memoria el sparse matrix?
+
+Una matriz dispersa (o sparse matrix) utiliza menos memoria porque solo almacena los elementos no cero y sus posiciones, mientras que una matriz densa almacena todos los elementos, incluidos los ceros.
+
+```{R}
+
+# Crear una matriz de adyacencia 20000x20000 en base R (approx no. genes en genoma humano)
+# Han estimado 650000 interacciones entre estos genes
+set.seed(42)
+dense_matrix <- matrix(0, nrow = 20000, ncol = 20000)
+positions <- sample(1:(1000*1000), size = 650000)  # Solo 1000 conexiones
+dense_matrix[positions] <- 1
+
+# Mostrar el tamaño en memoria de la matriz densa
+dense_matrix_size <- object.size(dense_matrix)
+print(paste("Tamaño de la matriz densa:", format(dense_matrix_size, units = "auto")))
+
+# Convertir la matriz densa a una matriz dispersa
+sparse_matrix <- as(dense_matrix, "sparseMatrix")
+
+# Mostrar el tamaño en memoria de la matriz dispersa
+sparse_matrix_size <- object.size(sparse_matrix)
+print(paste("Tamaño de la matriz dispersa:", format(sparse_matrix_size, units = "auto")))
+
+```
+
+### 10 Formas Diferentes de Visualizar la Red
+
+A continuación, se presentan diez maneras diferentes de visualizar la misma red, modificando colores, tipos de aristas y otros parámetros:
+
+1.  **Colores de Nodos Diferentes**
+
+```{r}
+plot(g_vis_examples, vertex.color = c("red", "green", "blue", "orange", "purple"), vertex.label = V(g_vis_examples)$name, main = "Colores de Nodos Diferentes")
+```
+
+2.  **Tamaño de Nodos Basado en Grado**
+
+```{r}
+vertex_sizes <- degree(g_vis_examples) * 5
+plot(g_vis_examples, vertex.size = vertex_sizes, vertex.label = V(g_vis_examples)$name, main = "Tamaño de Nodos Basado en Grado")
+```
+
+3.  **Tipo de Arista Diferente (dotted)**
+
+```{r}
+plot(g_vis_examples, edge.lty = "dotted", vertex.label = V(g_vis_examples)$name, main = "Aristas Dotted")
+```
+
+4.  **Colores de Aristas Diferentes**
+
+```{r}
+plot(g_vis_examples, edge.color = "purple", vertex.label = V(g_vis_examples)$name, main = "Colores de Aristas Diferentes")
+```
+
+5.  **Estructura Circular**
+
+```{r}
+plot(g_vis_examples, layout = layout_in_circle, vertex.label = V(g_vis_examples)$name, main = "Estructura Circular")
+
+# No se ver muy bien - vamos a ver mejro
+# Crear un grafo aleatorio con 20 nodos y un número específico de aristas
+set.seed(1)
+g_20 <- sample_gnp(20, p = 0.2)  # Generar una red aleatoria
+
+# Visualizar la red en un layout circular
+plot(g_20, layout = layout_in_circle, vertex.label = V(g_20)$name, 
+     vertex.color = "lightblue", edge.color = "gray", main = "Red Circular con 20 Nodos")
+
+
+```
+
+6.  **Estructura de Grid**
+
+```{r}
+plot(g_vis_examples, layout = layout_on_grid, vertex.label = V(g_vis_examples)$name, main = "Estructura de Grid")
+
+plot(g_20, layout = layout_on_grid, vertex.label = V(g_20)$name, 
+     vertex.color = "lightgreen", edge.color = "gray", main = "Red Grid con 20 Nodos")
+
+```
+
+7.  **Colores de Nodos según Grado**
+
+```{r}
+
+# Calcular el grado para cada nodo
+degree_values <- degree(g_20)
+# Normalizar los valores del grado para que estén entre 0 y 1
+degree_normalized <- (degree_values - min(degree_values)) / (max(degree_values) - min(degree_values))
+# Asignar colores según el grado
+# Usaremos un gradiente de colores de azul (bajo grado) a rojo (alto grado)
+node_colors <- colorRampPalette(c("blue", "red"))(length(degree_normalized))[rank(degree_normalized)]
+# Graficar el grafo
+plot(g_20, vertex.color = node_colors, main = "Grafo con Nodos Coloreados por Grado")
+
+```
+
+8.  **Hacer los enlaces con curvas**
+
+```{r}
+set.seed(42) # Para reproducibilidad
+plot(g_vis_examples, vertex.label = V(g_vis_examples)$name, vertex.size = 10, edge.curved = 0.2, main = "Curved edges")
+```
+
+9.  **Colocación Aleatoria**
+
+```{r}
+set.seed(42) # Para reproducibilidad
+plot(g_vis_examples, layout = layout_randomly, vertex.label = V(g_vis_examples)$name, main = "Colocación Aleatoria")
+```
+
+Estas diferentes visualizaciones muestran cómo se puede alterar la apariencia de una red más compleja utilizando el paquete `igraph`. Además, la matriz de adyacencia proporciona una representación clara de las conexiones entre los nodos, lo que puede ser útil para análisis posteriores. Cada modificación visual puede ayudar a resaltar diferentes características de la red y facilitar la comprensión de su estructura y propiedades.
+
+
+## Tipos de modelos "random" de grafos
+
+### Grafo de isla
+
+Creamos un grafo simple para ilustrar la funcionalidad básica.
+
+```{r sample_island}
+# Crear un grafo de isla
+set.seed(42)
+g <- sample_islands(3, 10, 5/10, 1)
+plot(g, vertex.label=V(g)$name, main="Grafo de Isla")
+```
+
+La función sample_islands genera un grafo que representa un conjunto de islas. En este modelo, cada "isla" es un conjunto de nodos altamente conectados, y hay pocas conexiones entre las islas. Este tipo de red se utiliza a menudo para modelar sistemas donde existen grupos interconectados, pero con poca interacción entre esos grupos.
+
+Características:
+
+Nodos dentro de una isla están densamente conectados. Pocas o ninguna conexión entre islas. Se observa un alto coeficiente de clustering dentro de las islas (More on this later :).
+
+-   \*\*Que son los argumentos de la funcion? Como afectan las propiedades del grafo producido?
+
+### Ejemplos de modelos de grafos aleatorios
+
+1.  **Modelo de Erdős-Rényi**
+
+```{r erdos_renyi}
+# Grafo Erdős-Rényi
+g_er <- erdos.renyi.game(100, p = 0.05)
+plot(g_er, vertex.size=5, main="Grafo Erdős-Rényi")
+```
+
+La función sample_gnp genera un grafo aleatorio utilizando el modelo de Erdős-Rényi, donde se crea un grafo al agregar aristas de forma aleatoria entre un conjunto de nodos. Cada arista se incluye con una probabilidad p. Este modelo es útil para estudiar propiedades de grafos en general y es una buena representación de redes donde cada conexión es independiente.
+
+Características:
+
+Cada par de nodos tiene una probabilidad p de estar conectado. Puede generar redes densas o dispersas, dependiendo de p. Generalmente, presenta un coeficiente de clustering más bajo en comparación con redes altamente agrupadas (More on this later :).
+
+2.  **Modelo de Barabási-Albert (scale-free)**
+
+```{r barabasi_albert}
+# Grafo Barabási-Albert
+g_ba <- barabasi.game(100)
+plot(g_ba, vertex.size=5, main="Grafo Barabási-Albert")
+```
+
+La función sample_pa genera un grafo siguiendo el modelo de Barabási-Albert, que es un modelo de red de escala libre. Este modelo simula el crecimiento de redes donde nuevos nodos se conectan a nodos existentes con una probabilidad proporcional a su grado, lo que significa que los nodos más conectados tienen más probabilidades de recibir nuevas conexiones.
+
+Características:
+
+Genera redes de escala libre con una distribución de grado que sigue una ley de potencia (more later). Presenta nodos hubs (nodos con un grado alto). Centralidad de grado generalmente alta en nodos muy conectados (more on this later).
+
+## Personalización de redes en igraph
+
+Aun mas ejemplos de personalización de redes, combinando factores, en un solo bloque de código con comentarios explicativos.
+
+```{r customize_networks}
+# Personalización de redes en igraph
+
+# Grafo de ejemplo
+g <- erdos.renyi.game(20, p = 0.1)
+
+# Personalizar atributos de nodos
+V(g)$color <- ifelse(degree(g) > 2, "red", "blue")  # Color por grado
+V(g)$size <- degree(g) * 3  # Tamaño de nodo proporcional al grado
+V(g)$label <- paste0("Node:", V(g))  # Etiquetas de nodos
+
+# Personalizar atributos de aristas
+E(g)$color <- "gray"  # Color de aristas
+E(g)$width <- 2  # Ancho de aristas
+
+# Graficar el grafo personalizado
+plot(g, vertex.label=V(g)$label, edge.arrow.size=0.5, 
+     main="Grafo Personalizado: Atributos de Nodos y Aristas")
+```
+
+# Topología de redes
+
+## Coeficiente de Clustering local
+
+El coeficiente de clustering es una medida que indica la tendencia de los nodos en una red a agruparse en clústeres. Un alto coeficiente de clustering para un nodo (local) sugiere que un nodo es parte de una comunidad densa. En biología, esto puede ser relevante para estudiar interacciones entre proteínas, donde un alto coeficiente de clustering entre varios genes puede indicar una comunidad de proteínas que interactúan fuertemente entre sí.
+
+Se puede definir como:
+
+$$
+C(v) = \frac{2 \times \text{number of triangles through } v}{\text{degree}(v) \times (\text{degree}(v) - 1)}
+$$
+
+O quizas mas intuitivemente, puede definirse en términos de la proporción de triángulos presentes en el grafo en comparación con el número total de triángulos posibles que pueden formarse a partir de los vecinos de un nodo. Esta definición se centra en la noción de "triángulos" y se expresa como:
+
+$$
+C(v) = \frac{\text{Número de triángulos en los vecinos de } v}{\text{Número total de triángulos posibles entre los vecinos de } v}
+$$
+
+### Interpretación
+
+-   Un coeficiente de clustering cercano a 1 indica que los vecinos de un nodo están muy interconectados, formando un clúster denso.
+-   Un coeficiente de clustering cercano a 0 indica que los vecinos de un nodo están poco interconectados.
+
+Esta definición es útil para visualizar cómo las interacciones locales entre los nodos contribuyen a la estructura global de la red, y es especialmente relevante en el contexto de redes sociales y biológicas, donde se pueden observar grupos de interacciones fuertes entre ciertos nodos.
+
+### Código para Calcular y Visualizar el Coeficiente de Clustering local
+
+```{r}
+
+# Crear una red aleatoria
+set.seed(42)
+g_clustering <- erdos.renyi.game(n = 15, p = 0.15, directed = FALSE)
+
+# Calcular el coeficiente de clustering por nodo
+vertex_clustering <- transitivity(g_clustering, type = "local")
+V(g_clustering)$color <- ifelse(vertex_clustering > 0, "red", "lightblue")
+
+# Visualizar la red con coeficiente de clustering - si los vecinos estan conectadas, se visualiza en rojo!
+set.seed(321)
+plot(g_clustering, vertex.size = 5, vertex.label = NA, main = "Coeficiente de Clustering Local")
+```
+
+## Coeficiente de Clustering Global
+
+-   **Definición**: El **coeficiente de clustering global** es una medida global que describe la tendencia general de la red de formar triángulos (conexiones entre tres nodos). Proporciona una visión general de la densidad de la red en términos de interacciones entre vecinos de los nodos.
+
+-   **Cálculo**:
+
+    -   Una forma común de calcular el coeficiente de clustering global es tomando el promedio de los coeficientes de clustering locales de todos los nodos en la red:
+
+$$
+  C_{\text{global}} = \frac{1}{N} \sum_{v \in G} C(v)
+$$
+
+Donde (N) es el número de nodos en el grafo y (C(v)) es el coeficiente de clustering local del nodo (v).
+
+-   Alternativamente, se puede definir como la relación entre el número de triángulos (tripletas de nodos completamente conectados) y el número de tripletas conectadas (un triplete es cualquier conjunto de 3 nodos conectados por 2 aristas):
+
+$$ C\_{\text{global}} = \frac{3 \times \text{Número de triángulos}}{\text{Número de tripletas conectadas}} $$
+
+-   **Interpretación**: Un coeficiente de clustering global cercano a 1 significa que la red está altamente agrupada (muchos nodos tienen coeficientes de clustering altos), mientras que un valor cercano a 0 sugiere que la red es más aleatoria, con menos agrupamientos locales.
+
+``` r
+# Visualizar la red de antes al nivel GLOBAL
+set.seed(321)
+plot(g_clustering, vertex.size = 5, vertex.label = NA, main = paste("Coeficiente de Clustering Global:", round(clustering_coeff, 3)))
+```
+
+Este código calcula e imprime tanto los coeficientes de clustering locales como el global de un pequeño grafo aleatorio y visualiza los nodos con tamaños ajustados según el coeficiente de clustering local, donde los nodos rojos tienen un coeficiente alto y los nodos azules tienen un coeficiente bajo.
+
+### Ejemplo en biología
+
+En las redes de interacción de proteínas, los genes que codifican proteínas que interactúan entre sí tienden a formar grupos o módulos con un alto coeficiente de clustering. Esto es relevante para identificar vías metabólicas o complejos proteicos.
+
+## Centralidad
+
+La **centralidad** se refiere a la importancia de un nodo dentro de una red. Existen varios tipos de centralidad, entre ellos:
+
+-   **Centralidad de grado** (degree centrality): Número de conexiones directas de un nodo.
+
+$$
+C_g(v) = \text{degree}(v)
+$$
+
+### Centralidad de Intermediación (Betweenness Centrality):
+
+La **centralidad de intermediación** es una medida clave en la teoría de redes que indica cuántas veces un nodo actúa como "puente" o intermediario entre otros nodos. Es un concepto crucial para entender la estructura de la red en términos de control o flujo de información, recursos, o influencia a través de los nodos de la red.
+
+#### Definición Matemática:
+
+La centralidad de intermediación de un nodo $v$ en una red se define como:
+
+$$
+C_b(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}
+$$
+
+- **$\sigma_{st}$** es el número total de caminos más cortos entre los nodos $s$ y $t$.
+- **$\sigma_{st}(v$** es el número de esos caminos más cortos que pasan por el nodo $v$.
+
+La centralidad de intermediación calcula, para un nodo dado, la fracción de caminos más cortos entre todos los pares de nodos $s$ y $t$ en la red que pasan a través de él. Cuanto mayor sea este valor, más "importante" es ese nodo en la red en términos de conectar diferentes partes de la misma.
+
+### Explicación Conceptual:
+
+La centralidad de intermediación mide el papel de un nodo como intermediario entre otros nodos de la red. Un nodo con una centralidad de intermediación alta es uno que está en el medio de muchos caminos más cortos entre otros nodos. Esencialmente, estos nodos tienen un poder significativo en términos de control del flujo de información o recursos a través de la red. 
+
+### Relevancia en Biología:
+
+En el contexto biológico, la centralidad de intermediación tiene aplicaciones en varias áreas, como las redes de interacción proteína-proteína (PPI), las redes metabólicas, y las redes de regulación génica. Identificar los nodos con alta centralidad de intermediación puede ayudar a entender los puntos de control clave o los "puentes" que facilitan la comunicación entre diferentes partes de una red biológica.
+
+#### Ejemplos en Biología:
+
+1. **Redes de Interacción Proteína-Proteína (PPI)**:
+   - En una **red de interacción proteína-proteína**, las proteínas con alta centralidad de intermediación pueden ser aquellas que conectan diferentes "modulos" funcionales dentro de la red. Estas proteínas actúan como puntos de control para la transmisión de señales entre distintas funciones celulares. Si una proteína con alta centralidad de intermediación se ve afectada por mutaciones, podría tener un impacto significativo en varias vías biológicas o incluso en la enfermedad.
+   
+   - **Ejemplo**: En una red PPI de una célula humana, una proteína como **TP53** (p53), que tiene un papel central en la regulación del ciclo celular y la respuesta al daño del ADN, podría tener una alta centralidad de intermediación. Si p53 se ve alterada o desregulada, puede afectar numerosas vías celulares relacionadas con el cáncer, como la apoptosis, la reparación del ADN y la regulación del ciclo celular.
+
+2. **Redes Metabólicas**:
+   - En una **red metabólica**, un metabolito o enzima con alta centralidad de intermediación puede ser clave para conectar diversas rutas metabólicas. Estos metabolitos actúan como puentes entre diferentes procesos metabólicos, lo que permite una integración eficiente de los recursos celulares.
+   
+   - **Ejemplo**: El **ATP** (adenosín trifosfato), que es esencial para casi todas las reacciones bioquímicas celulares, puede actuar como un nodo con alta centralidad de intermediación en una red metabólica. La alteración de la producción o el uso de ATP afecta una multitud de rutas metabólicas y es crucial para la función celular.
+
+3. **Redes de Regulación Génica**:
+   - En las **redes de regulación génica**, los factores de transcripción que conectan diferentes conjuntos de genes pueden tener una alta centralidad de intermediación. Estos factores de transcripción no solo regulan la expresión de un conjunto de genes, sino que también actúan como intermediarios para la integración de diversas señales celulares.
+   
+   - **Ejemplo**: El factor de transcripción **NF-kB** es un nodo con alta centralidad de intermediación en las redes de regulación génica. Controla la expresión de genes implicados en la respuesta inmune y en procesos inflamatorios. Si NF-kB está desregulado, puede contribuir a enfermedades como el cáncer, enfermedades autoinmunes y trastornos inflamatorios.
+
+
+#### Código R para Calcular y Visualizar la Centralidad de Intermediación:
+
+```{r centrality_example}
+set.seed(123)
+g <- erdos.renyi.game(10, p = 0.5)
+
+# Calculate betweenness centrality for all nodes
+betweenness_centrality <- betweenness(g)
+
+# Normalize the betweenness values for better visualization (optional)
+betweenness_normalized <- (betweenness_centrality - min(betweenness_centrality)) / 
+    (max(betweenness_centrality) - min(betweenness_centrality))
+
+# Visualize the graph with nodes colored by betweenness centrality
+plot(g, 
+     vertex.size = 20, 
+     vertex.color = heat.colors(100, rev=TRUE)[round(betweenness_normalized * 99) + 1], # Color nodes based on centrality # Optionally remove labels
+     main = "Graph colored by Betweenness Centrality")
+```
+
+# Redes de Escala Libre (Scale-Free Networks)
+
+Las **redes de escala libre** son un tipo particular de red que se caracteriza por una distribución de grado que sigue una **ley de potencia**. En este tipo de redes, existen unos pocos nodos con un número muy alto de conexiones (hubs), mientras que la mayoría de los nodos tienen pocas conexiones. Esta estructura es fundamental para entender cómo funcionan muchas redes complejas en la naturaleza y en sistemas biológicos, como las **redes de interacción proteína-proteína** o las **redes neuronales**.
+
+## Propiedades de las Redes de Escala Libre:
+
+### 1. **Distribución de Grado:**
+
+La **distribución de grado** en las redes de escala libre sigue una **ley de potencia**, lo que significa que el número de nodos con un cierto grado \( k \) (número de conexiones) disminuye rápidamente a medida que \( k \) aumenta. Matemáticamente, esto se expresa como:
+
+$$
+P(k) \sim k^{-\gamma}
+$$
+
+Donde:
+
+- **$P(k)$** es la probabilidad de que un nodo tenga un grado $k$.
+- **$k$** es el grado de un nodo (el número de conexiones que tiene).
+- **$\gamma$** es el exponente de la ley de potencia, que típicamente se encuentra entre 2 y 3 en la mayoría de redes de escala libre.
+
+Este tipo de distribución es característica de redes **autoorganizadas** o **generadas por crecimiento preferencial**, donde nuevos nodos tienden a conectarse preferentemente a los nodos que ya están muy conectados. Esta propiedad genera **hubs** o **nodos centrales**, que son cruciales para la conectividad de la red.
+
+#### Ejemplo en Biología: Redes de Interacción Proteína-Proteína (PPI)
+
+En **redes de interacción proteína-proteína** (PPI), las proteínas más fundamentales para las funciones celulares tienden a tener un alto grado de conectividad, es decir, son hubs. Estas proteínas suelen ser las que orquestan múltiples procesos celulares, como la transcripción genética, la reparación del ADN y la señalización celular.
+
+- **Ejemplo**: BRCA1 (Breast Cancer 1) es una proteína clave en la reparación del ADN y en la regulación del ciclo celular. En las redes de interacción proteína-proteína (PPI), BRCA1 actúa como un hub, conectando muchas otras proteínas involucradas en procesos esenciales como la reparación del ADN, el control del ciclo celular, y la respuesta al daño genético. Debido a su papel central en estas vías, BRCA1 es crucial para la estabilidad genética de la célula.
+
+La alteración o mutación de BRCA1 está asociada con un mayor riesgo de desarrollar cáncer de mama y ovario. Las mutaciones en BRCA1 afectan su capacidad para interactuar con otras proteínas de la red, lo que compromete la reparación del ADN y aumenta la probabilidad de que ocurran mutaciones genéticas que conduzcan al cáncer. En este caso, BRCA1 no solo es un hub en una red de interacciones, sino que también es un punto crítico para mantener la integridad genética celular.
+
+### 2. **Centralidad y Robustez:**
+
+Una de las características interesantes de las redes de escala libre es que, debido a la existencia de **hubs**, estas redes son **robustas frente a fallos aleatorios**. Esto significa que si se eliminan nodos de la red de manera aleatoria, la conectividad global de la red no se verá gravemente afectada, ya que los nodos de baja conectividad no son esenciales para la red. Sin embargo, si se atacan los **hubs** (nodos altamente conectados), la red puede volverse muy vulnerable, ya que la eliminación de estos nodos puede desconectar grandes partes de la red.
+
+#### Ejemplo en Biología: Redes Neuronales
+
+En las **redes neuronales**, los **hubs** son neuronas clave que conectan diferentes regiones del cerebro. La **red de conectividad cerebral** sigue una estructura de escala libre, donde ciertas neuronas tienen muchas conexiones con otras, permitiendo una comunicación eficiente entre regiones cerebrales distantes. Estas neuronas de alto grado son críticas para el procesamiento de información en el cerebro.
+
+- **Ejemplo**: El **córtex prefrontal** tiene neuronas de alta centralidad en las redes neuronales, que facilitan la integración de información de diferentes áreas cerebrales. Si se dañan estas neuronas (por ejemplo, en enfermedades neurodegenerativas), pueden ocurrir disfunciones cognitivas importantes.
+
+### 3. **Vulnerabilidad a Ataques Dirigidos:**
+
+Debido a su estructura jerárquica, las redes de escala libre son **vulnerables a ataques dirigidos** a los hubs. Al eliminar estos nodos clave, la conectividad de la red puede colapsar rápidamente, lo que afecta su funcionamiento global.
+
+- **Ejemplo en biología**: En las **redes de interacción proteína-proteína**, eliminar las proteínas clave (hubs) podría interrumpir varias vías biológicas simultáneamente, lo que llevaría a enfermedades o disfunciones celulares.
+
+---
+
+#### Ejemplo de Análisis de Redes de Escala Libre
+
+En R, podemos generar y analizar una red de escala libre utilizando el modelo de **Barabási-Albert** (BA), que es un modelo clásico para generar redes de escala libre. A continuación se muestra un código en R que genera una red de escala libre y visualiza la distribución de grados:
+
+```{r scale_free_analysis}
+# Crear una red de escala libre usando el modelo de Barabási-Albert
+g_sf <- barabasi.game(1000)
+
+# Obtener la distribución de grado
+degree_distribution <- degree(g_sf)
+
+# Visualizar la distribución de grado
+hist(degree_distribution, breaks=50, main="Distribución de Grado de una Red de Escala Libre", 
+     xlab="Grado", ylab="Frecuencia")
+```
+
+
+## Modularity en Redes
+
+La **modularidad** es una medida de la estructura de una red que evalúa la fortaleza de la división de la red en módulos o comunidades. Un módulo es un conjunto de nodos que están más densamente conectados entre sí en comparación con otros nodos de la red. La modularidad es útil para identificar comunidades o agrupamientos dentro de la red.
+
+La modularidad se calcula comparando la densidad de conexiones dentro de los módulos con la que se esperaría en una red aleatoria con la misma distribución de grados.
+
+### Definición Matemática
+
+La modularidad, \( Q \), de una partición en módulos se calcula usando la siguiente ecuación:
+
+$$
+Q = \frac{1}{2m} \sum_{i,j} \left( A_{ij} - \frac{k_i k_j}{2m} \right) \delta(c_i, c_j)
+$$
+
+donde:
+- $m$ es el número total de aristas en la red.
+- $A_{ij}$ es el valor en la posición $(i, j)$ de la matriz de adyacencia, donde $A_{ij} = 1$ si hay una arista entre los nodos $i$ y $j$, y $0$ en caso contrario.
+- $k_i$ y $k_j$ son los grados de los nodos $i$ y $j$, respectivamente.
+- $\delta(c_i, c_j)$ es la función delta de Kronecker, que es 1 si $c_i = c_j$ (es decir, los nodos $i$ y $j$ están en el mismo módulo) y 0 en caso contrario.
+
+La modularidad $Q$ varía entre -1 y 1, donde valores cercanos a 1 indican una alta modularidad, es decir, una red con comunidades bien definidas. Valores cercanos a 0 o negativos indican una estructura comunitaria poco definida o inexistente.
+
+Aquí tienes la sección revisada con dos ejemplos utilizando `sample_islands`, que ilustran redes con modularidad alta y baja. Esta función crea redes con distintas "islas" o comunidades y nos permite ajustar el número de nodos y el nivel de conectividad entre comunidades para observar el efecto en la modularidad.
+
+---
+
+## Modularidad en Redes y su Cálculo en `igraph`
+
+La modularidad en redes se refiere a la tendencia de los nodos a agruparse en comunidades o módulos. Este concepto es fundamental en el análisis de redes complejas, ya que una modularidad alta indica que la red tiene comunidades bien definidas, donde las conexiones dentro de cada comunidad son densas y las conexiones entre comunidades son escasas. En biología, esta estructura modular es común en redes como las de interacción proteica y rutas metabólicas.
+
+### Ecuación de la Modularidad
+
+La modularidad de una partición de la red en comunidades se calcula mediante la fórmula:
+
+\[
+Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \frac{k_i k_j}{2m} \right] \delta(c_i, c_j)
+\]
+
+donde:
+- \( A_{ij} \) es la matriz de adyacencia de la red (1 si hay una conexión entre \(i\) y \(j\), 0 en caso contrario),
+- \( k_i \) y \( k_j \) son los grados de los nodos \(i\) y \(j\),
+- \( m \) es el número total de enlaces en la red,
+- \( \delta(c_i, c_j) \) es una función que es 1 si los nodos \(i\) y \(j\) están en la misma comunidad y 0 en caso contrario.
+
+Esta ecuación permite calcular un valor de modularidad \( Q \) para evaluar qué tan bien definida está la estructura modular de una red.
+
+### Ejemplos de Redes con Alta y Baja Modularidad usando `sample_islands`
+
+#### Ejemplo 1: Red con Alta Modularidad
+
+En este ejemplo, crearemos una red con varias comunidades bien definidas, donde los nodos dentro de cada comunidad están fuertemente conectados entre sí, pero las conexiones entre comunidades son escasas. Esto genera una alta modularidad.
+
+```{r}
+# Cargar el paquete igraph
+library(igraph)
+
+# Crear una red con alta modularidad usando sample_islands
+set.seed(3)
+g_high_modularity <- sample_islands(islands.n=4, islands.size=10, islands.pin=0.8, n.inter=3)
+
+# Detectar comunidades usando el algoritmo de Louvain
+community_high <- cluster_louvain(g_high_modularity)
+
+# Calcular la modularidad
+modularity_high <- modularity(community_high)
+cat("Modularidad de la red con alta modularidad:", modularity_high, "\n")
+
+# Visualizar la red y las comunidades
+V(g_high_modularity)$color <- membership(community_high)
+plot(g_high_modularity, vertex.color = V(g_high_modularity)$color, main = "Red con Alta Modularidad")
+```
+
+En este caso, la modularidad es alta, lo cual indica que la red presenta comunidades bien definidas, con muchos enlaces dentro de cada comunidad y pocos entre ellas. Este tipo de estructura es común en redes biológicas robustas, como las de interacción proteica en células especializadas.
+
+#### Ejemplo 2: Red con Baja Modularidad
+
+A continuación, crearemos una red con menor modularidad, utilizando `sample_islands` con menos comunidades y mayor conectividad entre ellas. Esto reduce la modularidad, pues los nodos están más distribuidos y menos agrupados en módulos.
+
+```{r}
+# Crear una red con baja modularidad usando sample_islands
+set.seed(4)
+g_low_modularity <- sample_islands(islands.n=4, islands.size=10, islands.pin=0.3, n.inter=5)
+
+# Detectar comunidades usando el algoritmo de Louvain
+community_low <- cluster_louvain(g_low_modularity)
+
+# Calcular la modularidad
+modularity_low <- modularity(community_low)
+cat("Modularidad de la red con baja modularidad:", modularity_low, "\n")
+
+# Visualizar la red y las comunidades
+V(g_low_modularity)$color <- membership(community_low)
+plot(g_low_modularity, vertex.color = V(g_low_modularity)$color, main = "Red con Baja Modularidad")
+```
+
+En esta red, la modularidad es más baja debido a la mayor conectividad entre las comunidades, lo cual dificulta identificar módulos bien definidos. Redes de este tipo pueden aparecer en sistemas biológicos menos especializados o en procesos donde existe una integración funcional alta entre diferentes módulos, como en algunas redes metabólicas.
+
+### Interpretación en Biología
+
+La modularidad alta en redes biológicas es indicativa de una especialización funcional, donde cada módulo o comunidad realiza una función específica. Por otro lado, redes con baja modularidad pueden sugerir funciones integradas y sistemas menos especializados. En biología de sistemas, analizar la modularidad ayuda a descubrir módulos funcionales y a entender la organización jerárquica de los sistemas biológicos.
+
+### Descripción del Código
+
+- **Detección de Comunidades**: Utilizamos `cluster_louvain` para detectar comunidades en la red. Este algoritmo es eficiente para maximizar la modularidad y encontrar módulos bien definidos.
+- **Cálculo de Modularidad**: Con `modularity(community)`, calculamos la modularidad de la partición de la red en comunidades. Esto nos da una medida de la calidad de la estructura de la red en términos de módulos.
+- **Visualización de Comunidades**: Coloreamos los nodos de acuerdo con la comunidad a la que pertenecen usando `membership(community)` para facilitar la visualización de las divisiones de la red.
+
+---
+
+### Interpretación de Modularidad
+
+Un valor alto de modularidad sugiere que la red tiene una estructura de comunidad fuerte, con nodos más densamente conectados dentro de los módulos y menos conectados con nodos de otros módulos. La modularidad es especialmente útil en biología para identificar grupos funcionales de proteínas en redes de interacción o redes de coexpresión genética, donde los módulos pueden representar rutas o complejos funcionales.
+
+## Modularidad en Redes Biológicas y su Aplicación en Biología de Sistemas
+
+En biología, la modularidad es fundamental para analizar la organización de redes complejas, como redes de interacción proteica, redes de regulación genética y redes metabólicas. En estas redes, la modularidad ayuda a identificar **complejos de proteínas**, **rutas metabólicas**, y **módulos funcionales** que son esenciales para procesos celulares específicos. Estos módulos reflejan funciones biológicas que están integradas y muchas veces aisladas en cuanto a su función dentro de la célula, haciendo de la modularidad una herramienta poderosa para descubrir nuevas relaciones biológicas y entender la robustez de los sistemas.
+
+### Ejemplo 1: Red de Interacción Proteica
+
+En una red de interacción proteica, los nodos representan proteínas y las aristas representan interacciones físicas entre ellas. Las proteínas suelen agruparse en **complejos** que funcionan conjuntamente en procesos celulares específicos. Al analizar la modularidad de esta red, se pueden identificar módulos que representan estos complejos proteicos.
+
+**Código en `igraph` para analizar una red de interacción proteica simulada:**
+
+```{r}
+# Crear una red simulada con estructura modular, representando interacción proteica
+set.seed(1)
+g_protein <- sample_pa(50, m = 3, directed = FALSE)
+
+# Detectar comunidades en la red de interacción proteica usando el algoritmo de Louvain
+community_protein <- cluster_louvain(g_protein)
+
+# Calcular la modularidad de la partición
+modularity_protein <- modularity(community_protein)
+cat("Modularidad de la red de interacción proteica:", modularity_protein, "\n")
+
+# Visualizar la red y las comunidades
+V(g_protein)$color <- membership(community_protein)
+plot(g_protein, vertex.color = V(g_protein)$color, main = "Red de Interacción Proteica con Comunidades")
+```
+
+En este ejemplo, cada módulo (comunidad) detectado podría corresponder a un complejo proteico. La modularidad cuantifica la efectividad de esta división y sugiere una estructura comunitaria bien definida si el valor es alto, lo cual es común en redes biológicas debido a la especialización de funciones.
+
+### Ejemplo 2: Red Metabólica
+
+En una red metabólica, los nodos representan metabolitos y las aristas representan reacciones bioquímicas que convierten un metabolito en otro. La modularidad en este contexto puede ayudar a identificar **rutas metabólicas** o subconjuntos de metabolitos y reacciones que forman un proceso metabólico completo, como la glucólisis o el ciclo del ácido cítrico.
+
+**Código en `igraph` para analizar una red metabólica simulada:**
+
+```{r}
+# Crear una red metabólica simulada con estructura modular
+set.seed(2)
+g_metabolic <- sample_smallworld(1, 50, 4, 0.05)
+
+# Detectar comunidades en la red metabólica usando el algoritmo de Louvain
+community_metabolic <- cluster_louvain(g_metabolic)
+
+# Calcular la modularidad de la partición
+modularity_metabolic <- modularity(community_metabolic)
+cat("Modularidad de la red metabólica:", modularity_metabolic, "\n")
+
+# Visualizar la red y las comunidades
+V(g_metabolic)$color <- membership(community_metabolic)
+plot(g_metabolic, vertex.color = V(g_metabolic)$color, main = "Red Metabólica con Comunidades")
+```
+
+En este ejemplo, las comunidades o módulos identificados por la modularidad pueden representar rutas metabólicas en las cuales los metabolitos y reacciones están funcionalmente conectados. Esto permite el análisis de las interacciones metabólicas y cómo se organizan en la red celular.
+
+### Interpretación en Biología de Sistemas
+
+La modularidad es particularmente relevante en **biología de sistemas** para modelar la organización funcional de las redes biológicas y su robustez. Las redes altamente modulares tienden a ser **más robustas** frente a perturbaciones, ya que los módulos actúan de manera relativamente independiente. Por ejemplo:
+- En redes de **interacción genética**, los módulos pueden representar genes que participan en rutas reguladoras específicas.
+- En redes de **señalización celular**, la modularidad permite identificar cascadas de señalización, lo que ayuda a comprender cómo las células responden a estímulos externos de manera organizada.
+
+La modularidad, al permitir identificar estas estructuras funcionales dentro de la red, ayuda a los investigadores a proponer nuevas hipótesis sobre el funcionamiento de los sistemas biológicos y la evolución de su organización.

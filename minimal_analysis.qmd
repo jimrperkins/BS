@@ -1,0 +1,355 @@
+---
+title: "Flujo de análisis mínimo para un término HPO"
+---
+
+# Intro
+
+Este es un ejemplo mínimo del análisis de un término HPO utilizando técnicas de biología de sistemas para comprender mejor los mecanismos subyacentes, incluyendo los pasos más importantes en el flujo de trabajo del análisis. Comenzamos con un término HPO, "morfología anormal del corpúsculo renal", y sugerimos procesos subyacentes importantes, como el sistema inmunológico y las vías del complemento; la mitocondria, la respiración aeróbica y la producción de ATP. Sin embargo, existen muchas formas en que se puede ampliar el análisis. Puedes cambiar el umbral de puntuación utilizado para obtener interacciones de STRINGdb, agregar genes adicionales basados en interacciones con genes asociados a fenotipos conocidos, investigar otros métodos de agrupación, explorar otras bases de datos y fuentes de anotación para el análisis de enriquecimiento, o considerar herramientas adicionales de visualización.
+
+# Parte 1: Descargar la Lista de Genes de la HPO
+
+## Descarga Manual
+
+1.  Navega al [sitio web de la Ontología de Fenotipos Humanos (HPO)](https://hpo.jax.org).
+2.  Busca *abnormal renal corpuscle morphology* en la barra de búsqueda.
+3.  Haz clic en el fenotipo para ver los detalles.
+4.  Localiza la lista de genes asociados y descárgala en formato de texto (Export Associations).
+
+ANOTA el codigo HPO del fenotipo, nos va a hacer falta para el siguiente paso:
+
+## Uso de la API
+
+### ¿Qué es una API?
+
+Una **Interfaz de Programación de Aplicaciones (API)** permite que diferentes aplicaciones de software se comuniquen entre sí. En nuestro caso, nos permite acceder programáticamente a datos de la HPO. Puedes usar una API para obtener automáticamente la lista de genes sin tener que descargarla manualmente. PUEDES USAR OTRAS LENGUAJES DE PROGAMACION SI PREFERIS
+
+Para usar la API, aquí hay un ejemplo de cómo obtener genes programáticamente. Primero, necesitamos instalar y cargar las bibliotecas necesarias:
+
+```{r}
+# Install necessary packages if not already installed
+if (!requireNamespace("httr", quietly = TRUE)) {
+  install.packages("httr")
+}
+if (!requireNamespace("jsonlite", quietly = TRUE)) {
+  install.packages("jsonlite")
+}
+
+library(httr)
+library(jsonlite)
+
+# API request to get genes associated with the HPO term for abnormal renal corpuscle morphology
+hpo_id <- "HP:0031263"  # HPO ID for abnormal renal corpuscle morphology
+
+url <- paste0("https://ontology.jax.org/api/network/annotation/", hpo_id)
+
+response <- GET(url)
+data <- content(response, as = "text", encoding = "UTF-8")
+genes <- fromJSON(data)$genes
+
+# Display the first few genes
+head(genes)
+
+# Display all the genes (uncomment)
+# print(genes)
+```
+
+# Parte 2: Obtención de la Red de Interacción con STRINGdb
+
+Una vez que hemos obtenido la lista de genes asociados con el fenotipo de morfología anormal del corpúsculo renal, el siguiente paso es explorar cómo estos genes interactúan entre sí. Para ello, utilizaremos la base de datos STRING (Search Tool for the Retrieval of Interacting Genes/Proteins), que proporciona información sobre las interacciones conocidas y pronosticadas entre proteínas y genes. Esta base de datos incluye información sobre interacciones de proteínas a nivel físico, funcional y de co-expresión, lo que es esencial para entender las vías biológicas y las redes de señalización involucradas en diversas condiciones fenotípicas.
+
+Se puede usarlo con el interfaz web, sin problemas. Pero tambien existe un API.
+
+A través de la API de STRING, podemos obtener de manera programática una red de interacción que nos ayudará a visualizar y analizar las relaciones entre los genes de interés. Utilizaremos el paquete STRINGdb en R para acceder a estas interacciones y construir la red que analizaremos posteriormente.
+
+A continuación, aseguramos de que tienes el paquete STRINGdb instalado y luego procederemos a obtener la red de interacción.
+
+```{R}
+
+# Install the STRINGdb package if not already installed
+if (!requireNamespace("STRINGdb", quietly = TRUE)) {
+  install.packages("STRINGdb")
+}
+
+library(STRINGdb)
+
+# Initialize STRINGdb with the appropriate version and species
+string_db <- STRINGdb$new(version = "12", species = 9606, score_threshold = 800, input_directory = "")
+
+# Fetch interactions for the gene list
+# Replace 'genes' with your actual gene list variable
+gene_ids <- genes$name  # Adjust according to your downloaded data structure
+string_ids <- string_db$map( genes, "name", removeUnmappedRows = TRUE )
+
+interaction_network <- string_db$get_interactions(string_ids$STRING_id)
+interaction_network <- unique(interaction_network[, 1:2]) # necessary step to remove duplicate interactions
+interaction_network$to <- string_ids$name[match(interaction_network$to, string_ids$STRING_id)]
+interaction_network$from <- string_ids$name[match(interaction_network$from, string_ids$STRING_id)]
+
+# Display the first few rows of the interaction network
+head(interaction_network)
+```
+
+
+# Parte 3: Conversión a Formato igraph y calculos de propiedades de una red
+
+En esta sección, convertiremos la red de interacción obtenida de STRINGdb al formato **igraph**.
+
+Primero, asegúrate de tener instalado y cargado el paquete igraph (OK - you probably already have this.. I hope!):
+
+```{r}
+# Install igraph if it's not already installed
+if (!requireNamespace("igraph", quietly = TRUE)) {
+  install.packages("igraph")
+}
+
+library(igraph)
+```
+
+### Conversión a Formato igraph
+
+Para convertir la red de interacción que hemos obtenido de STRINGdb a un objeto igraph, utilizaremos la función `graph_from_data_frame()`, que permite crear una red a partir de un data frame que contiene las interacciones.
+
+Asumamos que interaction_network tiene al menos dos columnas: gene1 y gene2, que representan los nodos conectados. La conversión se realiza de la siguiente manera:
+
+```{r}
+
+# Convert the interaction network downloaded from STRING into igraph format
+g <- graph_from_data_frame(interaction_network, directed = FALSE)
+```
+
+### Cálculo de Propiedades de la Red
+
+Una vez que tenemos nuestra red en formato igraph, podemos calcular diversas propiedades que nos brindan información sobre su estructura y características. A continuación, se presentan algunas propiedades importantes que puedes calcular:
+
+#### Número de Nodos y Aristas
+
+Podemos calcular el número total de nodos y aristas en la red utilizando las funciones gorder() y gsize():
+
+```{r}
+
+# Calculate numbers of nodes and edges
+num_nodes <- gorder(g)  # Number of nodes
+num_edges <- gsize(g)  # Number of edges
+
+cat("Number of nodes:", num_nodes, "\n")
+cat("Number of edges:", num_edges, "\n")
+```
+
+#### Grado Promedio de los Nodos
+
+El grado de un nodo es el número de conexiones que tiene. Podemos calcular el grado promedio de todos los nodos en la red:
+
+```{r}
+
+# Calculate the degree (grado) of every node
+degree_values <- degree(g)
+
+# Calculate the average
+average_degree <- mean(degree_values)
+cat("Average degree of all nodes:", average_degree, "\n")
+```
+
+#### Densidad de la Red
+
+La densidad de una red es una medida que indica qué tan conectados están los nodos entre sí. Se calcula como el número de aristas dividido por el número máximo posible de aristas:
+
+```{r}
+
+# Calculate the density of the network
+network_density <- edge_density(g)
+cat("Network density:", network_density, "\n")
+```
+
+#### Centralidad
+
+La centralidad nos ayuda a identificar los nodos más importantes dentro de la red. Podemos calcular diferentes medidas de centralidad, aqui vemos centralidad de cercanía:
+
+```{r}
+
+# Calculate Closeness Centrality (centralidad de cercanía)
+centrality_closeness <- closeness(g)
+
+# Show results
+cat("Closeness Centrality (first 5 nodos):", head(centrality_closeness, 5), "\n")
+```
+
+# Parte 4: Visualizando la Red
+
+Una vez que tenemos nuestra red en formato igraph, podemos proceder a realizar diversas visualizaciones y análisis estadísticos. La visualización es una parte crucial del análisis de redes, ya que nos ayuda a entender la distribución y la relación entre los diferentes nodos.
+
+En esta sección, utilizaremos funciones del paquete igraph para crear gráficos visualmente informativos que representen las interacciones entre genes. Además, calcularemos estadísticas de la red, como el número de nodos e interacciones, lo que nos permitirá obtener una visión general de la complejidad y la conectividad de nuestra red. Esto es especialmente relevante en biología molecular, donde las interacciones entre genes pueden proporcionar información valiosa sobre funciones biológicas y mecanismos de enfermedades.
+
+### Gráfico Básico
+
+```{r}
+# Basic plot of the network
+plot(g, vertex.size=5, vertex.label.cex=0.7, edge.arrow.size=0.5,  main="Basic Interaction Network")
+```
+
+### Visualizaciones Personalizadas
+
+#### Graficado en base a atributo de nodo
+
+```{r}
+# Basic plot of the network
+plot(g, vertex.size=degree(g)/2, edge.arrow.size=0.7, vertex.label.cex=0.8, main="Network by degree")
+```
+
+#### Disposición de Fruchterman-Reingold
+
+```{r}
+layout <- layout_with_fr(g)  # Fruchterman-Reingold layout
+plot(g, layout = layout, vertex.color = "skyblue", vertex.size = 5, edge.width = 0.5, main = "Fruchterman-Reingold Layout")
+```
+
+#### Disposición Circular
+
+```{r}
+# Help page access
+# ?layout_in_circle  # Recuerda cómo acceder a las páginas de ayuda (commented)
+
+# Plot with circular layout
+circular_layout <- layout_in_circle(g)
+plot(g, layout = circular_layout, vertex.color = "lightgreen", vertex.size = 5, vertex.label.cex=0.8,edge.width = 0.5, main = "Circular Layout")
+```
+
+#### Without labels to better see the structure
+```{r}
+
+set.seed(123)
+plot(g, vertex.color = "orange", vertex.size = 5,vertex.label=NA, edge.width = 0.5, main = "Nicely Layout")
+```
+
+
+# Parte 5: Clustering de la Red con igraph
+
+### ¿Qué es el clustering?
+
+El clustering en redes es el proceso de identificar grupos de nodos (genes, en este caso) que están más densamente conectados entre sí que con otros nodos de la red. Este enfoque permite detectar módulos o clusters, que pueden representar vías de señalización o grupos funcionales de genes que operan juntos.
+
+```{r}
+g <- graph_from_data_frame(interaction_network, directed = FALSE)
+
+cluster_louvain <- cluster_louvain(g)
+set.seed(123)
+plot(cluster_louvain, g, vertex.size=5, vertex.label=NA, edge.arrow.size=0.2, main="Clustering with Louvain")
+```
+
+# Parte 6: Clustering de la Red con igraph
+
+### Introducción al Análisis de Enriquecimiento Funcional
+
+El análisis de enriquecimiento funcional es un conjunto de técnicas bioinformáticas diseñadas para identificar características funcionales, rutas o procesos biológicos que están representados en exceso dentro de un conjunto de genes de interés. Estas técnicas son fundamentales para ayudar a los investigadores a interpretar grandes cantidades de datos genómicos y transcriptómicos al descubrir las funciones moleculares y procesos biológicos que son importantes en condiciones experimentales específicas, como enfermedades o tratamientos.
+
+Cuando se estudia un conjunto de genes, ya sea obtenido a partir de datos de expresión diferencial, variantes genéticas, o cualquier otra fuente, el análisis de enriquecimiento nos permite responder preguntas como: ¿Qué procesos biológicos están sobrerrepresentados en este conjunto de genes? o ¿Qué funciones moleculares pueden estar relacionadas con el fenotipo de interés?
+
+Existen distinto metodos para este proposito, uno muy usado es el Análisis de Sobrerrepresentación (Over-Representation Analysis, ORA):
+
+Propósito: Determinar si ciertas funciones biológicas (por ejemplo, términos de Gene Ontology (GO), rutas de KEGG) están sobrerrepresentadas en un conjunto de genes de interés en comparación con un conjunto de fondo o referencia. Método: Se utiliza una prueba estadística (como la prueba exacta de Fisher) para evaluar si la frecuencia observada de un término es mayor de lo esperado al azar en el conjunto de interés.
+
+clusterProfiler ofrece la función enrichGO para realizar el análisis de Sobrerrepresentación para obtener enriquecimiento basado en términos de GO. Vamos a ejecutarlo sobre nuestros genes de interés.
+
+```{r}
+if (!requireNamespace("clusterProfiler", quietly = TRUE)) BiocManager::install("clusterProfiler")
+if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) BiocManager::install("org.Hs.eg.db")
+
+library(clusterProfiler)
+library(org.Hs.eg.db) # Base de datos de genes humanos
+
+# Execute ORA enrichment analysis
+enrich_results <- enrichGO(
+  gene          = genes$name,      # Set of genes of interest (from HPO in this case)
+  OrgDb         = org.Hs.eg.db,        # Gene annotation database
+  keyType       = "SYMBOL",            # Type of gene identification (here, gene symbols)
+  ont           = "BP",                # Ontology (BP: biological processes)
+  pAdjustMethod = "BH",                # Method for p-value adjustment
+  pvalueCutoff  = 0.05,                # Significance threshold for p-value
+  qvalueCutoff  = 0.2                  # Significance threshold for q-value
+)
+
+# Mostrar resultados
+head(enrich_results)
+```
+
+En la tabla, las filas son terminos GO, y los de mas columnas son propiedades importantes
+
+### Visualización de los Resultados de Enriquecimiento
+
+clusterProfiler permite visualizar términos GO enriquecidos con dotplot y barplot.
+
+```{r}
+if (!requireNamespace("enrichplot", quietly = TRUE)) BiocManager::install("enrichplot")
+library(enrichplot)
+
+# Dotplot to visualize enriched GO terms
+dotplot(enrich_results, showCategory = 10, title = "GO Enrichment for Abnormal Renal Corpuscle Morphology")
+
+# Barplot as an alternative
+barplot(enrich_results, showCategory = 10, title = "GO Enrichment Barplot")
+```
+
+#### También podemos exportar los resultados a CSV o visualizarlos en tablas.
+
+```{r}
+# Convert results to data frame and export to CSV
+write.csv2(as.data.frame(enrich_results), file = "GO_Enrichment_Abnormal_Renal_Corpuscle.csv", row.names = FALSE)
+```
+
+### Análisis de Enriquecimiento en Clusters de una Red
+
+Cuando trabajamos con redes de genes, el análisis de enriquecimiento funcional puede aplicarse a clusters individuales para identificar funciones únicas en cada grupo de genes.
+
+Para realizar un Análisis de Enriquecimiento en Clusters de una Red en R, partiremos tambien de la red STRINGdb del termino HPO "abnormal renal corpuscle morphology" que ya ha sido agrupada en diferentes clusters (por ejemplo, usando el algoritmo de Louvain en una sección previa). Esto permite aplicar análisis de enriquecimiento a cada uno de los clusters obtenidos para identificar funciones biológicas o rutas moleculares específicas asociadas con cada grupo de genes.
+
+#### Extracción de Genes de Clusters para Análisis de Enriquecimiento
+
+-   Asignación de Clusters a los Nodos: Partimos de un grafo en el que cada nodo ya tiene asignado un número de cluster.
+-   Extracción de Genes por Cluster: Utilizamos una función para extraer los genes de cada cluster.
+
+El siguiente código ilustra cómo extraer los genes de cada cluster en el grafo previamente agrupado del termino HPO.
+
+```{r}
+set.seed(123)
+
+cluster_membership <- membership(cluster_louvain(g)) # Louvain clustering on the graph
+# Split genes by cluster
+genes_clusters <- split(V(g)$name, cluster_membership)  # Names of genes by cluster
+
+# Look at the genes in each cluster. What pathways/GO terms do you think might be enriched?
+print(genes_clusters)
+```
+
+#### Aplicación del Análisis de Enriquecimiento ORA en Cada Cluster
+
+Con los genes divididos por clusters, aplicaremos el análisis de enriquecimiento Over-Representation Analysis (ORA) en cada uno. Esto permite identificar procesos biológicos o funciones moleculares específicas para los genes de cada grupo. Usaremos el paquete clusterProfiler y nos enfocaremos en el análisis de enriquecimiento GO.
+
+```{r}
+# Initialize an empty list to store enrichment results for each cluster
+enrichment_results_clusters <- list()
+
+# Loop over each cluster to perform enrichment analysis
+for (i in seq_along(genes_clusters)) {
+  # cat(i, "\n")
+  # Perform GO enrichment for the current cluster
+  enrichment_results_clusters[[i]] <- enrichGO(
+    gene          = genes_clusters[[i]],   # Set of genes for the current cluster
+    OrgDb         = org.Hs.eg.db,          # Database for gene annotation
+    keyType       = "SYMBOL",              # Identifier type (e.g., gene symbols)
+    ont           = "BP",                  # Ontology (BP: Biological Process)
+    pAdjustMethod = "BH",                  # Method for p-value adjustment
+    pvalueCutoff  = 0.05,                  # Significance threshold for p-value
+    qvalueCutoff  = 0.2                    # Significance threshold for q-value
+  )
+}
+
+# Visualize results for the first cluster as an example
+dotplot(enrichment_results_clusters[[1]], showCategory = 10, title = "GO Enrichment for Cluster 1")
+
+# Save enrichment results to CSV files for each cluster
+for (i in seq_along(enrichment_results_clusters)) {
+  write.csv2(
+    as.data.frame(enrichment_results_clusters[[i]]),  # Convert to data frame for saving
+    file = paste0("enrichment_cluster_", i, ".csv")   # File name based on cluster index
+  )
+}
+```

@@ -1,0 +1,22 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Biología de Sistemas"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: analisis_topo.qmd
+        text: Análisis y Topología
+      - href: minimal_analysis.qmd
+        text: Minimal Análisis
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
