@@ -166,7 +166,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#qué-es-el-clustering" id="toc-qué-es-el-clustering" class="nav-link" data-scroll-target="#qué-es-el-clustering">¿Qué es el clustering?</a></li>
   </ul></li>
-  <li><a href="#parte-6-clustering-de-la-red-con-igraph" id="toc-parte-6-clustering-de-la-red-con-igraph" class="nav-link" data-scroll-target="#parte-6-clustering-de-la-red-con-igraph">Parte 6: Clustering de la Red con igraph</a>
+  <li><a href="#parte-6-enriquecimiento-funcional" id="toc-parte-6-enriquecimiento-funcional" class="nav-link" data-scroll-target="#parte-6-enriquecimiento-funcional">Parte 6: Enriquecimiento Funcional</a>
   <ul class="collapse">
   <li><a href="#introducción-al-análisis-de-enriquecimiento-funcional" id="toc-introducción-al-análisis-de-enriquecimiento-funcional" class="nav-link" data-scroll-target="#introducción-al-análisis-de-enriquecimiento-funcional">Introducción al Análisis de Enriquecimiento Funcional</a></li>
   <li><a href="#visualización-de-los-resultados-de-enriquecimiento" id="toc-visualización-de-los-resultados-de-enriquecimiento" class="nav-link" data-scroll-target="#visualización-de-los-resultados-de-enriquecimiento">Visualización de los Resultados de Enriquecimiento</a></li>
@@ -197,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="intro" class="level1">
 <h1>Intro</h1>
-<p>Este es un ejemplo mínimo del análisis de un término HPO utilizando técnicas de biología de sistemas para comprender mejor los mecanismos subyacentes, incluyendo los pasos más importantes en el flujo de trabajo del análisis. Comenzamos con un término HPO, “morfología anormal del corpúsculo renal”, y sugerimos procesos subyacentes importantes, como el sistema inmunológico y las vías del complemento; la mitocondria, la respiración aeróbica y la producción de ATP. Sin embargo, existen muchas formas en que se puede ampliar el análisis. Puedes cambiar el umbral de puntuación utilizado para obtener interacciones de STRINGdb, agregar genes adicionales basados en interacciones con genes asociados a fenotipos conocidos, investigar otros métodos de agrupación, explorar otras bases de datos y fuentes de anotación para el análisis de enriquecimiento, o considerar herramientas adicionales de visualización.</p>
+<p>Este es un ejemplo mínimo del análisis de un término HPO utilizando técnicas de biología de sistemas para comprender mejor los mecanismos subyacentes, incluyendo los pasos más importantes en el flujo de trabajo del análisis. Comenzamos con un término HPO, “morfología anormal del corpúsculo renal”, y sugerimos procesos subyacentes importantes, como el sistema inmunológico y las vías del complemento; la mitocondria, la respiración aeróbica y la producción de ATP. Sin embargo, existen muchas formas en que se puede ampliar el análisis. Puedes cambiar el umbral de puntuación utilizado para obtener interacciones de STRINGdb, agregar genes adicionales basados en interacciones con genes asociados a fenotipos conocidos, investigar otros métodos de agrupación, explorar otras bases de datos y fuentes de anotación para el análisis de enriquecimiento, o considerar herramientas adicionales de visualización, otras metricas, etc.</p>
 </section>
 <section id="parte-1-descargar-la-lista-de-genes-de-la-hpo" class="level1">
 <h1>Parte 1: Descargar la Lista de Genes de la HPO</h1>
@@ -475,8 +475,8 @@ Adjuntando el paquete: 'igraph'</code></pre>
 </div>
 </section>
 </section>
-<section id="parte-6-clustering-de-la-red-con-igraph" class="level1">
-<h1>Parte 6: Clustering de la Red con igraph</h1>
+<section id="parte-6-enriquecimiento-funcional" class="level1">
+<h1>Parte 6: Enriquecimiento Funcional</h1>
 <section id="introducción-al-análisis-de-enriquecimiento-funcional" class="level3">
 <h3 class="anchored" data-anchor-id="introducción-al-análisis-de-enriquecimiento-funcional">Introducción al Análisis de Enriquecimiento Funcional</h3>
 <p>El análisis de enriquecimiento funcional es un conjunto de técnicas bioinformáticas diseñadas para identificar características funcionales, rutas o procesos biológicos que están representados en exceso dentro de un conjunto de genes de interés. Estas técnicas son fundamentales para ayudar a los investigadores a interpretar grandes cantidades de datos genómicos y transcriptómicos al descubrir las funciones moleculares y procesos biológicos que son importantes en condiciones experimentales específicas, como enfermedades o tratamientos.</p>
