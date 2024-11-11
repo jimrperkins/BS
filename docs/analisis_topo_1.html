@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.45">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Biología de Sistemas - Análisis de grafos y topología de redes (I): topología, clustering, scale-free networks</title>
+<title>Análisis de grafos y topología de redes (I): topología, clustering, scale-free networks – Biología de Sistemas</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -79,7 +79,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -88,13 +94,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -103,35 +138,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Biología de Sistemas</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./analisis_topo.html" rel="" target="">
- <span class="menu-text">Análisis y Topología</span></a>
+    <a class="nav-link" href="./analisis_topo.html"> 
+<span class="menu-text">Análisis y Topología</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./minimal_analysis.html" rel="" target="">
- <span class="menu-text">Minimal Análisis</span></a>
+    <a class="nav-link" href="./minimal_analysis.html"> 
+<span class="menu-text">Minimal Análisis</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto">
-</div>
           </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -201,7 +236,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <section id="introducción" class="level1">
 <h1>Introducción</h1>
@@ -215,29 +252,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><p><strong>Nodos (Vértices)</strong>: Los elementos individuales de un grafo. Un grafo se puede definir como <span class="math inline">\(G = (V, E)\)</span>, donde <span class="math inline">\(V\)</span> es el conjunto de nodos y <span class="math inline">\(E\)</span> es el conjunto de aristas. En biología, un nodo puede representar una proteína, un gen o cualquier otra entidad de interés.</p></li>
 <li><p><strong>Aristas (Enlaces)</strong>: Las conexiones entre los nodos. En un grafo que representa interacciones proteína-proteína (como STRINGdb por ejemplo), una arista podría indicar que dos proteínas interactúan. Matemáticamente, cada arista se puede representar como un par ordenado de nodos: <span class="math inline">\(e = (u, v)\)</span>, donde <span class="math inline">\(u, v \in V\)</span>.</p></li>
-<li><p><strong>Grado (Degree)</strong>: El grado de un nodo <span class="math inline">\(v\)</span> es el número de aristas que inciden en él. Por ejemplo en el siguiente red, los nodos 1, 2 y 4 tienen un grado de dos. El nodo 3 tiene un grado de tres. Esto es una red no-dirigida, o un grafo en el que las aristas no tienen dirección, lo que implica una relación simétrica entre nodos. Aquí, una arista se representa como un conjunto de nodos: <span class="math inline">\(e = \{u, v\}\)</span>.</p></li>
+<li><p><strong>Grado (Degree)</strong>: El grado de un nodo <span class="math inline">\(v\)</span> es el número de aristas que inciden en él. Por ejemplo en el siguiente red, los nodos 1, 2 y 4 tienen un grado de dos. El nodo 3 tiene un grado de tres. Esto es una red no-dirigida, o un grafo en el que las aristas no tienen dirección, lo que implica una relación simétrica entre nodos.</p></li>
 </ul>
-<p>Para el nodo <span class="math inline">\(i\)</span>-ésimo en una red, denotaremos su grado como <span class="math inline">\(k_i\)</span>. Por lo tanto, para el siguiente red, <span class="math inline">\(k_1 = k_2 = k_4 = 2\)</span> y <span class="math inline">\(k_3 = 3\)</span>.</p>
+<p>Para el nodo <span class="math inline">\(i\)</span>-ésimo en una red, denotaremos su grado como <span class="math inline">\(k_i\)</span>. Por lo tanto, para el siguiente red, <span class="math inline">\(k_1 = k_2 = 2\)</span>, <span class="math inline">\(k_4 = 1\)</span> y <span class="math inline">\(k_3 = 3\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">n =</span> <span class="dv">4</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `graph()` was deprecated in igraph 2.1.0.
-ℹ Please use `make_graph()` instead.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">n =</span> <span class="dv">4</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<p>Como se mencionó anteriormente, el número total de enlaces se denota como <span class="math inline">\(E\)</span>. En una red no dirigida, es fácil entender que <span class="math inline">\(L\)</span> debería ser la mitad de la suma de todos los grados de los nodos. Esto es porque cada enlace pertenece a dos nodos y, por lo tanto, cada enlace se cuenta dos veces. Así tenemos:</p>
+</div>
+<p>Como se mencionó anteriormente, el número total de enlaces se denota como <span class="math inline">\(E\)</span>. En una red no dirigida, es fácil entender que <span class="math inline">\(E\)</span> debería ser la mitad de la suma de todos los grados de los nodos. Esto es porque cada enlace pertenece a dos nodos y, por lo tanto, cada enlace se cuenta dos veces. Así tenemos:</p>
 <p><span class="math display">\[
 E = \frac{1}{2} \sum_{i=1}^{N} k_i
 \]</span></p>
 <p>En la red anterior, <span class="math inline">\(E = 4\)</span>.</p>
 <p>El grado medio, denotado como <span class="math inline">\(\langle k \rangle\)</span>, es simplemente la media de todos los grados de los nodos en una red. Para la red anterior (Figura 2.2), tenemos:</p>
 <p><span class="math display">\[
-\langle k \rangle = \frac{1}{4} \cdot (k_1 + k_2 + k_3 + k_4) = \frac{1}{4} \cdot (2 + 2 + 3 + 2) = 2.25
+\langle k \rangle = \frac{1}{4} \cdot (k_1 + k_2 + k_3 + k_4) = \frac{1}{4} \cdot (2 + 2 + 3 + 1) = 2
 \]</span></p>
 <p>Esto significa que, en promedio, cada nodo en la red tiene 2.25 enlaces.</p>
 <p>De acuerdo con su definición, sabemos que:</p>
@@ -253,15 +290,19 @@ E = \frac{1}{2} \sum_{i=1}^{N} k_i
 <li><strong>Grafo dirigido (Directed Graph)</strong>: Un grafo en el que las aristas tienen una dirección, es decir, indican una relación asimétrica entre dos nodos. En este caso, cada arista se representa como un par ordenado <span class="math inline">\(e = (u, v)\)</span>, donde <span class="math inline">\(u\)</span> apunta a <span class="math inline">\(v\)</span>. Por ejemplo:</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">n =</span> <span class="dv">4</span>, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">n =</span> <span class="dv">4</span>, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Cada enlace en la red anterior es dirigido. Si calculamos el grado medio de la red según la ecuación para redes no dirigdas, perderemos información.</p>
-<p>Por lo tanto, distinguimos entre el grado de entrada, denotado como <span class="math inline">\(k_{\text{in}_i}\)</span>, y el grado de salida, denotado como <span class="math inline">\(k_{\text{out}_i}\)</span>. <span class="math inline">\(k_{\text{in}_i}\)</span> representa el número de enlaces de otros nodos que apuntan al nodo <span class="math inline">\(i\)</span>, y <span class="math inline">\(k_{\text{out}_i}\)</span> representa el número de enlaces que parten del nodo ( i ) y apuntan a otros nodos.</p>
+<p>Por lo tanto, distinguimos entre el grado de entrada, denotado como <span class="math inline">\(k_{\text{in}_i}\)</span>, y el grado de salida, denotado como <span class="math inline">\(k_{\text{out}_i}\)</span>. <span class="math inline">\(k_{\text{in}_i}\)</span> representa el número de enlaces de otros nodos que apuntan al nodo <span class="math inline">\(i\)</span>, y <span class="math inline">\(k_{\text{out}_i}\)</span> representa el número de enlaces que parten del nodo <span class="math inline">\(i\)</span> y apuntan a otros nodos.</p>
 <p>Para un nodo <span class="math inline">\(i\)</span> en una red dirigida, su grado es la suma del grado de entrada y el grado de salida. Por lo tanto,</p>
 <p><span class="math display">\[
 k_i = k_{\text{in}_i} + k_{\text{out}_i}
@@ -298,24 +339,28 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 <h3 class="anchored" data-anchor-id="ejemplo-1-grafo-con-alta-conectividad">Ejemplo 1: Grafo con Alta Conectividad</h3>
 <p>En este ejemplo, mostramos un <strong>grafo completo</strong> de 5 nodos. En un grafo completo, cada nodo está conectado a todos los demás, lo que genera múltiples caminos alternativos entre los nodos y, por tanto, una alta conectividad.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo completo de 5 nodos (alta conectividad)</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>g_high <span class="ot">&lt;-</span> <span class="fu">make_full_graph</span>(<span class="dv">5</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_high, <span class="at">main =</span> <span class="st">"Grafo con Alta Conectividad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo completo de 5 nodos (alta conectividad)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>g_high <span class="ot">&lt;-</span> <span class="fu">make_full_graph</span>(<span class="dv">5</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_high, <span class="at">main =</span> <span class="st">"Grafo con Alta Conectividad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificamos la conectividad de nodos y aristas</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de nodos (g_high):"</span>, <span class="fu">vertex_connectivity</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificamos la conectividad de nodos y aristas</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de nodos (g_high):"</span>, <span class="fu">vertex_connectivity</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Conectividad de nodos (g_high): 4 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de aristas (g_high):"</span>, <span class="fu">edge_connectivity</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de aristas (g_high):"</span>, <span class="fu">edge_connectivity</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Conectividad de aristas (g_high): 4 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_high)?"</span>, <span class="fu">is_connected</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_high)?"</span>, <span class="fu">is_connected</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>¿Es conexo (g_high)? TRUE </code></pre>
+<pre><code>&lt;U+00BF&gt;Es conexo (g_high)? TRUE </code></pre>
 </div>
 </div>
 <p><strong>FIGURA 1</strong>: Grafo con alta conectividad.</p>
@@ -325,24 +370,28 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 <h3 class="anchored" data-anchor-id="ejemplo-2-grafo-con-baja-conectividad">Ejemplo 2: Grafo con Baja Conectividad</h3>
 <p>En el segundo ejemplo, tenemos un <strong>grafo lineal</strong> o en forma de cadena. Este grafo tiene baja conectividad de nodos y aristas, ya que la eliminación de un nodo o arista específico puede desconectar la red.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo lineal de 5 nodos (baja conectividad)</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>g_low <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">5</span>), <span class="at">n =</span> <span class="dv">5</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_low, <span class="at">main =</span> <span class="st">"Grafo con Baja Conectividad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo lineal de 5 nodos (baja conectividad)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>g_low <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">5</span>), <span class="at">n =</span> <span class="dv">5</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_low, <span class="at">main =</span> <span class="st">"Grafo con Baja Conectividad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificamos la conectividad de nodos y aristas</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de nodos (g_low):"</span>, <span class="fu">vertex_connectivity</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificamos la conectividad de nodos y aristas</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de nodos (g_low):"</span>, <span class="fu">vertex_connectivity</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Conectividad de nodos (g_low): 1 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de aristas (g_low):"</span>, <span class="fu">edge_connectivity</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de aristas (g_low):"</span>, <span class="fu">edge_connectivity</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Conectividad de aristas (g_low): 1 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_low)?"</span>, <span class="fu">is_connected</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_low)?"</span>, <span class="fu">is_connected</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>¿Es conexo (g_low)? TRUE </code></pre>
+<pre><code>&lt;U+00BF&gt;Es conexo (g_low)? TRUE </code></pre>
 </div>
 </div>
 <p><strong>FIGURA 2</strong>: Grafo con baja conectividad.</p>
@@ -356,28 +405,32 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 <section id="definición-de-la-red" class="level3">
 <h3 class="anchored" data-anchor-id="definición-de-la-red">Definición de la Red</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un grafo con 5 nodos y 6 aristas</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>g_vis_examples <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"B"</span>, <span class="st">"D"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"C"</span>, <span class="st">"E"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>), <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red básica</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Red Compleja"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un grafo con 5 nodos y 6 aristas</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>g_vis_examples <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"B"</span>, <span class="st">"D"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"C"</span>, <span class="st">"E"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>), <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red básica</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Red para Visualizar"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="matriz-de-adyacencia" class="level3">
 <h3 class="anchored" data-anchor-id="matriz-de-adyacencia">Matriz de Adyacencia</h3>
 <p>En una red cada arista se puede representar como un par ordenado de nodos: <span class="math inline">\(e = (u, v)\)</span>. Una table de pares de nodos se puede llamar como un “from-to list”.</p>
-<p>La matriz de adyacencia es otra representación que indica la conexión entre los nodos. Se define como una matriz cuadrada <span class="math inline">\(A\)</span> donde <span class="math inline">\(A[i, j] = 1\)</span> si hay una arista entre el nodo <span class="math inline">\(i\)</span> y el nodo <span class="math inline">\(j\)</span>, y $A[i, j] = $ en caso contrario.</p>
+<p>La matriz de adyacencia es otra representación que indica la conexión entre los nodos. Se define como una matriz cuadrada <span class="math inline">\(A\)</span> donde <span class="math inline">\(A[i, j] = 1\)</span> si hay una arista entre el nodo <span class="math inline">\(i\)</span> y el nodo <span class="math inline">\(j\)</span>, y <span class="math inline">\(A[i, j] = 0\)</span> en caso contrario.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir el grafo en data.frame con formato "from-to"</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir el grafo en una matriz de adyacencia</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>adjacency_matrix <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">as_adjacency_matrix</span>(g_vis_examples))</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar la matriz de adyacencia</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>adjacency_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir el grafo en data.frame con formato "from-to"</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir el grafo en una matriz de adyacencia</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>adjacency_matrix <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">as_adjacency_matrix</span>(g_vis_examples))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar la matriz de adyacencia</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>adjacency_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  A B C D E
 A 0 1 1 0 0
@@ -392,24 +445,24 @@ E 0 0 1 1 0</code></pre>
 <p>Por ejemplo, Si una red tiene 1,000 nodos, una matriz de adyacencia requeriría 1,000^2 =1,000,000 entradas, independientemente de cuántas conexiones realmente existan entre los nodos. Aunque solo una fracción de estas entradas podría representar enlaces reales, todas las celdas deben almacenarse en la memoria.</p>
 <p>Tambien existe representaciones sparse, por ejemplo en R:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Instala el paquete si aún no está instalado</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"Matrix"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"Matrix"</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar el paquete Matrix</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una matriz dispersa</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Definimos una matriz de 5x5 con solo algunos enlaces</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>adj_matrix <span class="ot">&lt;-</span> <span class="fu">Matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>,</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>), </span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">nrow =</span> <span class="dv">5</span>, <span class="at">ncol =</span> <span class="dv">5</span>, <span class="at">sparse =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar la matriz dispersa</span></span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(adj_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Instala el paquete si aún no está instalado</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"Matrix"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"Matrix"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar el paquete Matrix</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una matriz dispersa</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Definimos una matriz de 5x5 con solo algunos enlaces</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>adj_matrix <span class="ot">&lt;-</span> <span class="fu">Matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>), </span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">nrow =</span> <span class="dv">5</span>, <span class="at">ncol =</span> <span class="dv">5</span>, <span class="at">sparse =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar la matriz dispersa</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(adj_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>5 x 5 sparse Matrix of class "dsCMatrix"
               
@@ -419,8 +472,8 @@ E 0 0 1 1 0</code></pre>
 [4,] . . 1 . 1
 [5,] 1 . . 1 .</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># igraph ahora usa matrices sparse por definicion:</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">as_adjacency_matrix</span>(g_vis_examples))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># igraph ahora usa matrices sparse por definicion:</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">as_adjacency_matrix</span>(g_vis_examples))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>5 x 5 sparse Matrix of class "dgCMatrix"
   A B C D E
@@ -434,30 +487,30 @@ E . . 1 1 .</code></pre>
 <p>Porque usa menos memoria el sparse matrix?</p>
 <p>Una matriz dispersa (o sparse matrix) utiliza menos memoria porque solo almacena los elementos no cero y sus posiciones, mientras que una matriz densa almacena todos los elementos, incluidos los ceros.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar el paquete Matrix</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una matriz de adyacencia 20000x20000 en base R (approx no. genes en genoma humano)</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Han estimado 650000 interacciones entre estos genes</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>dense_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">20000</span>, <span class="at">ncol =</span> <span class="dv">20000</span>)</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>positions <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="dv">1000</span><span class="sc">*</span><span class="dv">1000</span>), <span class="at">size =</span> <span class="dv">650000</span>)  <span class="co"># Solo 1000 conexiones</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>dense_matrix[positions] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el tamaño en memoria de la matriz densa</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>dense_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(dense_matrix)</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz densa:"</span>, <span class="fu">format</span>(dense_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar el paquete Matrix</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una matriz de adyacencia 20000x20000 en base R (estimada no. genes en genoma humano segun un articulo famoso)</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Han estimado 650000 interacciones entre estos genes</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>dense_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">20000</span>, <span class="at">ncol =</span> <span class="dv">20000</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>positions <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="dv">1000</span><span class="sc">*</span><span class="dv">1000</span>), <span class="at">size =</span> <span class="dv">650000</span>)  <span class="co"># Solo 650000 conexiones</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>dense_matrix[positions] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el tamaño en memoria de la matriz densa</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>dense_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(dense_matrix)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz densa:"</span>, <span class="fu">format</span>(dense_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tamaño de la matriz densa: 3 Gb"</code></pre>
+<pre><code>[1] "Tama&lt;U+00F1&gt;o de la matriz densa: 3 Gb"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la matriz densa a una matriz dispersa</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>sparse_matrix <span class="ot">&lt;-</span> <span class="fu">as</span>(dense_matrix, <span class="st">"sparseMatrix"</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el tamaño en memoria de la matriz dispersa</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>sparse_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(sparse_matrix)</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz dispersa:"</span>, <span class="fu">format</span>(sparse_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la matriz densa a una matriz dispersa</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>sparse_matrix <span class="ot">&lt;-</span> <span class="fu">as</span>(dense_matrix, <span class="st">"sparseMatrix"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el tamaño en memoria de la matriz dispersa</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>sparse_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(sparse_matrix)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz dispersa:"</span>, <span class="fu">format</span>(sparse_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tamaño de la matriz dispersa: 7.5 Mb"</code></pre>
+<pre><code>[1] "Tama&lt;U+00F1&gt;o de la matriz dispersa: 7.5 Mb"</code></pre>
 </div>
 </div>
 </section>
@@ -468,108 +521,152 @@ E . . 1 1 .</code></pre>
 <li><strong>Colores de Nodos Diferentes</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.color =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>, <span class="st">"orange"</span>, <span class="st">"purple"</span>), <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colores de Nodos Diferentes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.color =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>, <span class="st">"orange"</span>, <span class="st">"purple"</span>), <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colores de Nodos Diferentes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="2" type="1">
 <li><strong>Tamaño de Nodos Basado en Grado</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>vertex_sizes <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_vis_examples) <span class="sc">*</span> <span class="dv">5</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.size =</span> vertex_sizes, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Tamaño de Nodos Basado en Grado"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>vertex_sizes <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_vis_examples) <span class="sc">*</span> <span class="dv">5</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.size =</span> vertex_sizes, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Tamaño de Nodos Basado en Grado"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="3" type="1">
 <li><strong>Tipo de Arista Diferente (dotted)</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">edge.lty =</span> <span class="st">"dotted"</span>, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Aristas Dotted"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">edge.lty =</span> <span class="st">"dotted"</span>, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Aristas Dotted"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="4" type="1">
 <li><strong>Colores de Aristas Diferentes</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">edge.color =</span> <span class="st">"purple"</span>, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colores de Aristas Diferentes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">edge.color =</span> <span class="st">"purple"</span>, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colores de Aristas Diferentes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="5" type="1">
 <li><strong>Estructura Circular</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Estructura Circular"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Estructura Circular"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No se ver muy bien - vamos a ver mejro</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un grafo aleatorio con 20 nodos y un número específico de aristas</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>g_20 <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">20</span>, <span class="at">p =</span> <span class="fl">0.2</span>)  <span class="co"># Generar una red aleatoria</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red en un layout circular</span></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_20)<span class="sc">$</span>name, </span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="st">"lightblue"</span>, <span class="at">edge.color =</span> <span class="st">"gray"</span>, <span class="at">main =</span> <span class="st">"Red Circular con 20 Nodos"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No se ver muy bien - vamos a ver mejro</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un grafo aleatorio con 20 nodos y un número específico de aristas</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>g_20 <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">20</span>, <span class="at">p =</span> <span class="fl">0.2</span>)  <span class="co"># Generar una red aleatoria</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red en un layout circular</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_20)<span class="sc">$</span>name, </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="st">"lightblue"</span>, <span class="at">edge.color =</span> <span class="st">"gray"</span>, <span class="at">main =</span> <span class="st">"Red Circular con 20 Nodos"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="6" type="1">
 <li><strong>Estructura de Grid</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_on_grid, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Estructura de Grid"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_on_grid, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Estructura de Grid"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">layout =</span> layout_on_grid, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_20)<span class="sc">$</span>name, </span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="st">"lightgreen"</span>, <span class="at">edge.color =</span> <span class="st">"gray"</span>, <span class="at">main =</span> <span class="st">"Red Grid con 20 Nodos"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">layout =</span> layout_on_grid, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_20)<span class="sc">$</span>name, </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="st">"lightgreen"</span>, <span class="at">edge.color =</span> <span class="st">"gray"</span>, <span class="at">main =</span> <span class="st">"Red Grid con 20 Nodos"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="7" type="1">
 <li><strong>Colores de Nodos según Grado</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el grado para cada nodo</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>degree_values <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_20)</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores del grado para que estén entre 0 y 1</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>degree_normalized <span class="ot">&lt;-</span> (degree_values <span class="sc">-</span> <span class="fu">min</span>(degree_values)) <span class="sc">/</span> (<span class="fu">max</span>(degree_values) <span class="sc">-</span> <span class="fu">min</span>(degree_values))</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Asignar colores según el grado</span></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Usaremos un gradiente de colores de azul (bajo grado) a rojo (alto grado)</span></span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>node_colors <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"red"</span>))(<span class="fu">length</span>(degree_normalized))[<span class="fu">rank</span>(degree_normalized)]</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar el grafo</span></span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">vertex.color =</span> node_colors, <span class="at">main =</span> <span class="st">"Grafo con Nodos Coloreados por Grado"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el grado para cada nodo</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>degree_values <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_20)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalizar los valores del grado para que estén entre 0 y 1</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>degree_normalized <span class="ot">&lt;-</span> (degree_values <span class="sc">-</span> <span class="fu">min</span>(degree_values)) <span class="sc">/</span> (<span class="fu">max</span>(degree_values) <span class="sc">-</span> <span class="fu">min</span>(degree_values))</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Asignar colores según el grado</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Usaremos un gradiente de colores de azul (bajo grado) a rojo (alto grado)</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>node_colors <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"red"</span>))(<span class="fu">length</span>(degree_normalized))[<span class="fu">rank</span>(degree_normalized)]</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar el grafo</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">vertex.color =</span> node_colors, <span class="at">main =</span> <span class="st">"Grafo con Nodos Coloreados por Grado"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="8" type="1">
 <li><strong>Hacer los enlaces con curvas</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># Para reproducibilidad</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">vertex.size =</span> <span class="dv">10</span>, <span class="at">edge.curved =</span> <span class="fl">0.2</span>, <span class="at">main =</span> <span class="st">"Curved edges"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># Para reproducibilidad</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">vertex.size =</span> <span class="dv">10</span>, <span class="at">edge.curved =</span> <span class="fl">0.2</span>, <span class="at">main =</span> <span class="st">"Curved edges"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="9" type="1">
 <li><strong>Colocación Aleatoria</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># Para reproducibilidad</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_randomly, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colocación Aleatoria"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># Para reproducibilidad</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_randomly, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colocación Aleatoria"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Estas diferentes visualizaciones muestran cómo se puede alterar la apariencia de una red más compleja utilizando el paquete <code>igraph</code>. Además, la matriz de adyacencia proporciona una representación clara de las conexiones entre los nodos, lo que puede ser útil para análisis posteriores. Cada modificación visual puede ayudar a resaltar diferentes características de la red y facilitar la comprensión de su estructura y propiedades.</p>
@@ -583,19 +680,23 @@ E . . 1 1 .</code></pre>
 <h1>Grafo de isla</h1>
 <p>Creamos un grafo simple para ilustrar la funcionalidad básica.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un grafo de isla</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_islands</span>(<span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">5</span><span class="sc">/</span><span class="dv">10</span>, <span class="dv">1</span>)</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.label=</span><span class="fu">V</span>(g)<span class="sc">$</span>name, <span class="at">main=</span><span class="st">"Grafo de Isla"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un grafo de isla</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_islands</span>(<span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">5</span><span class="sc">/</span><span class="dv">10</span>, <span class="dv">1</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.label=</span><span class="fu">V</span>(g)<span class="sc">$</span>name, <span class="at">main=</span><span class="st">"Grafo de Isla"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/sample_island-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/sample_island-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>La función sample_islands genera un grafo que representa un conjunto de islas. En este modelo, cada “isla” es un conjunto de nodos altamente conectados, y hay pocas conexiones entre las islas. Este tipo de red se utiliza a menudo para modelar sistemas donde existen grupos interconectados, pero con poca interacción entre esos grupos.</p>
 <p>Características:</p>
 <p>Nodos dentro de una isla están densamente conectados. Pocas o ninguna conexión entre islas. Se observa un alto coeficiente de clustering dentro de las islas (More on this later :).</p>
 <ul>
-<li>**Que son los argumentos de la funcion? Como afectan las propiedades del grafo producido?</li>
+<li><em>Que son los argumentos de la funcion? Como afectan las propiedades del grafo producido?</em></li>
 </ul>
 <section id="ejemplos-de-modelos-de-grafos-aleatorios" class="level3">
 <h3 class="anchored" data-anchor-id="ejemplos-de-modelos-de-grafos-aleatorios">Ejemplos de modelos de grafos aleatorios</h3>
@@ -603,62 +704,66 @@ E . . 1 1 .</code></pre>
 <li><strong>Modelo de Erdős-Rényi</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo Erdős-Rényi</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>g_er <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `erdos.renyi.game()` was deprecated in igraph 0.8.0.
-ℹ Please use `sample_gnp()` instead.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_er, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">main=</span><span class="st">"Grafo Erdős-Rényi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo Erdős-Rényi</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>g_er <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_er, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">main=</span><span class="st">"Grafo Erdős-Rényi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/erdos_renyi-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/erdos_renyi-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>La función sample_gnp genera un grafo aleatorio utilizando el modelo de Erdős-Rényi, donde se crea un grafo al agregar aristas de forma aleatoria entre un conjunto de nodos. Cada arista se incluye con una probabilidad p.&nbsp;Este modelo es útil para estudiar propiedades de grafos en general y es una buena representación de redes donde cada conexión es independiente.</p>
-<p>Características:</p>
+<p><strong>Características:</strong></p>
 <p>Cada par de nodos tiene una probabilidad p de estar conectado. Puede generar redes densas o dispersas, dependiendo de p.&nbsp;Generalmente, presenta un coeficiente de clustering más bajo en comparación con redes altamente agrupadas (More on this later :).</p>
 <ol start="2" type="1">
 <li><strong>Modelo de Barabási-Albert (scale-free)</strong></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo Barabási-Albert</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>g_ba <span class="ot">&lt;-</span> <span class="fu">barabasi.game</span>(<span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `barabasi.game()` was deprecated in igraph 2.0.0.
-ℹ Please use `sample_pa()` instead.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_ba, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">main=</span><span class="st">"Grafo Barabási-Albert"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo Barabási-Albert</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>g_ba <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">100</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_ba, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">main=</span><span class="st">"Grafo Barabási-Albert"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/barabasi_albert-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/barabasi_albert-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>La función sample_pa genera un grafo siguiendo el modelo de Barabási-Albert, que es un modelo de red de escala libre. Este modelo simula el crecimiento de redes donde nuevos nodos se conectan a nodos existentes con una probabilidad proporcional a su grado, lo que significa que los nodos más conectados tienen más probabilidades de recibir nuevas conexiones.</p>
-<p>Características:</p>
+<p><strong>Características:</strong></p>
 <p>Genera redes de escala libre con una distribución de grado que sigue una ley de potencia (more later). Presenta nodos hubs (nodos con un grado alto). Centralidad de grado generalmente alta en nodos muy conectados (more on this later).</p>
 </section>
 <section id="personalización-de-redes-en-igraph" class="level2">
 <h2 class="anchored" data-anchor-id="personalización-de-redes-en-igraph">Personalización de redes en igraph</h2>
 <p>Aun mas ejemplos de personalización de redes, combinando factores, en un solo bloque de código con comentarios explicativos.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Personalización de redes en igraph</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo de ejemplo</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="dv">20</span>, <span class="at">p =</span> <span class="fl">0.1</span>)</span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Personalizar atributos de nodos</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">degree</span>(g) <span class="sc">&gt;</span> <span class="dv">2</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>)  <span class="co"># Color por grado</span></span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>size <span class="ot">&lt;-</span> <span class="fu">degree</span>(g) <span class="sc">*</span> <span class="dv">3</span>  <span class="co"># Tamaño de nodo proporcional al grado</span></span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>label <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Node:"</span>, <span class="fu">V</span>(g))  <span class="co"># Etiquetas de nodos</span></span>
-<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Personalizar atributos de aristas</span></span>
-<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(g)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="st">"gray"</span>  <span class="co"># Color de aristas</span></span>
-<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(g)<span class="sc">$</span>width <span class="ot">&lt;-</span> <span class="dv">2</span>  <span class="co"># Ancho de aristas</span></span>
-<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar el grafo personalizado</span></span>
-<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.label=</span><span class="fu">V</span>(g)<span class="sc">$</span>label, <span class="at">edge.arrow.size=</span><span class="fl">0.5</span>, </span>
-<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Grafo Personalizado: Atributos de Nodos y Aristas"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Personalización de redes en igraph</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafo de ejemplo</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">20</span>, <span class="at">p =</span> <span class="fl">0.1</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Personalizar atributos de nodos</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">degree</span>(g) <span class="sc">&gt;</span> <span class="dv">2</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>)  <span class="co"># Color por grado</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>size <span class="ot">&lt;-</span> <span class="fu">degree</span>(g) <span class="sc">*</span> <span class="dv">3</span>  <span class="co"># Tamaño de nodo proporcional al grado</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>label <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Node:"</span>, <span class="fu">V</span>(g))  <span class="co"># Etiquetas de nodos</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Personalizar atributos de aristas</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(g)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="st">"gray"</span>  <span class="co"># Color de aristas</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(g)<span class="sc">$</span>width <span class="ot">&lt;-</span> <span class="dv">2</span>  <span class="co"># Ancho de aristas</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar el grafo personalizado</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.label=</span><span class="fu">V</span>(g)<span class="sc">$</span>label, <span class="at">edge.arrow.size=</span><span class="fl">0.5</span>, </span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Grafo Personalizado: Atributos de Nodos y Aristas"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/customize_networks-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/customize_networks-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -687,21 +792,26 @@ C(v) = \frac{\text{Número de triángulos en los vecinos de } v}{\text{Número t
 <section id="código-para-calcular-y-visualizar-el-coeficiente-de-clustering-local" class="level3">
 <h3 class="anchored" data-anchor-id="código-para-calcular-y-visualizar-el-coeficiente-de-clustering-local">Código para Calcular y Visualizar el Coeficiente de Clustering local</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una red aleatoria</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>g_clustering <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="at">n =</span> <span class="dv">15</span>, <span class="at">p =</span> <span class="fl">0.15</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el coeficiente de clustering por nodo</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>vertex_clustering <span class="ot">&lt;-</span> <span class="fu">transitivity</span>(g_clustering, <span class="at">type =</span> <span class="st">"local"</span>)</span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g_clustering)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(vertex_clustering <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"red"</span>, <span class="st">"lightblue"</span>)</span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red con coeficiente de clustering - si los vecinos estan conectadas, se visualiza en rojo!</span></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_clustering, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">main =</span> <span class="st">"Coeficiente de Clustering Local"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una red aleatoria</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>g_clustering <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="at">n =</span> <span class="dv">15</span>, <span class="at">p =</span> <span class="fl">0.15</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el coeficiente de clustering por nodo</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>vertex_clustering <span class="ot">&lt;-</span> <span class="fu">transitivity</span>(g_clustering, <span class="at">type =</span> <span class="st">"local"</span>)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g_clustering)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(vertex_clustering <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"red"</span>, <span class="st">"lightblue"</span>)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red con coeficiente de clustering - si los vecinos estan conectadas, se visualiza en rojo!</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_clustering, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">main =</span> <span class="st">"Coeficiente de Clustering Local"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
+</div>
+<p>Este código calcula e imprime los coeficientes local de un pequeño grafo aleatorio y visualiza los nodos según el coeficiente de clustering &gt; 1, donde los nodos rojos tienen un coeficiente &gt; 1 (por lo menos un par de interactores interaccionan entre ellos - en otras palabras - FORMAN UN TRIANGULO) y los nodos azules tienen un coeficiente bajo.</p>
 </section>
 <section id="coeficiente-de-clustering-global" class="level3">
 <h3 class="anchored" data-anchor-id="coeficiente-de-clustering-global">Coeficiente de Clustering Global</h3>
@@ -723,10 +833,38 @@ C(v) = \frac{\text{Número de triángulos en los vecinos de } v}{\text{Número t
 <ul>
 <li><strong>Interpretación</strong>: Un coeficiente de clustering global cercano a 1 significa que la red está altamente agrupada (muchos nodos tienen coeficientes de clustering altos), mientras que un valor cercano a 0 sugiere que la red es más aleatoria, con menos agrupamientos locales.</li>
 </ul>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red de antes al nivel GLOBAL</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_clustering, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Coeficiente de Clustering Global:"</span>, <span class="fu">round</span>(clustering_coeff, <span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Este código calcula e imprime tanto los coeficientes de clustering locales como el global de un pequeño grafo aleatorio y visualiza los nodos con tamaños ajustados según el coeficiente de clustering local, donde los nodos rojos tienen un coeficiente alto y los nodos azules tienen un coeficiente bajo.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">333</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># High Global Clustering Coefficient - Small-World Network</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>g_high_clustering <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">30</span>, <span class="at">nei =</span> <span class="dv">3</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>global_clustering_high <span class="ot">&lt;-</span> <span class="fu">transitivity</span>(g_high_clustering, <span class="at">type =</span> <span class="st">"global"</span>)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Global Clustering Coefficient (High):"</span>, global_clustering_high, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Global Clustering Coefficient (High): 0.4379085 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Low Global Clustering Coefficient - Random Network</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>g_low_clustering <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.05</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>global_clustering_low <span class="ot">&lt;-</span> <span class="fu">transitivity</span>(g_low_clustering, <span class="at">type =</span> <span class="st">"global"</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Global Clustering Coefficient (Low):"</span>, global_clustering_low, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Global Clustering Coefficient (Low): 0.1 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting both networks</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_high_clustering, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"High Clustering (Coeff:"</span>, <span class="fu">round</span>(global_clustering_high, <span class="dv">2</span>), <span class="st">")"</span>),</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">edge.color =</span> <span class="st">"dodgerblue"</span>)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_low_clustering, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Low Clustering (Coeff:"</span>, <span class="fu">round</span>(global_clustering_low, <span class="dv">2</span>), <span class="st">")"</span>),</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">edge.color =</span> <span class="st">"tomato"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <section id="ejemplo-en-biología" class="level4">
 <h4 class="anchored" data-anchor-id="ejemplo-en-biología">Ejemplo en biología</h4>
 <p>En las redes de interacción de proteínas, los genes que codifican proteínas que interactúan entre sí tienden a formar grupos o módulos con un alto coeficiente de clustering. Esto es relevante para identificar vías metabólicas o complejos proteicos.</p>
@@ -752,8 +890,8 @@ C_g(v) = \text{degree}(v)
 C_b(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}
 \]</span></p>
 <ul>
-<li><strong><span class="math inline">\(\sigma_{st}\)</span></strong> es el número total de caminos más cortos entre los nodos <span class="math inline">\(s\)</span> y <span class="math inline">\(t\)</span>.</li>
-<li><strong><span class="math inline">\(\sigma_{st}(v\)</span></strong> es el número de esos caminos más cortos que pasan por el nodo <span class="math inline">\(v\)</span>.</li>
+<li><span class="math inline">\(\sigma_{st}\)</span> es el número total de caminos más cortos entre los nodos <span class="math inline">\(s\)</span> y <span class="math inline">\(t\)</span>.</li>
+<li><span class="math inline">\(\sigma_{st}(v\)</span> es el número de esos caminos más cortos que pasan por el nodo <span class="math inline">\(v\)</span>.</li>
 </ul>
 <p>La centralidad de intermediación calcula, para un nodo dado, la fracción de caminos más cortos entre todos los pares de nodos <span class="math inline">\(s\)</span> y <span class="math inline">\(t\)</span> en la red que pasan a través de él. Cuanto mayor sea este valor, más “importante” es ese nodo en la red en términos de conectar diferentes partes de la misma.</p>
 </section>
@@ -788,23 +926,27 @@ C_b(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}
 <section id="código-r-para-calcular-y-visualizar-la-centralidad-de-intermediación" class="level4">
 <h4 class="anchored" data-anchor-id="código-r-para-calcular-y-visualizar-la-centralidad-de-intermediación">Código R para Calcular y Visualizar la Centralidad de Intermediación:</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="dv">10</span>, <span class="at">p =</span> <span class="fl">0.5</span>)</span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate betweenness centrality for all nodes</span></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>betweenness_centrality <span class="ot">&lt;-</span> <span class="fu">betweenness</span>(g)</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the betweenness values for better visualization (optional)</span></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>betweenness_normalized <span class="ot">&lt;-</span> (betweenness_centrality <span class="sc">-</span> <span class="fu">min</span>(betweenness_centrality)) <span class="sc">/</span> </span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">max</span>(betweenness_centrality) <span class="sc">-</span> <span class="fu">min</span>(betweenness_centrality))</span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the graph with nodes colored by betweenness centrality</span></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, </span>
-<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">20</span>, </span>
-<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">heat.colors</span>(<span class="dv">100</span>, <span class="at">rev=</span><span class="cn">TRUE</span>)[<span class="fu">round</span>(betweenness_normalized <span class="sc">*</span> <span class="dv">99</span>) <span class="sc">+</span> <span class="dv">1</span>], <span class="co"># Color nodes based on centrality # Optionally remove labels</span></span>
-<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Graph colored by Betweenness Centrality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">10</span>, <span class="at">p =</span> <span class="fl">0.5</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate betweenness centrality for all nodes</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>betweenness_centrality <span class="ot">&lt;-</span> <span class="fu">betweenness</span>(g)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the betweenness values for better visualization (optional)</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>betweenness_normalized <span class="ot">&lt;-</span> (betweenness_centrality <span class="sc">-</span> <span class="fu">min</span>(betweenness_centrality)) <span class="sc">/</span> </span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">max</span>(betweenness_centrality) <span class="sc">-</span> <span class="fu">min</span>(betweenness_centrality))</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the graph with nodes colored by betweenness centrality</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, </span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">20</span>, </span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">heat.colors</span>(<span class="dv">100</span>, <span class="at">rev=</span><span class="cn">TRUE</span>)[<span class="fu">round</span>(betweenness_normalized <span class="sc">*</span> <span class="dv">99</span>) <span class="sc">+</span> <span class="dv">1</span>], <span class="co"># Color nodes based on centrality # Optionally remove labels</span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Graph colored by Betweenness Centrality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/centrality_example-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/centrality_example-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -823,9 +965,9 @@ P(k) \sim k^{-\gamma}
 \]</span></p>
 <p>Donde:</p>
 <ul>
-<li><strong><span class="math inline">\(P(k)\)</span></strong> es la probabilidad de que un nodo tenga un grado <span class="math inline">\(k\)</span>.</li>
-<li><strong><span class="math inline">\(k\)</span></strong> es el grado de un nodo (el número de conexiones que tiene).</li>
-<li><strong><span class="math inline">\(\gamma\)</span></strong> es el exponente de la ley de potencia, que típicamente se encuentra entre 2 y 3 en la mayoría de redes de escala libre.</li>
+<li><span class="math inline">\(P(k)\)</span> es la probabilidad de que un nodo tenga un grado <span class="math inline">\(k\)</span>.</li>
+<li><span class="math inline">\(k\)</span> es el grado de un nodo (el número de conexiones que tiene).</li>
+<li><span class="math inline">\(\gamma\)</span> es el exponente de la ley de potencia, que típicamente se encuentra entre 2 y 3 en la mayoría de redes de escala libre.</li>
 </ul>
 <p>Este tipo de distribución es característica de redes <strong>autoorganizadas</strong> o <strong>generadas por crecimiento preferencial</strong>, donde nuevos nodos tienden a conectarse preferentemente a los nodos que ya están muy conectados. Esta propiedad genera <strong>hubs</strong> o <strong>nodos centrales</strong>, que son cruciales para la conectividad de la red.</p>
 </section>
@@ -854,6 +996,7 @@ P(k) \sim k^{-\gamma}
 <ul>
 <li><strong>Ejemplo en biología</strong>: En las <strong>redes de interacción proteína-proteína</strong>, eliminar las proteínas clave (hubs) podría interrumpir varias vías biológicas simultáneamente, lo que llevaría a enfermedades o disfunciones celulares.</li>
 </ul>
+<p>– <strong>Otro ejemplo</strong>: Se han usado esta propiedad para diseñar antibioticos - para atacar una proteina hub para afectar al maximo posible el funcionamiento de la bacteria</p>
 <hr>
 </section>
 </section>
@@ -861,20 +1004,24 @@ P(k) \sim k^{-\gamma}
 <h3 class="anchored" data-anchor-id="ejemplo-de-análisis-de-redes-de-escala-libre">Ejemplo de Análisis de Redes de Escala Libre</h3>
 <p>En R, podemos generar y analizar una red de escala libre utilizando el modelo de <strong>Barabási-Albert</strong> (BA), que es un modelo clásico para generar redes de escala libre. A continuación se muestra un código en R que genera una red de escala libre y visualiza la distribución de grados:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar la librería igraph</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una red de escala libre usando el modelo de Barabási-Albert</span></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>g_sf <span class="ot">&lt;-</span> <span class="fu">barabasi.game</span>(<span class="dv">1000</span>)</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener la distribución de grado</span></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>degree_distribution <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_sf)</span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la distribución de grado</span></span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(degree_distribution, <span class="at">breaks=</span><span class="dv">50</span>, <span class="at">main=</span><span class="st">"Distribución de Grado de una Red de Escala Libre"</span>, </span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Grado"</span>, <span class="at">ylab=</span><span class="st">"Frecuencia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar la librería igraph</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una red de escala libre usando el modelo de Barabási-Albert</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>g_sf <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">1000</span>)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener la distribución de grado</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>degree_distribution <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_sf)</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la distribución de grado</span></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(degree_distribution, <span class="at">breaks=</span><span class="dv">50</span>, <span class="at">main=</span><span class="st">"Distribución de Grado de una Red de Escala Libre"</span>, </span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Grado"</span>, <span class="at">ylab=</span><span class="st">"Frecuencia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_1_files/figure-html/scale_free_analysis-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_1_files/figure-html/scale_free_analysis-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -932,18 +1079,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -975,11 +1111,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -989,8 +1164,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1002,7 +1186,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1046,6 +1353,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1071,6 +1379,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1131,6 +1465,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

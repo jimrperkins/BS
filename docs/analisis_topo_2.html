@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.45">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Biología de Sistemas - Análisis de grafos y topología de redes (I): topología, clustering, scale-free networks</title>
+<title>Análisis de grafos y topología de redes (I): topología, clustering, scale-free networks – Biología de Sistemas</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -79,7 +79,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -88,13 +94,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -103,35 +138,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Biología de Sistemas</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./analisis_topo.html" rel="" target="">
- <span class="menu-text">Análisis y Topología</span></a>
+    <a class="nav-link" href="./analisis_topo.html"> 
+<span class="menu-text">Análisis y Topología</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./minimal_analysis.html" rel="" target="">
- <span class="menu-text">Minimal Análisis</span></a>
+    <a class="nav-link" href="./minimal_analysis.html"> 
+<span class="menu-text">Minimal Análisis</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto">
-</div>
           </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -213,7 +248,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <section id="introducción" class="level1">
 <h1>Introducción</h1>
@@ -235,11 +272,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">n =</span> <span class="dv">4</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `graph()` was deprecated in igraph 2.1.0.
-ℹ Please use `make_graph()` instead.</code></pre>
+i Please use `make_graph()` instead.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Como se mencionó anteriormente, el número total de enlaces se denota como <span class="math inline">\(E\)</span>. En una red no dirigida, es fácil entender que <span class="math inline">\(L\)</span> debería ser la mitad de la suma de todos los grados de los nodos. Esto es porque cada enlace pertenece a dos nodos y, por lo tanto, cada enlace se cuenta dos veces. Así tenemos:</p>
@@ -269,7 +310,11 @@ E = \frac{1}{2} \sum_{i=1}^{N} k_i
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Cada enlace en la red anterior es dirigido. Si calculamos el grado medio de la red según la ecuación para redes no dirigdas, perderemos información.</p>
@@ -314,7 +359,11 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>g_high <span class="ot">&lt;-</span> <span class="fu">make_full_graph</span>(<span class="dv">5</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_high, <span class="at">main =</span> <span class="st">"Grafo con Alta Conectividad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificamos la conectividad de nodos y aristas</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de nodos (g_high):"</span>, <span class="fu">vertex_connectivity</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -327,7 +376,7 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_high)?"</span>, <span class="fu">is_connected</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>¿Es conexo (g_high)? TRUE </code></pre>
+<pre><code>&lt;U+00BF&gt;Es conexo (g_high)? TRUE </code></pre>
 </div>
 </div>
 <p><strong>FIGURA 1</strong>: Grafo con alta conectividad.</p>
@@ -341,7 +390,11 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>g_low <span class="ot">&lt;-</span> <span class="fu">graph</span>(<span class="at">edges =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">5</span>), <span class="at">n =</span> <span class="dv">5</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_low, <span class="at">main =</span> <span class="st">"Grafo con Baja Conectividad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificamos la conectividad de nodos y aristas</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Conectividad de nodos (g_low):"</span>, <span class="fu">vertex_connectivity</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -354,7 +407,7 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_low)?"</span>, <span class="fu">is_connected</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>¿Es conexo (g_low)? TRUE </code></pre>
+<pre><code>&lt;U+00BF&gt;Es conexo (g_low)? TRUE </code></pre>
 </div>
 </div>
 <p><strong>FIGURA 2</strong>: Grafo con baja conectividad.</p>
@@ -375,7 +428,11 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red básica</span></span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Red Compleja"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -461,7 +518,7 @@ E . . 1 1 .</code></pre>
 <span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>dense_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(dense_matrix)</span>
 <span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz densa:"</span>, <span class="fu">format</span>(dense_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tamaño de la matriz densa: 3 Gb"</code></pre>
+<pre><code>[1] "Tama&lt;U+00F1&gt;o de la matriz densa: 3 Gb"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la matriz densa a una matriz dispersa</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>sparse_matrix <span class="ot">&lt;-</span> <span class="fu">as</span>(dense_matrix, <span class="st">"sparseMatrix"</span>)</span>
@@ -470,7 +527,7 @@ E . . 1 1 .</code></pre>
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>sparse_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(sparse_matrix)</span>
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz dispersa:"</span>, <span class="fu">format</span>(sparse_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tamaño de la matriz dispersa: 7.5 Mb"</code></pre>
+<pre><code>[1] "Tama&lt;U+00F1&gt;o de la matriz dispersa: 7.5 Mb"</code></pre>
 </div>
 </div>
 </section>
@@ -483,7 +540,11 @@ E . . 1 1 .</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.color =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>, <span class="st">"orange"</span>, <span class="st">"purple"</span>), <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colores de Nodos Diferentes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="2" type="1">
@@ -493,7 +554,11 @@ E . . 1 1 .</code></pre>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>vertex_sizes <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_vis_examples) <span class="sc">*</span> <span class="dv">5</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.size =</span> vertex_sizes, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Tamaño de Nodos Basado en Grado"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="3" type="1">
@@ -502,7 +567,11 @@ E . . 1 1 .</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">edge.lty =</span> <span class="st">"dotted"</span>, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Aristas Dotted"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="4" type="1">
@@ -511,7 +580,11 @@ E . . 1 1 .</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">edge.color =</span> <span class="st">"purple"</span>, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colores de Aristas Diferentes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="5" type="1">
@@ -520,7 +593,11 @@ E . . 1 1 .</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Estructura Circular"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No se ver muy bien - vamos a ver mejro</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un grafo aleatorio con 20 nodos y un número específico de aristas</span></span>
@@ -531,7 +608,11 @@ E . . 1 1 .</code></pre>
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_20)<span class="sc">$</span>name, </span>
 <span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="st">"lightblue"</span>, <span class="at">edge.color =</span> <span class="st">"gray"</span>, <span class="at">main =</span> <span class="st">"Red Circular con 20 Nodos"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="6" type="1">
@@ -540,12 +621,20 @@ E . . 1 1 .</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_on_grid, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Estructura de Grid"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">layout =</span> layout_on_grid, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_20)<span class="sc">$</span>name, </span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="st">"lightgreen"</span>, <span class="at">edge.color =</span> <span class="st">"gray"</span>, <span class="at">main =</span> <span class="st">"Red Grid con 20 Nodos"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="7" type="1">
@@ -562,7 +651,11 @@ E . . 1 1 .</code></pre>
 <span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar el grafo</span></span>
 <span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_20, <span class="at">vertex.color =</span> node_colors, <span class="at">main =</span> <span class="st">"Grafo con Nodos Coloreados por Grado"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="8" type="1">
@@ -572,7 +665,11 @@ E . . 1 1 .</code></pre>
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># Para reproducibilidad</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">vertex.size =</span> <span class="dv">10</span>, <span class="at">edge.curved =</span> <span class="fl">0.2</span>, <span class="at">main =</span> <span class="st">"Curved edges"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ol start="9" type="1">
@@ -582,7 +679,11 @@ E . . 1 1 .</code></pre>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># Para reproducibilidad</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_vis_examples, <span class="at">layout =</span> layout_randomly, <span class="at">vertex.label =</span> <span class="fu">V</span>(g_vis_examples)<span class="sc">$</span>name, <span class="at">main =</span> <span class="st">"Colocación Aleatoria"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Estas diferentes visualizaciones muestran cómo se puede alterar la apariencia de una red más compleja utilizando el paquete <code>igraph</code>. Además, la matriz de adyacencia proporciona una representación clara de las conexiones entre los nodos, lo que puede ser útil para análisis posteriores. Cada modificación visual puede ayudar a resaltar diferentes características de la red y facilitar la comprensión de su estructura y propiedades.</p>
@@ -598,7 +699,11 @@ E . . 1 1 .</code></pre>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_islands</span>(<span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">5</span><span class="sc">/</span><span class="dv">10</span>, <span class="dv">1</span>)</span>
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.label=</span><span class="fu">V</span>(g)<span class="sc">$</span>name, <span class="at">main=</span><span class="st">"Grafo de Isla"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/sample_island-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/sample_island-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>La función sample_islands genera un grafo que representa un conjunto de islas. En este modelo, cada “isla” es un conjunto de nodos altamente conectados, y hay pocas conexiones entre las islas. Este tipo de red se utiliza a menudo para modelar sistemas donde existen grupos interconectados, pero con poca interacción entre esos grupos.</p>
@@ -618,11 +723,15 @@ E . . 1 1 .</code></pre>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>g_er <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `erdos.renyi.game()` was deprecated in igraph 0.8.0.
-ℹ Please use `sample_gnp()` instead.</code></pre>
+i Please use `sample_gnp()` instead.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_er, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">main=</span><span class="st">"Grafo Erdős-Rényi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/erdos_renyi-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/erdos_renyi-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>La función sample_gnp genera un grafo aleatorio utilizando el modelo de Erdős-Rényi, donde se crea un grafo al agregar aristas de forma aleatoria entre un conjunto de nodos. Cada arista se incluye con una probabilidad p.&nbsp;Este modelo es útil para estudiar propiedades de grafos en general y es una buena representación de redes donde cada conexión es independiente.</p>
@@ -636,11 +745,15 @@ E . . 1 1 .</code></pre>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>g_ba <span class="ot">&lt;-</span> <span class="fu">barabasi.game</span>(<span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `barabasi.game()` was deprecated in igraph 2.0.0.
-ℹ Please use `sample_pa()` instead.</code></pre>
+i Please use `sample_pa()` instead.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_ba, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">main=</span><span class="st">"Grafo Barabási-Albert"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/barabasi_albert-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/barabasi_albert-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>La función sample_pa genera un grafo siguiendo el modelo de Barabási-Albert, que es un modelo de red de escala libre. Este modelo simula el crecimiento de redes donde nuevos nodos se conectan a nodos existentes con una probabilidad proporcional a su grado, lo que significa que los nodos más conectados tienen más probabilidades de recibir nuevas conexiones.</p>
@@ -670,7 +783,11 @@ E . . 1 1 .</code></pre>
 <span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.label=</span><span class="fu">V</span>(g)<span class="sc">$</span>label, <span class="at">edge.arrow.size=</span><span class="fl">0.5</span>, </span>
 <span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Grafo Personalizado: Atributos de Nodos y Aristas"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/customize_networks-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/customize_networks-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -711,7 +828,11 @@ C(v) = \frac{\text{Número de triángulos en los vecinos de } v}{\text{Número t
 <span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
 <span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_clustering, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">main =</span> <span class="st">"Coeficiente de Clustering Local"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -816,7 +937,11 @@ C_b(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}
 <span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">heat.colors</span>(<span class="dv">100</span>, <span class="at">rev=</span><span class="cn">TRUE</span>)[<span class="fu">round</span>(betweenness_normalized <span class="sc">*</span> <span class="dv">99</span>) <span class="sc">+</span> <span class="dv">1</span>], <span class="co"># Color nodes based on centrality # Optionally remove labels</span></span>
 <span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Graph colored by Betweenness Centrality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/centrality_example-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/centrality_example-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -885,7 +1010,11 @@ P(k) \sim k^{-\gamma}
 <span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(degree_distribution, <span class="at">breaks=</span><span class="dv">50</span>, <span class="at">main=</span><span class="st">"Distribución de Grado de una Red de Escala Libre"</span>, </span>
 <span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Grado"</span>, <span class="at">ylab=</span><span class="st">"Frecuencia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="analisis_topo_2_files/figure-html/scale_free_analysis-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/scale_free_analysis-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 
@@ -931,18 +1060,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -974,11 +1092,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -988,8 +1145,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1001,7 +1167,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1045,6 +1334,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1070,6 +1360,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1130,6 +1446,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
