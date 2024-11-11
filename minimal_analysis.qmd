@@ -89,7 +89,6 @@ interaction_network$from <- string_ids$name[match(interaction_network$from, stri
 head(interaction_network)
 ```
 
-
 # Parte 3: Conversión a Formato igraph y calculos de propiedades de una red
 
 En esta sección, convertiremos la red de interacción obtenida de STRINGdb al formato **igraph**.
@@ -214,12 +213,12 @@ plot(g, layout = circular_layout, vertex.color = "lightgreen", vertex.size = 5, 
 ```
 
 #### Without labels to better see the structure
+
 ```{r}
 
 set.seed(123)
 plot(g, vertex.color = "orange", vertex.size = 5,vertex.label=NA, edge.width = 0.5, main = "Nicely Layout")
 ```
-
 
 # Parte 5: Clustering de la Red con igraph
 
@@ -290,8 +289,8 @@ barplot(enrich_results, showCategory = 10, title = "GO Enrichment Barplot")
 
 #### También podemos exportar los resultados a CSV o visualizarlos en tablas.
 
-```{r}
-# Convert results to data frame and export to CSV
+```{r, eval=FALSE}
+# Convert results to data frame and export to CSV (not run)
 write.csv2(as.data.frame(enrich_results), file = "GO_Enrichment_Abnormal_Renal_Corpuscle.csv", row.names = FALSE)
 ```
 
@@ -323,8 +322,8 @@ print(genes_clusters)
 
 Con los genes divididos por clusters, aplicaremos el análisis de enriquecimiento Over-Representation Analysis (ORA) en cada uno. Esto permite identificar procesos biológicos o funciones moleculares específicas para los genes de cada grupo. Usaremos el paquete clusterProfiler y nos enfocaremos en el análisis de enriquecimiento GO.
 
-```{r}
-# Initialize an empty list to store enrichment results for each cluster
+```{r, eval=FALSE}
+# Initialize an empty list to store enrichment results for each cluster (not run)
 enrichment_results_clusters <- list()
 
 # Loop over each cluster to perform enrichment analysis
