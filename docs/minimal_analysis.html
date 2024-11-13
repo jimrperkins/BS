@@ -128,7 +128,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./analisis_topo.html"> 
-<span class="menu-text">Análisis y Topología</span></a>
+<span class="menu-text">Análisis y Topología (I)</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./analisis_topo_2.html"> 
+<span class="menu-text">Análisis y Topología (II)</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./minimal_analysis.html" aria-current="page"> 
@@ -737,7 +741,7 @@ GO:0032835    14</code></pre>
 <section id="también-podemos-exportar-los-resultados-a-csv-o-visualizarlos-en-tablas." class="level4">
 <h4 class="anchored" data-anchor-id="también-podemos-exportar-los-resultados-a-csv-o-visualizarlos-en-tablas.">También podemos exportar los resultados a CSV o visualizarlos en tablas.</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert results to data frame and export to CSV</span></span>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert results to data frame and export to CSV (not run)</span></span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv2</span>(<span class="fu">as.data.frame</span>(enrich_results), <span class="at">file =</span> <span class="st">"GO_Enrichment_Abnormal_Renal_Corpuscle.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -836,7 +840,7 @@ $`18`
 <h4 class="anchored" data-anchor-id="aplicación-del-análisis-de-enriquecimiento-ora-en-cada-cluster">Aplicación del Análisis de Enriquecimiento ORA en Cada Cluster</h4>
 <p>Con los genes divididos por clusters, aplicaremos el análisis de enriquecimiento Over-Representation Analysis (ORA) en cada uno. Esto permite identificar procesos biológicos o funciones moleculares específicas para los genes de cada grupo. Usaremos el paquete clusterProfiler y nos enfocaremos en el análisis de enriquecimiento GO.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize an empty list to store enrichment results for each cluster</span></span>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize an empty list to store enrichment results for each cluster (not run)</span></span>
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>enrichment_results_clusters <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop over each cluster to perform enrichment analysis</span></span>
@@ -855,21 +859,15 @@ $`18`
 <span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb67-18"><a href="#cb67-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb67-19"><a href="#cb67-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize results for the first cluster as an example</span></span>
-<span id="cb67-20"><a href="#cb67-20" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(enrichment_results_clusters[[<span class="dv">1</span>]], <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment for Cluster 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="minimal_analysis_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save enrichment results to CSV files for each cluster</span></span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(enrichment_results_clusters)) {</span>
-<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv2</span>(</span>
-<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>(enrichment_results_clusters[[i]]),  <span class="co"># Convert to data frame for saving</span></span>
-<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">file =</span> <span class="fu">paste0</span>(<span class="st">"enrichment_cluster_"</span>, i, <span class="st">".csv"</span>)   <span class="co"># File name based on cluster index</span></span>
-<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb67-20"><a href="#cb67-20" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(enrichment_results_clusters[[<span class="dv">1</span>]], <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment for Cluster 1"</span>)</span>
+<span id="cb67-21"><a href="#cb67-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-22"><a href="#cb67-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Save enrichment results to CSV files for each cluster</span></span>
+<span id="cb67-23"><a href="#cb67-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(enrichment_results_clusters)) {</span>
+<span id="cb67-24"><a href="#cb67-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv2</span>(</span>
+<span id="cb67-25"><a href="#cb67-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>(enrichment_results_clusters[[i]]),  <span class="co"># Convert to data frame for saving</span></span>
+<span id="cb67-26"><a href="#cb67-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">file =</span> <span class="fu">paste0</span>(<span class="st">"enrichment_cluster_"</span>, i, <span class="st">".csv"</span>)   <span class="co"># File name based on cluster index</span></span>
+<span id="cb67-27"><a href="#cb67-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb67-28"><a href="#cb67-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

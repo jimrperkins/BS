@@ -9,7 +9,9 @@ website:
       - href: index.qmd
         text: Home
       - href: analisis_topo.qmd
-        text: Análisis y Topología
+        text: Análisis y Topología (I)
+      - href: analisis_topo_2.qmd
+        text: Análisis y Topología (II)
       - href: minimal_analysis.qmd
         text: Minimal Análisis
 

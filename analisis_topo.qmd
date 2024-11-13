@@ -1,5 +1,5 @@
 ---
-title: "Análisis de grafos y topología de redes: Topología; Coef clustering; Centralidad, Modularidad. Introducción al uso de igraph y otros paquetes para crear y analizar redes"
+title: "Análisis de grafos y topología de redes (I): Topología; Coef clustering; Centralidad. Introducción al uso de igraph y otros paquetes para crear y analizar redes"
 ---
 
 
