@@ -376,7 +376,7 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_high)?"</span>, <span class="fu">is_connected</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;U+00BF&gt;Es conexo (g_high)? TRUE </code></pre>
+<pre><code>¿Es conexo (g_high)? TRUE </code></pre>
 </div>
 </div>
 <p>Grafo con alta conectividad.</p>
@@ -407,7 +407,7 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_low)?"</span>, <span class="fu">is_connected</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;U+00BF&gt;Es conexo (g_low)? TRUE </code></pre>
+<pre><code>¿Es conexo (g_low)? TRUE </code></pre>
 </div>
 </div>
 <p>Grafo con baja conectividad.</p>
@@ -515,7 +515,7 @@ E . . 1 1 .</code></pre>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>dense_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(dense_matrix)</span>
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz densa:"</span>, <span class="fu">format</span>(dense_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tama&lt;U+00F1&gt;o de la matriz densa: 3 Gb"</code></pre>
+<pre><code>[1] "Tamaño de la matriz densa: 3 Gb"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la matriz densa a una matriz dispersa</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>sparse_matrix <span class="ot">&lt;-</span> <span class="fu">as</span>(dense_matrix, <span class="st">"sparseMatrix"</span>)</span>
@@ -524,7 +524,7 @@ E . . 1 1 .</code></pre>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>sparse_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(sparse_matrix)</span>
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz dispersa:"</span>, <span class="fu">format</span>(sparse_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tama&lt;U+00F1&gt;o de la matriz dispersa: 7.5 Mb"</code></pre>
+<pre><code>[1] "Tamaño de la matriz dispersa: 7.5 Mb"</code></pre>
 </div>
 </div>
 </section>
