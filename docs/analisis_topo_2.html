@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortivity – Biología de Sistemas</title>
+<title>Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortividad – Biología de Sistemas</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -167,6 +167,10 @@ window.Quarto = {
     <a class="nav-link" href="./minimal_analysis.html"> 
 <span class="menu-text">Minimal Análisis</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./clustering.html"> 
+<span class="menu-text">Clustering</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -241,7 +245,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortivity</h1>
+<h1 class="title">Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortividad</h1>
 </div>
 
 
@@ -306,7 +310,7 @@ Q = \frac{1}{2m} \sum_{i,j} \left( A_{ij} - \frac{k_i k_j}{2m} \right) \delta(c_
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'igraph'</code></pre>
+Attaching package: 'igraph'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -438,7 +442,7 @@ D = \frac{2m}{n(n-1)}
 <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimimos los resultados</span></span>
 <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Densidad de la red dispersa (especialización):"</span>, sparse_density, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Densidad de la red dispersa (especializaci&lt;U+00F3&gt;n): 0.09885057 </code></pre>
+<pre><code>Densidad de la red dispersa (especialización): 0.09885057 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Densidad de la red densa (redundancia):"</span>, dense_density, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -446,11 +450,11 @@ D = \frac{2m}{n(n-1)}
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dispersión de la red dispersa:"</span>, sparse_sparsity, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Dispersi&lt;U+00F3&gt;n de la red dispersa: 0.9011494 </code></pre>
+<pre><code>Dispersión de la red dispersa: 0.9011494 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dispersión de la red densa:"</span>, dense_sparsity, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Dispersi&lt;U+00F3&gt;n de la red densa: 0.5264368 </code></pre>
+<pre><code>Dispersión de la red densa: 0.5264368 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizamos las redes</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sparse_network, <span class="at">main =</span> <span class="st">"Red Dispersa (Señalización Especializada)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -599,7 +603,7 @@ D = \max_{i \neq j} d(i,j)
 <span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>diameter_small_world <span class="ot">&lt;-</span> <span class="fu">diameter</span>(small_world_net)</span>
 <span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Diámetro de la red de pequeño mundo: "</span>, diameter_small_world, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Di&lt;U+00E1&gt;metro de la red de peque&lt;U+00F1&gt;o mundo:  5 </code></pre>
+<pre><code>Diámetro de la red de pequeño mundo:  5 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar una red modular (modelo de Watts-Strogatz) con 100 nodos, 4 vecinos por nodo, y probabilidad de reconexión baja (0.01)</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>modular_net <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="dv">1</span>, <span class="dv">100</span>, <span class="dv">4</span>, <span class="fl">0.01</span>)</span>
@@ -608,7 +612,7 @@ D = \max_{i \neq j} d(i,j)
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>diameter_modular <span class="ot">&lt;-</span> <span class="fu">diameter</span>(modular_net)</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Diámetro de la red modular: "</span>, diameter_modular, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Di&lt;U+00E1&gt;metro de la red modular:  8 </code></pre>
+<pre><code>Diámetro de la red modular:  8 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar ambas redes</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(small_world_net, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Red de Pequeño Mundo</span><span class="sc">\n</span><span class="st">Diámetro: "</span>, diameter_small_world), <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

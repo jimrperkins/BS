@@ -1,5 +1,5 @@
 ---
-title: "Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortivity"
+title: "Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortividad"
 ---
 
 # Introducción
@@ -24,7 +24,7 @@ Donde:
 
 -   $Q$ es el valor de modularidad.
 -   $m$ es el número total de aristas en la red.
--   \$A\_{ij} \$ representa la entrada en la posición $(i, j)$ de la matriz de adyacencia de la red, donde $A_{ij} = 1$ si hay una arista entre los nodos $i$ y $j$, y $A_{ij} = 0$ si no la hay.
+-   $A\_{ij}$ representa la entrada en la posición $(i, j)$ de la matriz de adyacencia de la red, donde $A_{ij} = 1$ si hay una arista entre los nodos $i$ y $j$, y $A_{ij} = 0$ si no la hay.
 -   $k_i$ es el grado del nodo $i$ (es decir, el número de conexiones que tiene el nodo $i$).
 -   $\delta(c_i, c_j)$ es una función indicadora que es igual a 1 si los nodos $i$ y $j$ pertenecen a la misma comunidad y 0 en caso contrario.
 
@@ -257,7 +257,7 @@ La longitud promedio de camino es una característica fundamental de las redes q
 
 ## Diámetro (Diameter)
 
-El **diámetro de una red** es la longitud del camino más largo entre cualquier par de nodos en la red. Es decir, el diámetro es el valor máximo de las distancias más cortas $d(i,j)$ entre nodos $i$ y $j$. Esta medida es importante porque da una idea de cuán "extendida" o "compacta" es la red en términos de conectividad.
+El **diámetro de una red** es la longitud del camino más corto entre nodos mas largo entre cualquier par de nodos en la red. Es decir, el diámetro es el valor máximo de las distancias más cortas $d(i,j)$ entre nodos $i$ y $j$. Esta medida es importante porque da una idea de cuán "extendida" o "compacta" es la red en términos de conectividad.
 
 El diámetro $D$ de una red se calcula como:
 
@@ -265,7 +265,7 @@ $$
 D = \max_{i \neq j} d(i,j)
 $$
 
-donde $d(i,j)$ es la distancia más corta entre los nodos ( i ) y ( j ).
+donde $d(i,j)$ es la distancia más corta entre los nodos $i$ y $j$.
 
 ### **Relación entre Longitud Promedio de Camino y Diámetro**
 
@@ -365,3 +365,31 @@ plot(low_assortativity_net, main = paste("Random Network with Low Assortativity\
      vertex.size = 15, vertex.label = NA, edge.arrow.size = 0.5)
 
 ```
+## **Ejemplos de Redes con Asortatividad Positiva y Negativa**
+
+### **Asortatividad Positiva**
+En redes con asortatividad positiva, los nodos con grados similares tienden a conectarse entre sí. Este patrón fomenta la formación de comunidades o módulos, lo que refuerza la resiliencia y la cohesión de la red. 
+
+- **Redes de Interacción Proteína-Proteína (PPI):**  
+  Las proteínas de alto grado (hubs) tienden a interactuar con otras proteínas igualmente conectadas, formando complejos funcionales específicos. Por ejemplo, en la maquinaria ribosomal, las proteínas ribosómicas suelen agruparse para garantizar una síntesis proteica eficiente.  
+   
+- **Redes Sociales:**  
+  En redes como LinkedIn, las personas con muchas conexiones suelen estar vinculadas a otros usuarios con un número similar de contactos, lo que genera grupos profesionales densamente interconectados.
+
+
+
+### **Asortatividad Negativa**
+En redes con asortatividad negativa, los nodos de alto grado tienden a conectarse con nodos de bajo grado. Este patrón es típico de sistemas diseñados para maximizar la eficiencia y la transferencia de recursos o información.
+
+- **Redes Metabólicas:**  
+  Los metabolitos universales, como el ATP, actúan como hubs al conectar múltiples metabolitos específicos con roles clave en diversas rutas metabólicas. Este diseño asegura que el ATP pueda participar rápidamente en numerosas reacciones bioquímicas.  
+
+- **Redes de Transporte:**  
+  En redes aéreas, los aeropuertos internacionales (hubs) están conectados con aeropuertos regionales más pequeños. Esto optimiza el flujo de pasajeros y carga en el sistema global.
+
+
+### **Comparación en Biología**
+- La **asortatividad positiva** refuerza la estabilidad dentro de módulos funcionales, como complejos proteicos específicos.  
+- La **asortatividad negativa** mejora la flexibilidad y la integración en sistemas jerárquicos, como en la regulación metabólica o genética.  
+
+Ambos patrones reflejan estrategias de diseño adaptativas que optimizan la funcionalidad en redes biológicas y tecnológicas.

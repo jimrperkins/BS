@@ -1,0 +1,859 @@
+---
+  title: "Stuff"
+---
+
+# Introducción a los Métodos de Clustering
+
+El análisis de redes es una herramienta fundamental en biología de sistemas, ya que permite modelar y analizar interacciones biológicas complejas, como las redes de interacción proteína-proteína (PPI, por sus siglas en inglés), redes metabólicas, redes de regulación génica y redes de co-expresión génica. Dentro de estas redes, los **módulos** o **comunidades** representan grupos de nodos altamente interconectados que frecuentemente comparten funciones biológicas comunes o están involucrados en procesos similares.
+
+Por ejemplo:
+
+- En **redes metabólicas**, los módulos pueden corresponder a rutas metabólicas específicas.
+
+![public.ornl.gov](met_pathway.png)
+
+
+- En **redes de co-expresión génica**, se han identificado clústeres de genes que co-regulan procesos biológicos importantes, como el ciclo celular o la respuesta al estrés.
+
+![rna-seqblog.com](coexp.png)
+
+
+- En **redes PPI**, los módulos pueden representar complejos proteicos funcionales o vías de señalización crítica.
+
+![Labusek et al., 2023](ppi_clusters.png)
+
+
+Dada la naturaleza jerárquica y modular de los sistemas biológicos, los métodos de clustering en redes permiten no solo identificar estas unidades funcionales, sino también generar hipótesis sobre la organización y evolución de los sistemas biológicos.
+
+## **Naturaleza Jerárquica y Modular de los Sistemas Biológicos**
+
+### **Modularidad en la Maquinaria Celular**  
+La modularidad es un principio clave en biología de sistemas, pues permite que los componentes de una red biológica interactúen de manera eficiente en subunidades funcionales. Estas subunidades (o módulos) están involucradas en procesos específicos, como la síntesis de proteínas, las rutas metabólicas y la señalización celular.  
+
+1. **En rutas metabólicas**:  
+   - Los módulos en redes metabólicas representan rutas bioquímicas específicas, donde cada módulo agrupa metabolitos y enzimas que trabajan de manera coordinada.  
+   - **Ejemplo**: Estudios han utilizado análisis de modularidad para optimizar la ingeniería metabólica en bacterias como *E. coli*, dividiendo su red metabólica en módulos para maximizar la producción de biocombustibles (Nielsen & Keasling, 2016).  
+
+2. **En redes de interacción proteína-proteína (PPI)**:  
+   - Las redes PPI son altamente modulares, con módulos que representan complejos proteicos funcionales o grupos de proteínas involucradas en procesos biológicos comunes.  
+   - **Ejemplo**: En un análisis de redes de proteínas relacionadas con el cáncer, se identificaron módulos asociados a procesos específicos como la apoptosis y la reparación del ADN. Este enfoque permite priorizar biomarcadores terapéuticos dentro de módulos funcionales.  
+   - Además, la identificación de módulos en redes virales (como las interacciones entre proteínas del SARS-CoV-2 y del huésped humano) ha revelado objetivos terapéuticos potenciales (Gordon et al., 2020).  
+
+3. **En redes de regulación génica**:  
+   - Los módulos en redes génicas reflejan conjuntos de genes co-regulados que participan en procesos celulares específicos.  
+   - **Ejemplo**: El uso de herramientas como ATAC-seq para analizar redes reguladoras ha permitido identificar módulos específicos activados durante la diferenciación celular (Buenrostro et al., 2018).  
+   
+### **Jerarquía en la Organización Celular y su Importancia en Redes Biológicas y Clustering**
+
+La **jerarquía en la organización celular** es un principio fundamental en la biología que refleja cómo los sistemas biológicos están estructurados en niveles organizativos, desde moléculas hasta células, tejidos, órganos y organismos. Este concepto es crucial para entender redes biológicas y para desarrollar métodos efectivos de **clustering**, ya que estas redes suelen mostrar propiedades jerárquicas y modulares que reflejan esta organización.
+
+#### **¿Qué es la Jerarquía en la Organización Celular?**
+
+- **Definición:** La jerarquía en la biología describe cómo las entidades en un nivel más bajo de organización (p. ej., moléculas) se ensamblan para formar estructuras más complejas (p. ej., organelos, células). 
+- **Relación con redes biológicas:** Las redes biológicas, como las de interacción proteína-proteína (PPI, *Protein-Protein Interaction*), regulan esta organización jerárquica al conectar moléculas que trabajan juntas para realizar funciones específicas.
+
+#### **Ejemplos de Jerarquía en Redes Biológicas**
+
+1. **Redes de Interacción Proteína-Proteína (PPI):**
+   - Las proteínas que forman parte de un complejo proteico específico suelen estar más conectadas entre sí que con otras proteínas en la red. Por ejemplo, las proteínas ribosomales interactúan predominantemente dentro del ribosoma, formando un módulo altamente cohesivo.
+   - A nivel jerárquico, los módulos del ribosoma pueden estar conectados con otros módulos relacionados con la síntesis de proteínas.
+
+2. **Redes Metabólicas:**
+   - Los metabolitos dentro de una vía metabólica específica (p. ej., glucólisis) están más interconectados entre sí que con metabolitos en otras vías.
+   - A mayor escala, estas vías metabólicas se agrupan en categorías funcionales más amplias, como el metabolismo energético.
+
+3. **Redes de Señalización:**
+   - Las moléculas señalizadoras (como kinases y fosfatasas) tienden a formar módulos relacionados con procesos específicos (p. ej., reparación del ADN o respuesta inmune).
+   - Estos módulos pueden interactuar en un nivel superior, integrando señales entre distintas rutas de señalización.
+
+
+#### **Relación con Clustering en Redes Biológicas**
+
+   - Los algoritmos de clustering jerárquicos (como Edge Betweenness y Fast Greedy) reflejan directamente esta organización jerárquica, ya que identifican subconjuntos dentro de la red a diferentes niveles de resolución.
+   - Por ejemplo, se pueden identificar módulos más pequeños que representan complejos proteicos individuales y módulos más grandes que conectan complejos relacionados funcionalmente.
+
+**Diferenciación entre Escalas:**
+   - La jerarquía permite estudiar redes biológicas en múltiples escalas, desde interacciones moleculares específicas hasta sistemas multicelulares completos.
+
+- **Redes de regulación genética:**
+   - Los genes regulados por un mismo factor de transcripción forman módulos cohesivos. A su vez, estos factores se agrupan en niveles superiores de regulación, reflejando una jerarquía en el control de la expresión génica.
+
+### **Ventajas Biológicas de la Modularidad y la Jerarquía**
+
+1. **Eficiencia en la maquinaria celular**:  
+   - Los módulos permiten realizar tareas específicas de manera eficiente y sin interferencias.  
+ 
+2. **Robustez frente a fallos**:  
+   - La jerarquía y modularidad permiten que la red siga funcionando incluso si ciertos nodos fallan.  
+
+
+3. **Adaptabilidad evolutiva**:  
+   - Los módulos pueden evolucionar independientemente, permitiendo la especialización.  
+   
+El clustering de redes ha sido utilizado para:
+
+1. **Función génica y predicción de enfermedades**: Los genes asociados a un mismo módulo suelen estar implicados en funciones similares, lo que facilita la anotación funcional de genes no caracterizados.
+   
+2. **Descubrimiento de biomarcadores**: En estudios de transcriptómica y proteómica, los módulos identificados pueden revelar biomarcadores asociados a enfermedades o estados fisiológicos específicos .
+
+3. **Modelado de la robustez y vulnerabilidad del sistema**: La estructura modular ayuda a entender cómo los sistemas biológicos mantienen su funcionalidad frente a perturbaciones, ya sea mediante redundancia o interacción entre módulos.
+
+4. **Evolución de las redes biológicas**: El análisis de los módulos permite estudiar cómo han evolucionado las interacciones entre genes y proteínas en diferentes especies.
+
+## Métodos de Clustering Cubiertos
+
+A lo largo de este tutorial, se abordarán cinco métodos principales de clustering, cada uno con características únicas:
+
+1. **Edge Betweenness (Intermediación de Aristas)**:  
+   - Identifica comunidades al eliminar iterativamente las aristas con mayor intermediación.  
+   - Es particularmente útil para redes pequeñas y permite una visualización clara del proceso de partición. Sin embargo, su complejidad lo hace ineficiente para redes grandes.  
+
+2. **Walktrap (Caminatas Aleatorias)**:  
+   - Utiliza caminatas aleatorias para detectar comunidades, basándose en la idea de que nodos dentro de una misma comunidad están más "cercanos" en términos probabilísticos.  
+   - Ideal para redes medianas con módulos densos y conexos.  
+
+3. **Fast Greedy (Greedy Maximization of Modularity)**:  
+   - Un método jerárquico que agrupa nodos de manera iterativa para maximizar la modularidad global.  
+   - Es eficiente y adecuado para redes grandes, aunque su resolución puede ser limitada en algunos casos.  
+
+4. **Infomap**:  
+   - Se basa en la teoría de la codificación de información para dividir la red en módulos, minimizando la descripción de un caminante aleatorio.  
+   - Es particularmente efectivo en redes con muchas comunidades pequeñas.  
+
+5. **Label Propagation**:  
+   - Un método rápido y escalable que utiliza la propagación iterativa de etiquetas para asignar nodos a comunidades.  
+   - Su simplicidad lo hace adecuado para redes extremadamente grandes, aunque puede generar resultados variables.  
+
+Cada método será descrito en detalle, con explicaciones teóricas, ventajas, desventajas, y ejemplos ilustrativos. Además, se destacarán las mejores prácticas para aplicar estos métodos en el contexto de biología de sistemas y otras áreas.
+
+
+### Referencias Clave
+
+
+Labusek N, Mouloud Y, Köster C, Diesterbeck E, Tertel T, Wiek C, Hanenberg H, Horn PA, Felderhoff-Müser U, Bendix I, Giebel B, Herz J. Extracellular vesicles from immortalized mesenchymal stromal cells protect against neonatal hypoxic-ischemic brain injury. Inflamm Regen. 2023 Apr 17;43(1):24. doi: 10.1186/s41232-023-00274-6. PMID: 37069694; PMCID: PMC10108458.
+
+Nielsen J, Keasling JD. Engineering Cellular Metabolism. Cell. 2016 Mar 10;164(6):1185-1197. doi: 10.1016/j.cell.2016.02.004. PMID: 26967285.
+
+Gordon DE, Jang GM, Bouhaddou M, Xu J, Obernier K, White KM, O'Meara MJ, Rezelj VV, Guo JZ, Swaney DL, Tummino TA, Hüttenhain R, Kaake RM, Richards AL, Tutuncuoglu B, Foussard H, Batra J, Haas K, Modak M, Kim M, Haas P, Polacco BJ, Braberg H, Fabius JM, Eckhardt M, Soucheray M, Bennett MJ, Cakir M, McGregor MJ, Li Q, Meyer B, Roesch F, Vallet T, Mac Kain A, Miorin L, Moreno E, Naing ZZC, Zhou Y, Peng S, Shi Y, Zhang Z, Shen W, Kirby IT, Melnyk JE, Chorba JS, Lou K, Dai SA, Barrio-Hernandez I, Memon D, Hernandez-Armenta C, Lyu J, Mathy CJP, Perica T, Pilla KB, Ganesan SJ, Saltzberg DJ, Rakesh R, Liu X, Rosenthal SB, Calviello L, Venkataramanan S, Liboy-Lugo J, Lin Y, Huang XP, Liu Y, Wankowicz SA, Bohn M, Safari M, Ugur FS, Koh C, Savar NS, Tran QD, Shengjuler D, Fletcher SJ, O'Neal MC, Cai Y, Chang JCJ, Broadhurst DJ, Klippsten S, Sharp PP, Wenzell NA, Kuzuoglu-Ozturk D, Wang HY, Trenker R, Young JM, Cavero DA, Hiatt J, Roth TL, Rathore U, Subramanian A, Noack J, Hubert M, Stroud RM, Frankel AD, Rosenberg OS, Verba KA, Agard DA, Ott M, Emerman M, Jura N, von Zastrow M, Verdin E, Ashworth A, Schwartz O, d'Enfert C, Mukherjee S, Jacobson M, Malik HS, Fujimori DG, Ideker T, Craik CS, Floor SN, Fraser JS, Gross JD, Sali A, Roth BL, Ruggero D, Taunton J, Kortemme T, Beltrao P, Vignuzzi M, García-Sastre A, Shokat KM, Shoichet BK, Krogan NJ. A SARS-CoV-2 protein interaction map reveals targets for drug repurposing. Nature. 2020 Jul;583(7816):459-468. doi: 10.1038/s41586-020-2286-9. Epub 2020 Apr 30. PMID: 32353859; PMCID: PMC7431030.
+
+Buenrostro JD, Corces MR, Lareau CA, Wu B, Schep AN, Aryee MJ, Majeti R, Chang HY, Greenleaf WJ. Integrated Single-Cell Analysis Maps the Continuous Regulatory Landscape of Human Hematopoietic Differentiation. Cell. 2018 May 31;173(6):1535-1548.e16. doi: 10.1016/j.cell.2018.03.074. Epub 2018 Apr 26. PMID: 29706549; PMCID: PMC5989727.
+
+Saxton RA, Sabatini DM. mTOR Signaling in Growth, Metabolism, and Disease. Cell. 2017 Mar 9;168(6):960-976. doi: 10.1016/j.cell.2017.02.004. Erratum in: Cell. 2017 Apr 6;169(2):361-371. doi: 10.1016/j.cell.2017.03.035. PMID: 28283069; PMCID: PMC5394987.
+
+---
+
+
+# **Clustering Basado en *centralidad de intermediación de enlaces* (Edge Betweenness Clustering)**  
+
+El clustering basado en betweenness de aristas es un método jerárquico que identifica comunidades en redes dividiendo la estructura mediante la eliminación iterativa de las aristas con mayor **betweenness**. Este algoritmo es particularmente útil en biología de sistemas para analizar redes de interacción proteína-proteína (PPI), rutas metabólicas y redes de regulación génica, donde las comunidades corresponden a módulos funcionales biológicos.
+
+
+## **Conceptos Básicos de Edge Betweenness**  
+
+La **betweenness de una arista** es casi el mismo que el **centralidad de intermediación** que vimos en la [primera practica](analisis_topo.html). Pero aqui lo aplicamos a los enlaces, entonces en este caso es una medida que evalúa cuántos caminos más cortos entre pares de nodos pasan por un *enlace* específica. Enlaces con alta betweenness suelen actuar como "puentes" entre diferentes comunidades dentro de una red.  
+
+Matemáticamente, la betweenness de una arista $e$ se define como:  
+
+$$
+B(e) = \sum_{s \neq t} \frac{\sigma_{st}(e)}{\sigma_{st}}
+$$
+
+Donde:  
+- $\sigma_{st}$ es el número total de caminos más cortos entre los nodos $s$ y $t$.  
+- $\sigma_{st}(e)$ es el número de esos caminos que pasan por la arista $e$.  
+
+La idea central del método es que al eliminar las aristas con mayor betweenness, se separan progresivamente las comunidades que están conectadas de manera más débil.
+
+
+#### **Cómo Funciona el Algoritmo**
+
+1. **Cálculo de Betweenness Inicial**:  
+   Se calcula la betweenness de todas las aristas en la red. Este paso inicial es computacionalmente costoso, ya que implica evaluar caminos más cortos para todos los pares de nodos.  
+
+2. **Eliminación de Aristas**:  
+   Se identifica la arista con el valor más alto de betweenness y se elimina de la red. Esta eliminación puede desconectar nodos o subconjuntos de nodos, formando comunidades más pequeñas.  
+
+3. **Reevaluación de Betweenness**:  
+   Después de eliminar una arista, se recalcula la betweenness de las aristas restantes, ya que la estructura de la red ha cambiado.  
+
+4. **Repetición**:  
+   Los pasos anteriores se repiten iterativamente hasta que todas las aristas hayan sido eliminadas, dejando la red completamente desconectada.  
+
+5. **Optimización**:  
+   Durante el proceso, se evalúan métricas como la modularidad ($Q$) para determinar el número óptimo de comunidades. La modularidad [lo hemos visto antes](analisis_topo_2.html); mide la calidad de una partición y se define como:  
+
+   $$
+   Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \frac{k_i k_j}{2m} \right] \delta(c_i, c_j)
+   $$
+
+   Donde:  
+   - $A_{ij}$: Matriz de adyacencia.  
+   - $k_i, k_j$: Grados de los nodos $i$ y $j$.  
+   - $m$: Número total de aristas en la red.  
+   - $\delta(c_i, c_j)$: Indicador de si $i$ y $j$ están en la misma comunidad.  
+
+### **Visualización del Proceso de Clustering**
+
+Para comprender cómo funciona el clustering basado en betweenness, podemos visualizar el proceso paso a paso. Comenzamos con el grafo completo y eliminamos iterativamente las aristas con mayor betweenness.
+
+```{r}
+library(igraph)
+library(netUtils)  # For LFR network generation
+
+# Generate a LFR benchmark network with clear communities
+n <- 100  # Number of nodes
+tau1 <- 3  # Degree distribution exponent for nodes
+tau2 <- 1.5  # Degree distribution exponent for communities
+mu <- 0.1  # Mixing parameter (controls inter-community edges)
+average_degree <- 4  # Desired average degree of nodes
+max_degree <- 5  # Maximum degree of nodes
+
+# Generate the LFR network using the correct arguments
+g <- sample_lfr(n = n, tau1 = tau1, tau2 = tau2, mu = mu, 
+                average_degree = average_degree, max_degree = max_degree)
+
+# Calculate edge betweenness
+edge_btw <- edge_betweenness(g)
+top_edges <- order(edge_btw, decreasing = TRUE)
+
+# Plot settings for consistent layout
+layout <- layout_with_fr(g)  # Use Fruchterman-Reingold layout for fixed positions
+
+# Plot the original graph with the highest betweenness edges highlighted
+plot(g, layout = layout, main = "Original LFR Network with High Betweenness Edges",
+     edge.width = ifelse(rank(-edge_btw) <= 1, 4, 1),  # Highlight top 3 edges
+     edge.color = ifelse(rank(-edge_btw) <= 1, "red", "gray"),
+     vertex.color = "skyblue", vertex.size = 10, vertex.label = NA)
+
+
+# Stepwise removal of high-betweenness edges
+# Remove top betweenness edges iteratively and plot the result each time
+edge_to_remove <- which.max(edge_btw)
+for (i in 1:20) {
+  cat("Quitando enlace con el ", i, " mas alta conectividad\n")
+  # Identify the edge with the highest betweenness remaining
+
+  g <- delete_edges(g, E(g)[edge_to_remove])
+  
+  # Recalculate connected components
+  components <- clusters(g)
+  
+  # Calculate and print modularity
+  mod <- modularity(g, components$membership)
+
+  
+  # Assign a color to each component
+  component_colors <- rainbow(components$no)[components$membership]
+  
+  # Edge to remove in next iteration:
+  edge_btw <- edge_betweenness(g)
+  edge_to_remove <- which.max(edge_btw)
+  # Plot the graph after each removal
+  plot(g, layout = layout, main = paste("After Removing Top", i, "High-Betweenness Edges\n Modularity =", mod, "\n Number of clusters:", components$no),
+       vertex.color = component_colors, vertex.size = 10, vertex.label = NA,
+            edge.width = ifelse(rank(-edge_btw) <= 1, 4, 1),  # Highlight top 3 edges
+     edge.color = ifelse(rank(-edge_btw) <= 1, "red", "gray"), edge.width = 1)
+}
+```
+
+### **Ventajas y Desventajas**
+
+**Ventajas**:  
+- Es un método intuitivo y visual que identifica comunidades de manera progresiva.
+- Identifica estructuras comunitarias significativas, especialmente en redes con cuellos de botella claros.
+- Permite una evaluación dinámica de la estructura de la red durante el proceso de partición.  
+- Es útil para redes de tamaño moderado con alta conectividad.  
+
+**Desventajas**:  
+- Es computacionalmente intensivo, especialmente para redes grandes, debido a la necesidad de recalcular betweenness iterativamente.  
+- Puede ser sensible a pequeñas variaciones en la estructura de la red, lo que afecta la estabilidad de los resultados.
+
+# **Clustering Basado en Walktrap**
+
+El método de clustering Walktrap es un enfoque basado en caminos aleatorios (*random walks*) que detecta comunidades en redes complejas evaluando la proximidad entre nodos mediante simulaciones de pasos aleatorios. Este método aprovecha la idea de que los nodos dentro de una misma comunidad están más estrechamente conectados y, por lo tanto, es más probable que un camino aleatorio permanezca dentro de una comunidad antes de cruzar a otra.
+
+Walktrap es particularmente valioso en el análisis de redes biológicas, como redes de interacción proteína-proteína (PPI), redes metabólicas y redes de regulación génica. Su eficiencia y capacidad para capturar estructuras modulares lo convierten en una herramienta ampliamente utilizada en biología de sistemas.
+
+## **Conceptos Básicos del Método Walktrap**
+
+La idea principal detrás de Walktrap es que los nodos dentro de la misma comunidad tienden a ser más cercanos en términos de caminos aleatorios que aquellos en comunidades diferentes. Para medir esta cercanía, Walktrap utiliza la **distancia de caminos aleatorios** entre los nodos, que captura la similitud estructural basada en las trayectorias aleatorias.  
+
+El algoritmo se basa en los siguientes pasos:
+
+1. **Simulación de Caminos Aleatorios**:  
+   Se simulan caminos aleatorios en la red comenzando desde cada nodo, siguiendo las conexiones existentes.  
+
+2. **Cálculo de la Distancia entre Nodos**:  
+   La distancia entre nodos $i$ y $j$ se mide considerando la probabilidad de que un camino aleatorio que empieza en $i$ llegue a $j$.  
+
+   Matemáticamente, la distancia entre comunidades se define como:  
+   $$
+   d(C_1, C_2) = ||\mathbf{p}_{C_1} - \mathbf{p}_{C_2}||^2
+   $$
+   
+::: {.callout-tip collapse="true" title="Explicacion de la formula e intuicion de la distancia"}
+
+**$\mathbf{p}_{C_k}$:**  
+Este es el vector de probabilidades asociado a la comunidad $C_k$. Cada elemento del vector indica la probabilidad de que un paseo aleatorio en la red se encuentre en un nodo específico de esa comunidad después de un número suficiente de pasos.
+
+**$||\mathbf{p}_{C_1} - \mathbf{p}_{C_2}||^2$:**  
+   La norma cuadrada (distancia euclidiana al cuadrado) mide qué tan diferentes son los vectores de probabilidad de las comunidades $C_1$ y $C_2$. Si esta distancia es pequeña, significa que las probabilidades de navegación en ambas comunidades son similares, lo que sugiere que los nodos están estrechamente conectados entre las comunidades.
+
+**Intuición detrás de la distancia**
+El algoritmo Walktrap utiliza esta métrica para medir la "cercanía" entre comunidades basándose en cómo los paseos aleatorios se distribuyen entre ellas. Dos comunidades serán consideradas "próximas" si:
+- Los nodos de una comunidad tienen una alta probabilidad de acceder a los nodos de la otra durante un paseo aleatorio.  
+- Los vectores de probabilidad $\mathbf{p}_{C_1}$ y $\mathbf{p}_{C_2}$ son similares, lo que implica que los nodos están bien conectados a través de enlaces.
+
+Por el contrario, si la distancia entre comunidades es grande, significa que hay pocos caminos que conectan los nodos entre esas comunidades.
+
+**Relevancia para la Identificación de Comunidades**
+Al fusionar comunidades basándose en esta métrica de distancia, el algoritmo Walktrap asegura que las comunidades agrupadas comparten conexiones significativas, manteniendo un alto grado de coherencia interna. Este proceso gradual de fusión permite identificar estructuras jerárquicas en la red, revelando módulos funcionales.
+
+**Ejemplo Biológico**
+En una red de interacción proteína-proteína (PPI), esta métrica podría agrupar proteínas que participan en un mismo complejo funcional o ruta metabólica. Por ejemplo:
+- Si las proteínas en $C_1$ y $C_2$ tienen roles interdependientes en un proceso celular, los vectores $\mathbf{p}_{C_1}$ y $\mathbf{p}_{C_2}$ serán similares. Esto podría corresponder a módulos funcionales como un complejo ribosomal o proteínas de señalización en cascada. 
+:::
+
+3. **Fusión Jerárquica**:  
+   Walktrap utiliza un esquema de clustering aglomerativo jerárquico. Comienza considerando cada nodo como una comunidad separada y fusiona iterativamente las comunidades más cercanas.  
+
+4. **Optimización**:  
+   Se evalúan métricas como la **modularidad** ($Q$) para determinar la partición óptima.  
+
+
+## **Ventajas y Desventajas**
+
+**Ventajas**:  
+- Captura de manera efectiva la estructura modular de redes complejas.  
+- Computacionalmente eficiente para redes grandes.  
+- Basado en un enfoque probabilístico que refleja mejor la conectividad local.  
+
+**Desventajas**:  
+- Puede no ser tan preciso en redes muy dispersas o con bajo número de conexiones.  
+- La elección de la longitud de los caminos aleatorios puede influir en los resultados.  
+
+
+### **Ejemplo en R**
+
+El siguiente código demuestra cómo aplicar el algoritmo Walktrap a una red simulada y visualizar los resultados:
+
+```{r}
+library(igraph)
+
+# Crear una red de interacción proteína-proteína simulada
+set.seed(42)
+g <- sample_pa(n = 100, m = 2, directed = FALSE)
+
+# Aplicar Walktrap clustering
+wc <- cluster_walktrap(g)
+
+# Visualizar comunidades detectadas
+plot(
+  g,
+  vertex.color = membership(wc),
+  vertex.size = 5,
+  layout = layout_with_fr(g),
+  edge.arrow.size = 0.5,
+  main = "Clustering basado en Walktrap"
+)
+
+# Evaluar modularidad
+modularity(wc)
+```
+
+### **Visualización del Funcionamiento del Algoritmo**
+
+El siguiente ejemplo ilustra cómo Walktrap funciona al fusionar comunidades jerárquicamente, destacando las comunidades formadas en cada paso:
+
+```{r}
+# Create a toy network with modular structure
+set.seed(42)
+g <- make_full_graph(5) %du% make_full_graph(5) %du% make_ring(5)  # Three clusters
+g <- add_edges(g, c(1, 6, 6, 11))  # Add inter-cluster connections
+
+# Plot the original network
+plot(g, vertex.label = NA, main = "Original Network", layout = layout_with_fr)
+
+# Perform Walktrap clustering
+walktrap <- cluster_walktrap(g)
+
+# Extract the number of clusters at each step
+num_clusters <- rev(seq_along(walktrap$merges))
+
+# Plot function for intermediate clustering steps
+plot_walktrap_progression <- function(graph, walktrap, step) {
+  memberships <- cut_at(walktrap, no = step)  # Cluster memberships at this step
+  node_colors <- rainbow(max(memberships))[memberships]  # Color nodes by cluster
+  
+  plot(graph, 
+       vertex.color = node_colors, 
+       vertex.label = NA, 
+       main = paste("Step", length(walktrap$merges) - step + 1, 
+                    "-", step, "Clusters"),
+       layout = layout_with_fr)
+}
+
+# Visualize clustering steps
+for (step in c(12, 8, 4, 3)) {  # Select key steps to illustrate progression
+  plot_walktrap_progression(g, walktrap, step)
+}
+
+# Plot dendrogram
+par(mfrow = c(1, 1))
+plot_dendrogram(walktrap, main = "Walktrap Dendrogram")
+```
+
+
+# **Clustering Basado en el Algoritmo Fast Greedy**
+
+El algoritmo **Fast Greedy** (Greedy Optimization of Modularity) es un método jerárquico que optimiza directamente la **modularidad** de una red para detectar comunidades. A diferencia de métodos como Walktrap o Edge Betweenness, que se centran en caminos aleatorios o en la importancia estructural de aristas, Fast Greedy se enfoca en maximizar la partición modular de manera eficiente, lo que lo hace especialmente adecuado para redes grandes y densas.
+
+Este método es ampliamente utilizado en biología de sistemas, ya que la modularidad captura de forma natural la idea de que los nodos dentro de una comunidad tienen más conexiones entre sí que con nodos de otras comunidades. Esto se relaciona con propiedades funcionales en redes de interacción proteína-proteína (PPI), redes metabólicas y redes de regulación génica.
+
+
+## **¿Cómo Funciona el Algoritmo Fast Greedy?**
+
+1. **Modularidad como Métrica Clave**  
+   La modularidad ($Q$) mide la calidad de una partición de la red en comunidades, comparando la densidad de aristas dentro de comunidades frente a una red aleatoria con la misma distribución de grados. Matemáticamente (se que ya lo hemos visto antes 2 veces pero es especialmente importante aqui):  
+   $$
+   Q = \frac{1}{2m} \sum_{ij} \left[A_{ij} - \frac{k_i k_j}{2m}\right] \delta(c_i, c_j)
+   $$
+   - $A_{ij}$: Existencia de una arista entre los nodos $i$ y $j$.  
+   - $k_i, k_j$: Grados de los nodos $i$ y $j$.  
+   - $m$: Número total de aristas en la red.  
+   - $\delta(c_i, c_j)$: Es 1 si $i$ y $j$ están en la misma comunidad, y 0 en caso contrario.  
+
+2. **Estrategia Greedy (Voraz)**  
+   El algoritmo Fast Greedy sigue una **estrategia greedy** o voraz, lo que significa que toma decisiones locales en cada paso para mejorar la modularidad. El algoritmo funciona de la siguiente manera:
+   - **Paso inicial**: Comienza considerando que cada nodo es su propia comunidad.
+   - **Fusión de comunidades**: En cada paso, fusiona las dos comunidades que más incrementan la modularidad.
+   - **Terminación**: El algoritmo continúa fusionando comunidades hasta que no se pueda incrementar más la modularidad.
+   
+La eficiencia del algoritmo se debe a que no tiene que evaluar todas las posibles particiones, sino que se concentra en el máximo incremento de modularidad en cada paso. Esto lo hace rápido y adecuado para redes grandes.
+
+3. **Resultados Jerárquicos**  
+  Similar a otros métodos jerárquicos como Walktrap, el algoritmo Fast Greedy genera un dendrograma, que muestra cómo se van fusionando las comunidades a medida que la modularidad se maximiza. Este dendrograma se puede cortar en diferentes niveles de granularidad para obtener particiones de la red con distintas cantidades de comunidades.
+  
+::: {.callout-tip collapse="true" title="Modularidad es global o local?"}
+La modularidad es una propiedad global de una red, aunque puede ser calculada localmente cuando se considera una partición específica de la red en comunidades.
+
+**Propiedad Global:**
+
+La modularidad mide la calidad de toda la partición de una red, es decir, evalúa qué tan bien están agrupados los nodos en comunidades dentro de la red.
+Compara la densidad real de aristas dentro de las comunidades con lo que se esperaría en una red aleatoria con la misma distribución de grados (el número de aristas conectadas a cada nodo). Esta medida requiere evaluar la estructura completa de la red en relación con la partición propuesta de los nodos.
+
+**Cálculo Local:**
+
+Aunque la modularidad es una propiedad global de la red, se calcula localmente para cada comunidad durante el proceso de optimización.
+Cuando se utilizan algoritmos como Fast Greedy o Louvain para detectar comunidades, la modularidad se optimiza mediante la fusión de comunidades basadas en los cambios locales en la puntuación de modularidad. En cada paso, se observa el efecto de fusionar dos comunidades en la modularidad, pero la puntuación total de modularidad considera la estructura de toda la red.
+
+En resumen, la modularidad en sí es una propiedad global que depende de toda la estructura de la red y de la partición de los nodos, pero la optimización (o el cálculo) se realiza a través de decisiones locales iterativas sobre cómo fusionar o dividir las comunidades.
+:::
+
+
+### **Ventajas y Desventajas**
+
+**Ventajas**:
+
+- **Escalabilidad**: El algoritmo es rápido y adecuado para redes grandes con miles de nodos.
+- **Optimización directa de modularidad**: La modularidad proporciona una métrica intuitiva para evaluar la calidad del clustering, lo que facilita la interpretación de los resultados.
+- **Identificación clara de comunidades**: Dado que se enfoca en maximizar la modularidad, es particularmente efectivo en redes densas donde las comunidades están bien definidas.
+
+**Desventajas**:
+
+- **Redes con estructuras pequeñas o solapadas**: El algoritmo puede no funcionar bien cuando las comunidades son pequeñas o se solapan mucho, ya que la estrategia greedy no siempre puede detectar estos patrones sutiles.
+- **Redes dispersas**: En redes con muy pocas conexiones internas entre nodos dentro de cada comunidad, el algoritmo puede tener dificultades para identificar bien las comunidades.
+
+### **Ejemplo en R**
+
+El siguiente código muestra cómo aplicar el algoritmo Fast Greedy a una red simulada. En este caso, se utiliza una red aleatoria generada mediante el modelo de Preferential Attachment (`sample_pa`), que tiene una estructura modular natural.
+
+```{r}
+library(igraph)
+
+# Crear una red simulada
+set.seed(42)
+g <- sample_pa(n = 100, m = 2, directed = FALSE)  # Red generada con el modelo Preferential Attachment
+
+# Aplicar el algoritmo Fast Greedy
+fc <- cluster_fast_greedy(g)
+
+# Visualizar las comunidades
+plot(
+  g,
+  vertex.color = membership(fc),  # Colorear nodos según las comunidades
+  layout = layout_with_fr(g),  # Layout Fruchterman-Reingold para visualizar la red
+  vertex.size = 5,  # Tamaño de los nodos
+  main = "Clustering Basado en Fast Greedy"
+)
+
+# Mostrar la modularidad de la partición
+cat("Modularidad:", modularity(fc), "\n")
+```
+
+### **Explicación del Código:**
+1. **Generación de la red**: Usamos el modelo de **Preferential Attachment** (`sample_pa`) para crear una red con 100 nodos y una probabilidad de 2 conexiones por nodo. Este modelo genera una red con una estructura de "preferencia" donde los nodos más conectados tienen más probabilidades de atraer nuevas conexiones, lo que lleva a una red con estructuras jerárquicas y comunidades naturales.
+   
+2. **Aplicación del algoritmo**: Utilizamos la función `cluster_fast_greedy()` de `igraph` para aplicar el algoritmo Fast Greedy a la red generada. El algoritmo detecta las comunidades optimizando la modularidad.
+
+3. **Visualización**: En el gráfico generado, los nodos se colorean según las comunidades detectadas por el algoritmo, y se utiliza el layout de Fruchterman-Reingold para visualizar la red de manera que las comunidades estén lo más separadas posible. 
+
+4. **Modularidad**: Finalmente, se imprime el valor de la modularidad ($Q$) de la partición obtenida. Este valor indica la calidad de la partición, siendo un valor alto una señal de que las comunidades están bien definidas.
+
+# **Clustering Basado en el Algoritmo Louvain**
+
+El **algoritmo Louvain** es uno de los métodos más utilizados para la detección de comunidades en redes. Fue propuesto por Blondel et al. en 2008 y se basa en la idea de **optimizar la modularidad** de la red a través de un proceso jerárquico y eficiente. Louvain se ha destacado por su capacidad para manejar redes grandes y complejas, lo que lo hace ideal para su aplicación en biología de sistemas, donde las redes pueden ser densas y tener muchas conexiones entre nodos.
+
+#### **¿Cómo Funciona el Algoritmo Louvain?**
+
+El algoritmo Louvain sigue un enfoque **jerárquico** en dos fases clave:
+
+1. **Fase 1: Optimización Local de Modularity**
+   - El algoritmo comienza asignando a cada nodo su propia comunidad.
+   - Luego, en cada iteración, el algoritmo evalúa si mover un nodo a la comunidad de uno de sus vecinos incrementa la modularidad de la red.
+   - El nodo se mueve a la comunidad que maximiza la modularidad local, es decir, se busca que las conexiones internas sean mayores que las conexiones externas.
+
+2. **Fase 2: Construcción de la Red de Comunidades**
+   - Una vez que se han asignado los nodos a comunidades, el algoritmo **agrupa las comunidades** en un nuevo "supernodo" y construye una nueva red en la que los nodos son las comunidades encontradas.
+   - Se calcula de nuevo la modularidad en esta nueva red y se repite el proceso hasta que ya no se pueda mejorar más la modularidad.
+
+El proceso se repite de manera **jerárquica**, lo que permite detectar comunidades a diferentes escalas de la red, desde subcomunidades pequeñas hasta estructuras más grandes que agrupan muchas comunidades.
+
+#### **Modularidad en Louvain**
+
+La **modularidad** ($Q$) en Louvain se calcula de manera similar a fast_greedy, y mide qué tan bien se dividen los nodos de la red en comunidades.
+
+El objetivo del algoritmo Louvain es **maximizar esta modularidad** a través de las iteraciones, identificando comunidades en la red donde los nodos están más densamente conectados entre sí que con nodos fuera de la comunidad.
+
+::: {.callout-tip collapse="true" title="Que diferencia Louvain de Fast_greedy, si los dos intentan maximizar modularidad?"}
+### **Diferencias Clave entre el Algoritmo Fast Greedy y Louvain**:
+
+#### **1. Proceso de Combinación de Comunidades:**
+- **Fast Greedy**:
+  - El algoritmo **Fast Greedy** comienza considerando cada nodo como su propia comunidad y fusiona comunidades de manera iterativa, eligiendo en cada paso las comunidades que aumentan más la **modularidad**.
+  - **No se crean supernodos** durante el proceso. Después de cada fusión, las comunidades se recalculan, pero no hay una reducción explícita del grafo. El algoritmo simplemente continúa fusionando las comunidades existentes basándose en el aumento de modularidad.
+
+- **Louvain**:
+  - Louvain también comienza con cada nodo como su propia comunidad y optimiza la modularidad, pero lo hace en un proceso de dos fases:
+    1. **Fase 1**: Agrega los nodos en **supernodos**, donde cada supernodo representa una comunidad en el paso anterior. Esto es básicamente una **reducción** del grafo.
+    2. **Fase 2**: Se vuelve a optimizar la modularidad en el nuevo nivel (con los supernodos). El proceso se repite y el grafo se simplifica cada vez más conforme se crean nuevos supernodos.
+  - **Supernodos**: Esta es la principal diferencia. Louvain reduce el tamaño del grafo durante el proceso al colapsar comunidades en supernodos, lo que simplifica el problema en cada iteración.
+
+#### **2. Representación del Grafo Durante el Proceso:**
+- **Fast Greedy**:
+  - La estructura del grafo **no cambia** durante el proceso. Las comunidades se actualizan de manera iterativa, pero todos los nodos y aristas se mantienen. El algoritmo solo fusiona comunidades existentes según el aumento de modularidad, por lo que la red sigue teniendo su forma original.
+  
+- **Louvain**:
+  - **Se crean supernodos** después de cada fase. En cada paso, el algoritmo construye un nuevo grafo donde los nodos representan las comunidades del paso anterior. Esto significa que Louvain reduce el tamaño del grafo conforme avanza. En cada nivel de la jerarquía, Louvain trabaja con un grafo simplificado.
+
+#### **3. Estructura Jerárquica:**
+- **Fast Greedy**:
+  - Fast Greedy es **jerárquico**, lo que significa que la estructura de comunidades se puede representar como un **dendrograma**, similar a Walktrap. Sin embargo, no hay una **reducción del grafo** a través de supernodos. La jerarquía solo se representa por los **pasos de fusión** y la estructura de las comunidades resultantes.
+  
+- **Louvain**:
+  - Louvain también es **jerárquico**, pero su jerarquía es más explícita, ya que involucra la reducción del grafo en **supernodos** en cada iteración. Esto crea una **estructura multiescala** en la que las comunidades de niveles superiores están representadas por nodos únicos, y el algoritmo trabaja con grafos progresivamente más simples.
+
+#### **4. Velocidad y Escalabilidad:**
+- **Fast Greedy**:
+  - Fast Greedy tiende a ser **más lento** en redes muy grandes en comparación con Louvain, ya que no reduce el grafo en ningún momento. Tiene que trabajar con la estructura completa del grafo durante todo el proceso.
+  
+- **Louvain**:
+  - Louvain está diseñado para ser **mucho más rápido**, especialmente para redes grandes, ya que la creación de supernodos reduce el tamaño del grafo, lo que permite que el algoritmo funcione de manera más eficiente a medida que avanza a través de diferentes niveles de abstracción.
+
+#### **Resumen de las Distinciones Clave:**
+- **Fast Greedy** no crea supernodos ni reduce el grafo. Fusiona comunidades de manera iterativa basándose en el aumento de modularidad, sin simplificar la estructura del grafo.
+- **Louvain** crea **supernodos** y trabaja en un grafo simplificado en cada paso, lo que reduce el tamaño del grafo y simplifica el problema a medida que avanza. Esto le permite procesar redes grandes de manera más eficiente.
+
+En resumen, la principal diferencia radica en la **simplificación del grafo**: **Louvain** reduce explícitamente el tamaño del grafo al crear supernodos, mientras que **Fast Greedy** trabaja con el grafo original y solo fusiona comunidades de manera iterativa.
+:::
+
+
+#### **Ventajas y Desventajas**
+
+**Ventajas**:
+- **Rápido y escalable**: Louvain es eficiente, lo que lo hace adecuado para redes grandes con miles o incluso millones de nodos.
+- **Capacidad de detectar comunidades a múltiples escalas**: El proceso jerárquico permite identificar comunidades en diferentes niveles de granularidad.
+- **Interpretable en biología**: La modularidad se ajusta muy bien al análisis de redes biológicas, ya que las **comunidades reflejan posibles funciones biológicas** o procesos celulares, como vías metabólicas, complejos proteicos, o grupos de genes relacionados.
+
+**Desventajas**:
+- **No siempre encuentra la partición global óptima**: Aunque el algoritmo es eficiente, debido a su naturaleza heurística, los resultados pueden variar dependiendo de la red de entrada.
+- **Reducción de resolución**: En redes con comunidades pequeñas y dispersas, el algoritmo puede no identificar correctamente comunidades de tamaño pequeño, lo que puede afectar su capacidad para detectar subestructuras en redes muy finas.
+
+
+#### **Ejemplo en R: Algoritmo Louvain**
+
+El siguiente código muestra cómo aplicar el algoritmo Louvain a una red simulada, utilizando el paquete `igraph` en R:
+
+```{r}
+library(igraph)
+
+# Crear una red simulada (completa con tres comunidades)
+set.seed(42)
+g <- erdos.renyi.game(100, p = 0.05, directed = FALSE)  # Crear una red aleatoria
+
+# Aplicar el algoritmo Louvain
+louvain_cluster <- cluster_louvain(g)
+
+# Visualizar las comunidades
+plot(
+  g,
+  vertex.color = membership(louvain_cluster),  # Colorear según comunidad
+  layout = layout_with_fr(g),  # Diseño de la red
+  vertex.size = 5,
+  main = "Clustering Basado en Louvain"
+)
+
+# Modificar el tamaño de las comunidades
+cat("Modularidad:", modularity(louvain_cluster), "\n")
+```
+
+En este ejemplo, el algoritmo **Louvain** detecta comunidades dentro de una red aleatoria y optimiza la modularidad. Cada nodo se colorea de acuerdo con la comunidad a la que pertenece, y la modularidad final se imprime para evaluar la calidad del clustering.
+
+
+# **Clustering Basado en el Algoritmo Infomap**
+
+El algoritmo **Infomap** es un enfoque de clustering basado en la teoría de la información, diseñado para encontrar comunidades en redes complejas. En lugar de basarse directamente en medidas de modularidad o distancia entre nodos, como en los métodos anteriores, Infomap utiliza un enfoque inspirado en el **mapa de flujo de información**. Su objetivo es dividir la red de tal manera que se minimice la cantidad total de información necesaria para describir los movimientos de un "paseador" aleatorio a través de la red, lo que se traduce en la identificación de comunidades. 
+
+Este algoritmo es muy adecuado para redes con estructuras jerárquicas y comunidades con una fuerte organización interna. En el contexto de **biología de sistemas**, Infomap ha demostrado ser útil para identificar módulos funcionales en redes de interacción proteína-proteína (PPI), redes metabólicas, y redes de regulación genética, donde los módulos corresponden a grupos de genes o proteínas que están estrechamente relacionados funcionalmente.
+
+### **¿Cómo Funciona el Algoritmo Infomap?**
+
+1. **Mapa de Flujo de Información**  
+   Infomap se basa en la idea de que un caminante aleatorio que se mueve por la red puede pasar de un nodo a otro, y la eficiencia con la que se puede representar su movimiento a través de la red está vinculada a la estructura modular de la red. El algoritmo se centra en optimizar la codificación del flujo de información en la red, dividiéndola en **comunidades** que minimicen la cantidad total de información necesaria para describir el movimiento del caminante.
+
+2. **Codificación de la Información**  
+   En el modelo de Infomap, el espacio de la red se divide en **códigos de camino**: cada vez que el caminante se mueve a través de un nodo, se necesita una descripción que indique a qué comunidad pertenece el nodo, y si se mueve entre comunidades. Este proceso de codificación permite descubrir la estructura modular al identificar los nodos que están más frecuentemente conectados entre sí.
+
+3. **Optimización mediante Minimización de la Información**  
+   Infomap utiliza un enfoque de **optimización de la compresión** para minimizar la cantidad de bits necesarios para describir el movimiento del caminante en la red. Este proceso puede ser interpretado como una búsqueda de la partición de la red que más eficientemente agrupe los nodos en comunidades, con el fin de reducir el costo de la codificación.
+
+::: {.callout-tip collapse="true" title="Por qué tener comunidades ayuda a acortar la descripción del recorrido?"}
+### Descripción del Recorrido del Caminante Aleatorio
+
+Imagina que el caminante aleatorio se mueve a través de una red y pasa por una serie de nodos. Si queremos describir su recorrido, podríamos simplemente enumerar cada nodo que el caminante visita uno por uno.
+
+- **Sin Comunidades:**
+  Si la red no tiene comunidades, el recorrido del caminante podría verse algo así:
+
+  - **Recorrido del Caminante:** Nodo A → Nodo B → Nodo C → Nodo D → Nodo E → Nodo F.
+
+  Para describir esto, tendríamos que nombrar cada nodo que el caminante visita individualmente. Si la red es grande y el caminante se mueve a través de muchos nodos que no están fuertemente conectados entre sí, la descripción podría volverse larga e ineficiente.
+
+### Cómo Ayudan las Comunidades
+
+Por otro lado, las comunidades ayudan a organizar la red en grupos de nodos que están **fuertemente conectados** dentro del grupo y solo débilmente conectados a nodos fuera de él. Esta estructura significa que:
+
+1. El movimiento **intra-comunidad** (dentro de una comunidad) es más probable porque los nodos dentro de una comunidad están fuertemente conectados. Esto hace que el caminante permanezca más tiempo dentro de un área local.
+   
+2. El movimiento **inter-comunidad** (entre comunidades) es más raro, y cuando el caminante se mueve entre comunidades, es menos frecuente.
+
+Ahora, cuando describimos el recorrido del caminante:
+
+- **Con Comunidades:**
+  Imagina que ahora agrupamos los nodos en comunidades. Por ejemplo:
+
+  - **Comunidad 1**: Nodos A, B y C.
+  - **Comunidad 2**: Nodos D, E y F.
+
+  En lugar de describir cada nodo individualmente, podemos describir el recorrido del caminante a nivel de **comunidades**:
+
+  - **Recorrido del Caminante (con comunidades):** Comunidad 1 → Comunidad 2 → Comunidad 1 → Comunidad 1.
+
+  Esta es una forma mucho más corta y eficiente de describir el movimiento del caminante porque no estamos listando cada nodo individual. En lugar de eso, solo nos referimos a la comunidad en la que se encuentra el caminante, reduciendo la complejidad de la descripción.
+
+### ¿Por Qué Es Más Eficiente?
+
+La idea clave es que en redes con comunidades, la **estructura local** (las relaciones entre los nodos dentro de una comunidad) es más predecible y **densa**. Esto significa que el caminante aleatorio pasará más tiempo en áreas de la red que están altamente conectadas (comunidades) y menos tiempo saltando entre partes distantes y menos conectadas.
+
+- Al agrupar los nodos en comunidades, reducimos la necesidad de listar nodos individuales cada vez que el caminante se mueve. En lugar de eso, podemos describir al caminante moviéndose de una comunidad a otra. Esto hace que la descripción sea más compacta y eficiente.
+
+### Compresión de Información en Acción
+
+Piénsalo como describir la ubicación de una persona en una ciudad. Sin comunidades, podrías decir: “La persona está en esta calle, en esa calle, en este bloque y luego en ese bloque”. Con comunidades, podrías decir: “La persona está en el centro de la ciudad, luego se mueve a las afueras, y después regresa al centro”. En lugar de listar cada calle o bloque individual, estás describiendo **áreas más grandes** (las comunidades) donde es probable que la persona esté.
+
+Esta compresión de información es lo que hace que los algoritmos de detección de comunidades como **Infomap** sean tan poderosos: agrupan nodos relacionados, lo que permite una representación más **compacta y eficiente** de la estructura de la red.
+
+### En Resumen:
+
+- **Las Comunidades** ayudan a acortar la descripción de un recorrido aleatorio porque los nodos dentro de una comunidad están más conectados entre sí que con nodos fuera de la comunidad.
+- En lugar de seguir cada paso que da el caminante a través de nodos individuales, podemos describir el recorrido a nivel de las comunidades, lo que hace que la descripción sea más corta y eficiente.
+- Este proceso de "compresión de información" es fundamental en cómo funciona Infomap, y es por eso que Infomap puede detectar comunidades de manera efectiva en una red, optimizando cómo fluye la información a través de ella.
+:::
+
+4. **Resultados Jerárquicos**  
+   Al igual que el algoritmo de Fast Greedy y Walktrap, Infomap produce una estructura jerárquica que puede ser cortada en diferentes niveles de granularidad para obtener particiones de la red en varios niveles de detalle.
+
+### **Ventajas y Desventajas**
+
+**Ventajas**:
+- **Alta precisión**: Infomap tiende a identificar comunidades más compactas, especialmente en redes grandes y con una estructura jerárquica bien definida.
+- **Eficiencia**: Es un algoritmo muy eficiente desde el punto de vista computacional y es capaz de manejar redes con decenas de miles de nodos.
+- **Aplicaciones a redes grandes**: Es muy adecuado para redes biológicas de gran escala, como redes de interacción proteína-proteína (PPI) y redes metabólicas.
+
+**Desventajas**:
+- **Dependencia de la estructura de la red**: Infomap puede no funcionar tan bien en redes que no tienen una estructura jerárquica clara.
+- **No es adecuado para redes muy dispersas**: Si la red no tiene muchas conexiones locales fuertes, Infomap puede no ser tan efectivo en la detección de comunidades.
+
+### **Ejemplo en R**
+
+El siguiente código muestra cómo aplicar Infomap a una red simulada utilizando el paquete `igraph` en R:
+
+```{r}
+library(igraph)
+
+# Crear una red simulada
+set.seed(42)
+g <- sample_pa(n = 100, m = 2, directed = FALSE)
+
+# Aplicar el algoritmo Infomap
+fc <- cluster_infomap(g)
+
+# Visualizar las comunidades
+plot(
+  g,
+  vertex.color = membership(fc),
+  layout = layout_with_fr(g),
+  vertex.size = 5,
+  main = "Clustering Basado en Infomap"
+)
+
+# Modularidad
+cat("Modularidad:", modularity(fc), "\n")
+```
+
+# **Clustering Basado en Label Propagation**
+
+El algoritmo de **Label Propagation (Propagación de Etiquetas)** es uno de los métodos más simples y rápidos para realizar clustering en redes. A pesar de su simplicidad, ha demostrado ser sorprendentemente efectivo en la detección de comunidades en una variedad de redes, desde redes sociales hasta redes biológicas. Su principal ventaja es que no requiere de una matriz de similitud o de modularidad para ser optimizado, lo que lo hace muy eficiente y escalable, incluso en redes de gran tamaño.
+
+## **¿Cómo Funciona el Algoritmo de Label Propagation?**
+
+El algoritmo de **Label Propagation** sigue un proceso iterativo en el que cada nodo de la red tiene una "etiqueta" inicial (generalmente, su propio identificador o una etiqueta aleatoria). La idea principal es que los nodos en la misma comunidad tienden a compartir las mismas etiquetas, por lo que a través de la propagación de etiquetas, los nodos de una misma comunidad convergerán hacia la misma etiqueta. 
+
+Aquí está el proceso paso a paso:
+
+1. **Inicialización**:
+   Cada nodo recibe una etiqueta inicial. Por lo general, cada nodo comienza con una etiqueta única o aleatoria. En este caso, asumimos que cada nodo está en su propia comunidad.
+
+2. **Propagación**:
+   En cada paso, cada nodo **actualiza su etiqueta** en función de las etiquetas de sus vecinos. La etiqueta que un nodo adoptará es la etiqueta más frecuente entre sus vecinos. Si varios vecinos tienen etiquetas diferentes, el nodo elige aleatoriamente entre las etiquetas más frecuentes.
+
+3. **Repetición**:
+   Este proceso de actualización de etiquetas se repite varias veces (hasta que no haya cambios) o durante un número de iteraciones predefinido. A medida que se repiten las iteraciones, los nodos que están más cerca entre sí en la red empiezan a compartir la misma etiqueta, formando comunidades.
+
+4. **Finalización**:
+   El algoritmo finaliza cuando las etiquetas de todos los nodos dejan de cambiar. En ese momento, las comunidades están definidas por los nodos que comparten la misma etiqueta.
+
+#### **Ventajas y Desventajas**
+
+**Ventajas**:
+- **Escalabilidad**: El algoritmo es muy eficiente, especialmente en redes grandes, ya que no requiere el cálculo de métricas complejas, como la modularidad.
+- **Simplicidad**: Es un algoritmo simple de entender e implementar. No requiere ninguna información de la estructura global de la red, solo las conexiones locales entre los nodos.
+- **Paralelización**: El algoritmo se puede paralelizar fácilmente, lo que aumenta su velocidad en redes muy grandes.
+
+**Desventajas**:
+- **Estabilidad**: Puede ser sensible al orden de los nodos en las iteraciones. En redes con estructuras complejas o de gran tamaño, la convergencia puede ser lenta o inestable.
+- **Dependencia de la inicialización**: Los resultados pueden depender de cómo se asignan las etiquetas iniciales. En algunos casos, el algoritmo puede dar lugar a particiones inadecuadas si no se tiene en cuenta la conectividad entre los nodos.
+- **Comunidad solapada**: No es adecuado para detectar comunidades solapadas, donde un nodo pertenece a varias comunidades al mismo tiempo.
+
+#### **¿Por qué es útil en Biología de Sistemas?**
+
+El algoritmo de **Label Propagation** es especialmente útil en biología de sistemas, ya que permite identificar comunidades de nodos que están más densamente conectados entre sí, lo que puede ser interpretado como funciones biológicas relacionadas. Este tipo de comunidad se encuentra frecuentemente en redes de interacción proteína-proteína (PPI), redes de rutas metabólicas o en redes de expresión génica, donde los componentes biológicos tienden a formar agrupaciones que trabajan conjuntamente para realizar una función biológica.
+
+Por ejemplo, en una red de **interacciones proteína-proteína (PPI)**, los nodos (proteínas) que interactúan entre sí tienden a formar comunidades que corresponden a complejos proteicos o procesos biológicos. Estas comunidades pueden representar, por ejemplo, **puntos de control del ciclo celular**, **señalización celular**, o **procesos metabólicos**.
+
+### **Ejemplo Detallado del Algoritmo de Label Propagation**
+
+Este ejemplo utiliza una red pequeña pero suficientemente compleja para visualizar los pasos del algoritmo. La idea es mostrar cómo las etiquetas se propagan entre los nodos a lo largo de varias iteraciones hasta que el algoritmo converge.
+
+```{r}
+library(igraph)
+
+# Crear una red simulada con estructura de comunidades
+set.seed(42)
+g <- erdos.renyi.game(100, p = 0.05)  # Red aleatoria con 100 nodos y p=0.05
+
+# Añadir comunidades manualmente (grupos de nodos más densamente conectados)
+g <- add_edges(g, c(1, 2, 2, 3, 3, 4, 4, 1))  # Un ciclo entre 4 nodos
+g <- add_edges(g, c(5, 6, 6, 7, 7, 8, 8, 5))  # Otro ciclo entre 4 nodos
+
+# Visualizar la red inicial
+plot(g, vertex.label = NA, layout = layout_with_fr, main = "Red Original")
+
+# Aplicar el algoritmo de Label Propagation
+lp <- cluster_label_prop(g)
+
+# Visualizar las comunidades detectadas al final
+plot(g, 
+     vertex.color = membership(lp), 
+     layout = layout_with_fr, 
+     vertex.size = 5, 
+     main = "Comunidades Finales (Label Propagation)")
+
+# Mostrar el número de comunidades detectadas
+cat("Número de comunidades detectadas:", length(unique(membership(lp))), "\n")
+
+# Visualizar cómo las etiquetas de los nodos cambian a lo largo de las iteraciones
+# Usaremos un ciclo para mostrar varias iteraciones
+
+# Función para simular las iteraciones de la propagación de etiquetas
+plot_label_propagation <- function(graph, max_iter = 10) {
+  # Inicializar las etiquetas de los nodos (cada nodo tiene su propia etiqueta inicialmente)
+  node_labels <- 1:vcount(graph)
+  community_colors <- rainbow(vcount(graph))  # Colores para cada etiqueta
+  
+  # Crear un gráfico vacío para mostrar las iteraciones
+
+  for (iter in 1:max_iter) {
+    # Asignar nuevas etiquetas a los nodos basadas en la mayoría de sus vecinos
+    for (node in 1:vcount(graph)) {
+      # Obtener etiquetas de los vecinos
+      neighbor_labels <- node_labels[neighbors(graph, node)]
+      # Asignar la etiqueta más frecuente entre los vecinos
+      node_labels[node] <- as.integer(names(sort(table(neighbor_labels), decreasing = TRUE)[1]))
+    }
+    
+    # Visualizar el progreso de las iteraciones
+    plot(graph, 
+         vertex.color = community_colors[node_labels], 
+         vertex.label = NA, 
+         main = paste("Iteración", iter), 
+         layout = layout_with_fr)
+  }
+}
+
+# Mostrar las iteraciones del algoritmo Label Propagation
+plot_label_propagation(g)
+```
+
+### **Explicación del Código y del Ejemplo:**
+
+1. **Red Inicial**:
+   - Se genera una red aleatoria utilizando el modelo de Erdős-Rényi con 100 nodos. Esto crea una estructura de red bastante dispersa, pero luego se añaden dos comunidades pequeñas con una conexión densa entre los nodos de cada comunidad.
+   - Se visualiza la red original antes de aplicar el algoritmo de **Label Propagation**.
+
+2. **Aplicación del Algoritmo**:
+   - El algoritmo de **Label Propagation** se aplica a la red y se visualizan las comunidades detectadas después de que el algoritmo haya convergido. La visualización muestra cómo los nodos dentro de una comunidad comparten la misma etiqueta.
+
+3. **Visualización de las Iteraciones**:
+   - La función `plot_label_propagation` simula cómo las etiquetas de los nodos cambian a lo largo de las iteraciones. En cada iteración, cada nodo toma la etiqueta más frecuente de sus vecinos. Esto se repite durante varias iteraciones para ver cómo las etiquetas se propagan por la red.
+   - A medida que las iteraciones avanzan, los nodos dentro de una comunidad empiezan a compartir la misma etiqueta, mostrando cómo el algoritmo forma comunidades.
+
+4. **Resultados**:
+   - El número de comunidades detectadas por **Label Propagation** se imprime al final.
+   - La visualización muestra las comunidades formadas a medida que el algoritmo avanza, y cómo las etiquetas de los nodos cambian en cada iteración.
+
+### **Ventajas y Propiedades de Label Propagation**:
+
+- **Escalabilidad**: Este algoritmo es extremadamente rápido y puede ser utilizado en redes muy grandes.
+- **Simplicidad**: Es muy fácil de implementar y entender, no requiere cálculo de métricas complejas como la modularidad.
+- **Paralelización**: Dado que las actualizaciones de las etiquetas son locales y no dependen de otras partes de la red, el algoritmo se puede paralelizar fácilmente, lo que aumenta su eficiencia.
+
+### **Aplicaciones en Biología de Sistemas**:
+
+En biología de sistemas, **Label Propagation** puede ser utilizado para detectar comunidades en redes de interacción proteína-proteína (PPI), redes de regulación génica, o redes metabólicas, donde los nodos (proteínas, genes, enzimas, etc.) que interactúan entre sí o comparten funciones biológicas similares tienden a formar comunidades.
+
+Este algoritmo es útil cuando se tiene una red de gran tamaño y se busca encontrar agrupaciones de nodos sin necesidad de un análisis computacional complejo, lo que lo hace adecuado para estudiar grandes bases de datos biológicos.
+
+### **Conclusión**:
+
+El algoritmo de **Label Propagation** es una herramienta poderosa y eficiente para realizar clustering en redes, especialmente cuando se trata de grandes volúmenes de datos. Su simplicidad y capacidad de escalabilidad lo convierten en una opción atractiva en muchos dominios, incluida la biología de sistemas, donde las comunidades de nodos a menudo representan funciones biológicas relacionadas.
