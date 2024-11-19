@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.45">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -236,6 +236,12 @@ window.Quarto = {
   <li><a href="#asortatividad-de-grado-degree-assortativity-y-homofilia-homophily" id="toc-asortatividad-de-grado-degree-assortativity-y-homofilia-homophily" class="nav-link" data-scroll-target="#asortatividad-de-grado-degree-assortativity-y-homofilia-homophily">Asortatividad de Grado (Degree Assortativity) y Homofilia (Homophily)</a>
   <ul class="collapse">
   <li><a href="#definiciones" id="toc-definiciones" class="nav-link" data-scroll-target="#definiciones"><strong>Definiciones</strong></a></li>
+  <li><a href="#ejemplos-de-redes-con-asortatividad-positiva-y-negativa" id="toc-ejemplos-de-redes-con-asortatividad-positiva-y-negativa" class="nav-link" data-scroll-target="#ejemplos-de-redes-con-asortatividad-positiva-y-negativa"><strong>Ejemplos de Redes con Asortatividad Positiva y Negativa</strong></a>
+  <ul class="collapse">
+  <li><a href="#asortatividad-positiva" id="toc-asortatividad-positiva" class="nav-link" data-scroll-target="#asortatividad-positiva"><strong>Asortatividad Positiva</strong></a></li>
+  <li><a href="#asortatividad-negativa" id="toc-asortatividad-negativa" class="nav-link" data-scroll-target="#asortatividad-negativa"><strong>Asortatividad Negativa</strong></a></li>
+  <li><a href="#comparación-en-biología" id="toc-comparación-en-biología" class="nav-link" data-scroll-target="#comparación-en-biología"><strong>Comparación en Biología</strong></a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -280,7 +286,7 @@ Q = \frac{1}{2m} \sum_{i,j} \left( A_{ij} - \frac{k_i k_j}{2m} \right) \delta(c_
 <ul>
 <li><span class="math inline">\(Q\)</span> es el valor de modularidad.</li>
 <li><span class="math inline">\(m\)</span> es el número total de aristas en la red.</li>
-<li>$A_{ij} $ representa la entrada en la posición <span class="math inline">\((i, j)\)</span> de la matriz de adyacencia de la red, donde <span class="math inline">\(A_{ij} = 1\)</span> si hay una arista entre los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, y <span class="math inline">\(A_{ij} = 0\)</span> si no la hay.</li>
+<li><span class="math inline">\(A\_{ij}\)</span> representa la entrada en la posición <span class="math inline">\((i, j)\)</span> de la matriz de adyacencia de la red, donde <span class="math inline">\(A_{ij} = 1\)</span> si hay una arista entre los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, y <span class="math inline">\(A_{ij} = 0\)</span> si no la hay.</li>
 <li><span class="math inline">\(k_i\)</span> es el grado del nodo <span class="math inline">\(i\)</span> (es decir, el número de conexiones que tiene el nodo <span class="math inline">\(i\)</span>).</li>
 <li><span class="math inline">\(\delta(c_i, c_j)\)</span> es una función indicadora que es igual a 1 si los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span> pertenecen a la misma comunidad y 0 en caso contrario.</li>
 </ul>
@@ -290,7 +296,7 @@ Q = \frac{1}{2m} \sum_{i,j} \left( A_{ij} - \frac{k_i k_j}{2m} \right) \delta(c_
 <ol type="1">
 <li><p><strong>Identificar la estructura de la comunidad</strong>: La red se divide en comunidades o módulos (grupos de nodos densamente conectados entre sí). Esto puede hacerse con algoritmos específicos como el algoritmo de Louvain o el algoritmo de agrupamiento <em>fast-greedy</em>, que buscan maximizar la modularidad <span class="math inline">\(Q\)</span> dividiendo la red en comunidades. Veremos mas algoritmos de clusterizacion en la siguiente parte teorica.</p></li>
 <li><p><strong>Calcular la matriz de adyacencia y el grado</strong>: A partir de la estructura de la red, construimos la matriz de adyacencia <span class="math inline">\(A\)</span> y calculamos el grado de cada nodo <span class="math inline">\(k_i\)</span>.</p></li>
-<li><p><strong>Sumar las diferencias entre enlaces observados y esperados</strong>: Para cada par de nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, se calcula <span class="math inline">\(A_{ij} - \frac{k_i k_j}{2m}\)</span>. Este término mide la diferencia entre el número real de enlaces entre los nodos de la misma comunidad y el número esperado si las conexiones fueran aleatorias.</p></li>
+<li><p><strong>Sumar las diferencias entre enlaces observados y esperados</strong>: Para cada par de nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, se calcula <span class="math inline">\(A_{ij} - \frac{k_i k_j}{2m}\)</span>. Este término controla por el grado de los nods <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>.</p></li>
 <li><p><strong>Sumar los valores para los pares dentro de la misma comunidad</strong>: Los valores obtenidos en el paso anterior se suman únicamente para los pares de nodos <span class="math inline">\((i, j)\)</span> que están dentro de la misma comunidad (esto lo controla la función <span class="math inline">\(\delta(c_i, c_j)\)</span>).</p></li>
 <li><p><strong>Normalizar por el número total de enlaces</strong>: Finalmente, el resultado se multiplica por <span class="math inline">\(\frac{1}{2m}\)</span> para obtener el valor final de modularidad <span class="math inline">\(Q\)</span>.</p></li>
 </ol>
@@ -577,12 +583,12 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 </section>
 <section id="diámetro-diameter" class="level2">
 <h2 class="anchored" data-anchor-id="diámetro-diameter">Diámetro (Diameter)</h2>
-<p>El <strong>diámetro de una red</strong> es la longitud del camino más largo entre cualquier par de nodos en la red. Es decir, el diámetro es el valor máximo de las distancias más cortas <span class="math inline">\(d(i,j)\)</span> entre nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>. Esta medida es importante porque da una idea de cuán “extendida” o “compacta” es la red en términos de conectividad.</p>
+<p>El <strong>diámetro de una red</strong> es la longitud del camino más corto entre nodos mas largo entre cualquier par de nodos en la red. Es decir, el diámetro es el valor máximo de las distancias más cortas <span class="math inline">\(d(i,j)\)</span> entre nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>. Esta medida es importante porque da una idea de cuán “extendida” o “compacta” es la red en términos de conectividad.</p>
 <p>El diámetro <span class="math inline">\(D\)</span> de una red se calcula como:</p>
 <p><span class="math display">\[
 D = \max_{i \neq j} d(i,j)
 \]</span></p>
-<p>donde <span class="math inline">\(d(i,j)\)</span> es la distancia más corta entre los nodos ( i ) y ( j ).</p>
+<p>donde <span class="math inline">\(d(i,j)\)</span> es la distancia más corta entre los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>.</p>
 <section id="relación-entre-longitud-promedio-de-camino-y-diámetro" class="level3">
 <h3 class="anchored" data-anchor-id="relación-entre-longitud-promedio-de-camino-y-diámetro"><strong>Relación entre Longitud Promedio de Camino y Diámetro</strong></h3>
 <ul>
@@ -715,6 +721,38 @@ r = \frac{\sum_{ij} (A_{ij} - \frac{k_i k_j}{2m}) k_i k_j}{\sum_{ij} (k_i^2 - \f
 </div>
 </div>
 </div>
+</section>
+</section>
+<section id="ejemplos-de-redes-con-asortatividad-positiva-y-negativa" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplos-de-redes-con-asortatividad-positiva-y-negativa"><strong>Ejemplos de Redes con Asortatividad Positiva y Negativa</strong></h2>
+<section id="asortatividad-positiva" class="level3">
+<h3 class="anchored" data-anchor-id="asortatividad-positiva"><strong>Asortatividad Positiva</strong></h3>
+<p>En redes con asortatividad positiva, los nodos con grados similares tienden a conectarse entre sí. Este patrón fomenta la formación de comunidades o módulos, lo que refuerza la resiliencia y la cohesión de la red.</p>
+<ul>
+<li><p><strong>Redes de Interacción Proteína-Proteína (PPI):</strong><br>
+Las proteínas de alto grado (hubs) tienden a interactuar con otras proteínas igualmente conectadas, formando complejos funcionales específicos. Por ejemplo, en la maquinaria ribosomal, las proteínas ribosómicas suelen agruparse para garantizar una síntesis proteica eficiente.</p></li>
+<li><p><strong>Redes Sociales:</strong><br>
+En redes como LinkedIn, las personas con muchas conexiones suelen estar vinculadas a otros usuarios con un número similar de contactos, lo que genera grupos profesionales densamente interconectados.</p></li>
+</ul>
+</section>
+<section id="asortatividad-negativa" class="level3">
+<h3 class="anchored" data-anchor-id="asortatividad-negativa"><strong>Asortatividad Negativa</strong></h3>
+<p>En redes con asortatividad negativa, los nodos de alto grado tienden a conectarse con nodos de bajo grado. Este patrón es típico de sistemas diseñados para maximizar la eficiencia y la transferencia de recursos o información.</p>
+<ul>
+<li><p><strong>Redes Metabólicas:</strong><br>
+Los metabolitos universales, como el ATP, actúan como hubs al conectar múltiples metabolitos específicos con roles clave en diversas rutas metabólicas. Este diseño asegura que el ATP pueda participar rápidamente en numerosas reacciones bioquímicas.</p></li>
+<li><p><strong>Redes de Transporte:</strong><br>
+En redes aéreas, los aeropuertos internacionales (hubs) están conectados con aeropuertos regionales más pequeños. Esto optimiza el flujo de pasajeros y carga en el sistema global.</p></li>
+</ul>
+</section>
+<section id="comparación-en-biología" class="level3">
+<h3 class="anchored" data-anchor-id="comparación-en-biología"><strong>Comparación en Biología</strong></h3>
+<ul>
+<li>La <strong>asortatividad positiva</strong> refuerza la estabilidad dentro de módulos funcionales, como complejos proteicos específicos.<br>
+</li>
+<li>La <strong>asortatividad negativa</strong> mejora la flexibilidad y la integración en sistemas jerárquicos, como en la regulación metabólica o genética.</li>
+</ul>
+<p>Ambos patrones reflejan estrategias de diseño adaptativas que optimizan la funcionalidad en redes biológicas y tecnológicas.</p>
 
 
 </section>

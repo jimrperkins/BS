@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.45">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -167,6 +167,10 @@ window.Quarto = {
     <a class="nav-link" href="./minimal_analysis.html"> 
 <span class="menu-text">Minimal Análisis</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./clustering.html"> 
+<span class="menu-text">Clustering</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -246,7 +250,7 @@ Q = \frac{1}{2m} \sum_{i,j} \left( A_{ij} - \frac{k_i k_j}{2m} \right) \delta(c_
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'igraph'</code></pre>
+Attaching package: 'igraph'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -352,7 +356,7 @@ Adjuntando el paquete: 'igraph'</code></pre>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>modularity_protein <span class="ot">&lt;-</span> <span class="fu">modularity</span>(community_protein)</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Modularidad de la red de interacción proteica:"</span>, modularity_protein, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Modularidad de la red de interacci&lt;U+00F3&gt;n proteica: 0.3002508 </code></pre>
+<pre><code>Modularidad de la red de interacción proteica: 0.3002508 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red y las comunidades</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g_protein)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">membership</span>(community_protein)</span>
@@ -383,7 +387,7 @@ Adjuntando el paquete: 'igraph'</code></pre>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>modularity_metabolic <span class="ot">&lt;-</span> <span class="fu">modularity</span>(community_metabolic)</span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Modularidad de la red metabólica:"</span>, modularity_metabolic, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Modularidad de la red metab&lt;U+00F3&gt;lica: 0.518775 </code></pre>
+<pre><code>Modularidad de la red metabólica: 0.518775 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red y las comunidades</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g_metabolic)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">membership</span>(community_metabolic)</span>

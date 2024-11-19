@@ -36,7 +36,7 @@ Esta ecuación compara la densidad de enlaces dentro de las comunidades con la d
 
 2.  **Calcular la matriz de adyacencia y el grado**: A partir de la estructura de la red, construimos la matriz de adyacencia $A$ y calculamos el grado de cada nodo $k_i$.
 
-3.  **Sumar las diferencias entre enlaces observados y esperados**: Para cada par de nodos $i$ y $j$, se calcula $A_{ij} - \frac{k_i k_j}{2m}$. Este término mide la diferencia entre el número real de enlaces entre los nodos de la misma comunidad y el número esperado si las conexiones fueran aleatorias.
+3.  **Sumar las diferencias entre enlaces observados y esperados**: Para cada par de nodos $i$ y $j$, se calcula $A_{ij} - \frac{k_i k_j}{2m}$. Este término controla por el grado de los nods $i$ y $j$.
 
 4.  **Sumar los valores para los pares dentro de la misma comunidad**: Los valores obtenidos en el paso anterior se suman únicamente para los pares de nodos $(i, j)$ que están dentro de la misma comunidad (esto lo controla la función $\delta(c_i, c_j)$).
 

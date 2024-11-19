@@ -1,5 +1,5 @@
 ---
-  title: "Stuff"
+  title: "Partición de grafos (I). Módulos en redes biológicas"
 ---
 
 # Introducción a los Métodos de Clustering
@@ -748,112 +748,12 @@ Aquí está el proceso paso a paso:
 **Ventajas**:
 - **Escalabilidad**: El algoritmo es muy eficiente, especialmente en redes grandes, ya que no requiere el cálculo de métricas complejas, como la modularidad.
 - **Simplicidad**: Es un algoritmo simple de entender e implementar. No requiere ninguna información de la estructura global de la red, solo las conexiones locales entre los nodos.
-- **Paralelización**: El algoritmo se puede paralelizar fácilmente, lo que aumenta su velocidad en redes muy grandes.
 
 **Desventajas**:
 - **Estabilidad**: Puede ser sensible al orden de los nodos en las iteraciones. En redes con estructuras complejas o de gran tamaño, la convergencia puede ser lenta o inestable.
 - **Dependencia de la inicialización**: Los resultados pueden depender de cómo se asignan las etiquetas iniciales. En algunos casos, el algoritmo puede dar lugar a particiones inadecuadas si no se tiene en cuenta la conectividad entre los nodos.
 - **Comunidad solapada**: No es adecuado para detectar comunidades solapadas, donde un nodo pertenece a varias comunidades al mismo tiempo.
 
-#### **¿Por qué es útil en Biología de Sistemas?**
 
-El algoritmo de **Label Propagation** es especialmente útil en biología de sistemas, ya que permite identificar comunidades de nodos que están más densamente conectados entre sí, lo que puede ser interpretado como funciones biológicas relacionadas. Este tipo de comunidad se encuentra frecuentemente en redes de interacción proteína-proteína (PPI), redes de rutas metabólicas o en redes de expresión génica, donde los componentes biológicos tienden a formar agrupaciones que trabajan conjuntamente para realizar una función biológica.
 
-Por ejemplo, en una red de **interacciones proteína-proteína (PPI)**, los nodos (proteínas) que interactúan entre sí tienden a formar comunidades que corresponden a complejos proteicos o procesos biológicos. Estas comunidades pueden representar, por ejemplo, **puntos de control del ciclo celular**, **señalización celular**, o **procesos metabólicos**.
 
-### **Ejemplo Detallado del Algoritmo de Label Propagation**
-
-Este ejemplo utiliza una red pequeña pero suficientemente compleja para visualizar los pasos del algoritmo. La idea es mostrar cómo las etiquetas se propagan entre los nodos a lo largo de varias iteraciones hasta que el algoritmo converge.
-
-```{r}
-library(igraph)
-
-# Crear una red simulada con estructura de comunidades
-set.seed(42)
-g <- erdos.renyi.game(100, p = 0.05)  # Red aleatoria con 100 nodos y p=0.05
-
-# Añadir comunidades manualmente (grupos de nodos más densamente conectados)
-g <- add_edges(g, c(1, 2, 2, 3, 3, 4, 4, 1))  # Un ciclo entre 4 nodos
-g <- add_edges(g, c(5, 6, 6, 7, 7, 8, 8, 5))  # Otro ciclo entre 4 nodos
-
-# Visualizar la red inicial
-plot(g, vertex.label = NA, layout = layout_with_fr, main = "Red Original")
-
-# Aplicar el algoritmo de Label Propagation
-lp <- cluster_label_prop(g)
-
-# Visualizar las comunidades detectadas al final
-plot(g, 
-     vertex.color = membership(lp), 
-     layout = layout_with_fr, 
-     vertex.size = 5, 
-     main = "Comunidades Finales (Label Propagation)")
-
-# Mostrar el número de comunidades detectadas
-cat("Número de comunidades detectadas:", length(unique(membership(lp))), "\n")
-
-# Visualizar cómo las etiquetas de los nodos cambian a lo largo de las iteraciones
-# Usaremos un ciclo para mostrar varias iteraciones
-
-# Función para simular las iteraciones de la propagación de etiquetas
-plot_label_propagation <- function(graph, max_iter = 10) {
-  # Inicializar las etiquetas de los nodos (cada nodo tiene su propia etiqueta inicialmente)
-  node_labels <- 1:vcount(graph)
-  community_colors <- rainbow(vcount(graph))  # Colores para cada etiqueta
-  
-  # Crear un gráfico vacío para mostrar las iteraciones
-
-  for (iter in 1:max_iter) {
-    # Asignar nuevas etiquetas a los nodos basadas en la mayoría de sus vecinos
-    for (node in 1:vcount(graph)) {
-      # Obtener etiquetas de los vecinos
-      neighbor_labels <- node_labels[neighbors(graph, node)]
-      # Asignar la etiqueta más frecuente entre los vecinos
-      node_labels[node] <- as.integer(names(sort(table(neighbor_labels), decreasing = TRUE)[1]))
-    }
-    
-    # Visualizar el progreso de las iteraciones
-    plot(graph, 
-         vertex.color = community_colors[node_labels], 
-         vertex.label = NA, 
-         main = paste("Iteración", iter), 
-         layout = layout_with_fr)
-  }
-}
-
-# Mostrar las iteraciones del algoritmo Label Propagation
-plot_label_propagation(g)
-```
-
-### **Explicación del Código y del Ejemplo:**
-
-1. **Red Inicial**:
-   - Se genera una red aleatoria utilizando el modelo de Erdős-Rényi con 100 nodos. Esto crea una estructura de red bastante dispersa, pero luego se añaden dos comunidades pequeñas con una conexión densa entre los nodos de cada comunidad.
-   - Se visualiza la red original antes de aplicar el algoritmo de **Label Propagation**.
-
-2. **Aplicación del Algoritmo**:
-   - El algoritmo de **Label Propagation** se aplica a la red y se visualizan las comunidades detectadas después de que el algoritmo haya convergido. La visualización muestra cómo los nodos dentro de una comunidad comparten la misma etiqueta.
-
-3. **Visualización de las Iteraciones**:
-   - La función `plot_label_propagation` simula cómo las etiquetas de los nodos cambian a lo largo de las iteraciones. En cada iteración, cada nodo toma la etiqueta más frecuente de sus vecinos. Esto se repite durante varias iteraciones para ver cómo las etiquetas se propagan por la red.
-   - A medida que las iteraciones avanzan, los nodos dentro de una comunidad empiezan a compartir la misma etiqueta, mostrando cómo el algoritmo forma comunidades.
-
-4. **Resultados**:
-   - El número de comunidades detectadas por **Label Propagation** se imprime al final.
-   - La visualización muestra las comunidades formadas a medida que el algoritmo avanza, y cómo las etiquetas de los nodos cambian en cada iteración.
-
-### **Ventajas y Propiedades de Label Propagation**:
-
-- **Escalabilidad**: Este algoritmo es extremadamente rápido y puede ser utilizado en redes muy grandes.
-- **Simplicidad**: Es muy fácil de implementar y entender, no requiere cálculo de métricas complejas como la modularidad.
-- **Paralelización**: Dado que las actualizaciones de las etiquetas son locales y no dependen de otras partes de la red, el algoritmo se puede paralelizar fácilmente, lo que aumenta su eficiencia.
-
-### **Aplicaciones en Biología de Sistemas**:
-
-En biología de sistemas, **Label Propagation** puede ser utilizado para detectar comunidades en redes de interacción proteína-proteína (PPI), redes de regulación génica, o redes metabólicas, donde los nodos (proteínas, genes, enzimas, etc.) que interactúan entre sí o comparten funciones biológicas similares tienden a formar comunidades.
-
-Este algoritmo es útil cuando se tiene una red de gran tamaño y se busca encontrar agrupaciones de nodos sin necesidad de un análisis computacional complejo, lo que lo hace adecuado para estudiar grandes bases de datos biológicos.
-
-### **Conclusión**:
-
-El algoritmo de **Label Propagation** es una herramienta poderosa y eficiente para realizar clustering en redes, especialmente cuando se trata de grandes volúmenes de datos. Su simplicidad y capacidad de escalabilidad lo convierten en una opción atractiva en muchos dominios, incluida la biología de sistemas, donde las comunidades de nodos a menudo representan funciones biológicas relacionadas.

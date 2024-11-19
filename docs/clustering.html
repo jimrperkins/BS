@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.45">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Stuff – Biología de Sistemas</title>
+<title>Partición de grafos (I). Módulos en redes biológicas – Biología de Sistemas</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -235,14 +235,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#clustering-basado-en-label-propagation" id="toc-clustering-basado-en-label-propagation" class="nav-link" data-scroll-target="#clustering-basado-en-label-propagation"><strong>Clustering Basado en Label Propagation</strong></a>
   <ul class="collapse">
-  <li><a href="#cómo-funciona-el-algoritmo-de-label-propagation" id="toc-cómo-funciona-el-algoritmo-de-label-propagation" class="nav-link" data-scroll-target="#cómo-funciona-el-algoritmo-de-label-propagation"><strong>¿Cómo Funciona el Algoritmo de Label Propagation?</strong></a>
-  <ul class="collapse">
-  <li><a href="#ejemplo-detallado-del-algoritmo-de-label-propagation" id="toc-ejemplo-detallado-del-algoritmo-de-label-propagation" class="nav-link" data-scroll-target="#ejemplo-detallado-del-algoritmo-de-label-propagation"><strong>Ejemplo Detallado del Algoritmo de Label Propagation</strong></a></li>
-  <li><a href="#explicación-del-código-y-del-ejemplo" id="toc-explicación-del-código-y-del-ejemplo" class="nav-link" data-scroll-target="#explicación-del-código-y-del-ejemplo"><strong>Explicación del Código y del Ejemplo:</strong></a></li>
-  <li><a href="#ventajas-y-propiedades-de-label-propagation" id="toc-ventajas-y-propiedades-de-label-propagation" class="nav-link" data-scroll-target="#ventajas-y-propiedades-de-label-propagation"><strong>Ventajas y Propiedades de Label Propagation</strong>:</a></li>
-  <li><a href="#aplicaciones-en-biología-de-sistemas" id="toc-aplicaciones-en-biología-de-sistemas" class="nav-link" data-scroll-target="#aplicaciones-en-biología-de-sistemas"><strong>Aplicaciones en Biología de Sistemas</strong>:</a></li>
-  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><strong>Conclusión</strong>:</a></li>
-  </ul></li>
+  <li><a href="#cómo-funciona-el-algoritmo-de-label-propagation" id="toc-cómo-funciona-el-algoritmo-de-label-propagation" class="nav-link" data-scroll-target="#cómo-funciona-el-algoritmo-de-label-propagation"><strong>¿Cómo Funciona el Algoritmo de Label Propagation?</strong></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -252,7 +245,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Stuff</h1>
+<h1 class="title">Partición de grafos (I). Módulos en redes biológicas</h1>
 </div>
 
 
@@ -1406,201 +1399,8 @@ Al igual que el algoritmo de Fast Greedy y Walktrap, Infomap produce una estruct
 </ol>
 <section id="ventajas-y-desventajas-5" class="level4">
 <h4 class="anchored" data-anchor-id="ventajas-y-desventajas-5"><strong>Ventajas y Desventajas</strong></h4>
-<p><strong>Ventajas</strong>: - <strong>Escalabilidad</strong>: El algoritmo es muy eficiente, especialmente en redes grandes, ya que no requiere el cálculo de métricas complejas, como la modularidad. - <strong>Simplicidad</strong>: Es un algoritmo simple de entender e implementar. No requiere ninguna información de la estructura global de la red, solo las conexiones locales entre los nodos. - <strong>Paralelización</strong>: El algoritmo se puede paralelizar fácilmente, lo que aumenta su velocidad en redes muy grandes.</p>
+<p><strong>Ventajas</strong>: - <strong>Escalabilidad</strong>: El algoritmo es muy eficiente, especialmente en redes grandes, ya que no requiere el cálculo de métricas complejas, como la modularidad. - <strong>Simplicidad</strong>: Es un algoritmo simple de entender e implementar. No requiere ninguna información de la estructura global de la red, solo las conexiones locales entre los nodos.</p>
 <p><strong>Desventajas</strong>: - <strong>Estabilidad</strong>: Puede ser sensible al orden de los nodos en las iteraciones. En redes con estructuras complejas o de gran tamaño, la convergencia puede ser lenta o inestable. - <strong>Dependencia de la inicialización</strong>: Los resultados pueden depender de cómo se asignan las etiquetas iniciales. En algunos casos, el algoritmo puede dar lugar a particiones inadecuadas si no se tiene en cuenta la conectividad entre los nodos. - <strong>Comunidad solapada</strong>: No es adecuado para detectar comunidades solapadas, donde un nodo pertenece a varias comunidades al mismo tiempo.</p>
-</section>
-<section id="por-qué-es-útil-en-biología-de-sistemas" class="level4">
-<h4 class="anchored" data-anchor-id="por-qué-es-útil-en-biología-de-sistemas"><strong>¿Por qué es útil en Biología de Sistemas?</strong></h4>
-<p>El algoritmo de <strong>Label Propagation</strong> es especialmente útil en biología de sistemas, ya que permite identificar comunidades de nodos que están más densamente conectados entre sí, lo que puede ser interpretado como funciones biológicas relacionadas. Este tipo de comunidad se encuentra frecuentemente en redes de interacción proteína-proteína (PPI), redes de rutas metabólicas o en redes de expresión génica, donde los componentes biológicos tienden a formar agrupaciones que trabajan conjuntamente para realizar una función biológica.</p>
-<p>Por ejemplo, en una red de <strong>interacciones proteína-proteína (PPI)</strong>, los nodos (proteínas) que interactúan entre sí tienden a formar comunidades que corresponden a complejos proteicos o procesos biológicos. Estas comunidades pueden representar, por ejemplo, <strong>puntos de control del ciclo celular</strong>, <strong>señalización celular</strong>, o <strong>procesos metabólicos</strong>.</p>
-</section>
-<section id="ejemplo-detallado-del-algoritmo-de-label-propagation" class="level3">
-<h3 class="anchored" data-anchor-id="ejemplo-detallado-del-algoritmo-de-label-propagation"><strong>Ejemplo Detallado del Algoritmo de Label Propagation</strong></h3>
-<p>Este ejemplo utiliza una red pequeña pero suficientemente compleja para visualizar los pasos del algoritmo. La idea es mostrar cómo las etiquetas se propagan entre los nodos a lo largo de varias iteraciones hasta que el algoritmo converge.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una red simulada con estructura de comunidades</span></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)  <span class="co"># Red aleatoria con 100 nodos y p=0.05</span></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Añadir comunidades manualmente (grupos de nodos más densamente conectados)</span></span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(g, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>))  <span class="co"># Un ciclo entre 4 nodos</span></span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(g, <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">5</span>))  <span class="co"># Otro ciclo entre 4 nodos</span></span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red inicial</span></span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">layout =</span> layout_with_fr, <span class="at">main =</span> <span class="st">"Red Original"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar el algoritmo de Label Propagation</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>lp <span class="ot">&lt;-</span> <span class="fu">cluster_label_prop</span>(g)</span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar las comunidades detectadas al final</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, </span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">membership</span>(lp), </span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">layout =</span> layout_with_fr, </span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">5</span>, </span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Comunidades Finales (Label Propagation)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el número de comunidades detectadas</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Número de comunidades detectadas:"</span>, <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">membership</span>(lp))), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Número de comunidades detectadas: 1 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar cómo las etiquetas de los nodos cambian a lo largo de las iteraciones</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Usaremos un ciclo para mostrar varias iteraciones</span></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para simular las iteraciones de la propagación de etiquetas</span></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>plot_label_propagation <span class="ot">&lt;-</span> <span class="cf">function</span>(graph, <span class="at">max_iter =</span> <span class="dv">10</span>) {</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Inicializar las etiquetas de los nodos (cada nodo tiene su propia etiqueta inicialmente)</span></span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  node_labels <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">vcount</span>(graph)</span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  community_colors <span class="ot">&lt;-</span> <span class="fu">rainbow</span>(<span class="fu">vcount</span>(graph))  <span class="co"># Colores para cada etiqueta</span></span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Crear un gráfico vacío para mostrar las iteraciones</span></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
-<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Asignar nuevas etiquetas a los nodos basadas en la mayoría de sus vecinos</span></span>
-<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (node <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">vcount</span>(graph)) {</span>
-<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Obtener etiquetas de los vecinos</span></span>
-<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>      neighbor_labels <span class="ot">&lt;-</span> node_labels[<span class="fu">neighbors</span>(graph, node)]</span>
-<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Asignar la etiqueta más frecuente entre los vecinos</span></span>
-<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>      node_labels[node] <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">names</span>(<span class="fu">sort</span>(<span class="fu">table</span>(neighbor_labels), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]))</span>
-<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Visualizar el progreso de las iteraciones</span></span>
-<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(graph, </span>
-<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">vertex.color =</span> community_colors[node_labels], </span>
-<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">vertex.label =</span> <span class="cn">NA</span>, </span>
-<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Iteración"</span>, iter), </span>
-<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">layout =</span> layout_with_fr)</span>
-<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar las iteraciones del algoritmo Label Propagation</span></span>
-<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_label_propagation</span>(g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-4.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-5.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-6.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-7.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-8.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-9.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-10.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-11.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="clustering_files/figure-html/unnamed-chunk-7-12.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="explicación-del-código-y-del-ejemplo" class="level3">
-<h3 class="anchored" data-anchor-id="explicación-del-código-y-del-ejemplo"><strong>Explicación del Código y del Ejemplo:</strong></h3>
-<ol type="1">
-<li><strong>Red Inicial</strong>:
-<ul>
-<li>Se genera una red aleatoria utilizando el modelo de Erdős-Rényi con 100 nodos. Esto crea una estructura de red bastante dispersa, pero luego se añaden dos comunidades pequeñas con una conexión densa entre los nodos de cada comunidad.</li>
-<li>Se visualiza la red original antes de aplicar el algoritmo de <strong>Label Propagation</strong>.</li>
-</ul></li>
-<li><strong>Aplicación del Algoritmo</strong>:
-<ul>
-<li>El algoritmo de <strong>Label Propagation</strong> se aplica a la red y se visualizan las comunidades detectadas después de que el algoritmo haya convergido. La visualización muestra cómo los nodos dentro de una comunidad comparten la misma etiqueta.</li>
-</ul></li>
-<li><strong>Visualización de las Iteraciones</strong>:
-<ul>
-<li>La función <code>plot_label_propagation</code> simula cómo las etiquetas de los nodos cambian a lo largo de las iteraciones. En cada iteración, cada nodo toma la etiqueta más frecuente de sus vecinos. Esto se repite durante varias iteraciones para ver cómo las etiquetas se propagan por la red.</li>
-<li>A medida que las iteraciones avanzan, los nodos dentro de una comunidad empiezan a compartir la misma etiqueta, mostrando cómo el algoritmo forma comunidades.</li>
-</ul></li>
-<li><strong>Resultados</strong>:
-<ul>
-<li>El número de comunidades detectadas por <strong>Label Propagation</strong> se imprime al final.</li>
-<li>La visualización muestra las comunidades formadas a medida que el algoritmo avanza, y cómo las etiquetas de los nodos cambian en cada iteración.</li>
-</ul></li>
-</ol>
-</section>
-<section id="ventajas-y-propiedades-de-label-propagation" class="level3">
-<h3 class="anchored" data-anchor-id="ventajas-y-propiedades-de-label-propagation"><strong>Ventajas y Propiedades de Label Propagation</strong>:</h3>
-<ul>
-<li><strong>Escalabilidad</strong>: Este algoritmo es extremadamente rápido y puede ser utilizado en redes muy grandes.</li>
-<li><strong>Simplicidad</strong>: Es muy fácil de implementar y entender, no requiere cálculo de métricas complejas como la modularidad.</li>
-<li><strong>Paralelización</strong>: Dado que las actualizaciones de las etiquetas son locales y no dependen de otras partes de la red, el algoritmo se puede paralelizar fácilmente, lo que aumenta su eficiencia.</li>
-</ul>
-</section>
-<section id="aplicaciones-en-biología-de-sistemas" class="level3">
-<h3 class="anchored" data-anchor-id="aplicaciones-en-biología-de-sistemas"><strong>Aplicaciones en Biología de Sistemas</strong>:</h3>
-<p>En biología de sistemas, <strong>Label Propagation</strong> puede ser utilizado para detectar comunidades en redes de interacción proteína-proteína (PPI), redes de regulación génica, o redes metabólicas, donde los nodos (proteínas, genes, enzimas, etc.) que interactúan entre sí o comparten funciones biológicas similares tienden a formar comunidades.</p>
-<p>Este algoritmo es útil cuando se tiene una red de gran tamaño y se busca encontrar agrupaciones de nodos sin necesidad de un análisis computacional complejo, lo que lo hace adecuado para estudiar grandes bases de datos biológicos.</p>
-</section>
-<section id="conclusión" class="level3">
-<h3 class="anchored" data-anchor-id="conclusión"><strong>Conclusión</strong>:</h3>
-<p>El algoritmo de <strong>Label Propagation</strong> es una herramienta poderosa y eficiente para realizar clustering en redes, especialmente cuando se trata de grandes volúmenes de datos. Su simplicidad y capacidad de escalabilidad lo convierten en una opción atractiva en muchos dominios, incluida la biología de sistemas, donde las comunidades de nodos a menudo representan funciones biológicas relacionadas.</p>
 
 
 </section>
