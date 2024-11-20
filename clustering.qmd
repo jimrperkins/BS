@@ -729,7 +729,12 @@ El algoritmo de **Label Propagation (Propagación de Etiquetas)** es uno de los 
 
 El algoritmo de **Label Propagation** sigue un proceso iterativo en el que cada nodo de la red tiene una "etiqueta" inicial (generalmente, su propio identificador o una etiqueta aleatoria). La idea principal es que los nodos en la misma comunidad tienden a compartir las mismas etiquetas, por lo que a través de la propagación de etiquetas, los nodos de una misma comunidad convergerán hacia la misma etiqueta. 
 
+
+
+
 Aquí está el proceso paso a paso:
+
+![label propagation](label_prop.png)
 
 1. **Inicialización**:
    Cada nodo recibe una etiqueta inicial. Por lo general, cada nodo comienza con una etiqueta única o aleatoria. En este caso, asumimos que cada nodo está en su propia comunidad.

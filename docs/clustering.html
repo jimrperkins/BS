@@ -171,6 +171,10 @@ window.Quarto = {
     <a class="nav-link active" href="./clustering.html" aria-current="page"> 
 <span class="menu-text">Clustering</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./clustering_2.html"> 
+<span class="menu-text">Clustering Enlaces</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -1391,6 +1395,12 @@ Al igual que el algoritmo de Fast Greedy y Walktrap, Infomap produce una estruct
 <h2 class="anchored" data-anchor-id="cómo-funciona-el-algoritmo-de-label-propagation"><strong>¿Cómo Funciona el Algoritmo de Label Propagation?</strong></h2>
 <p>El algoritmo de <strong>Label Propagation</strong> sigue un proceso iterativo en el que cada nodo de la red tiene una “etiqueta” inicial (generalmente, su propio identificador o una etiqueta aleatoria). La idea principal es que los nodos en la misma comunidad tienden a compartir las mismas etiquetas, por lo que a través de la propagación de etiquetas, los nodos de una misma comunidad convergerán hacia la misma etiqueta.</p>
 <p>Aquí está el proceso paso a paso:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="label_prop.png" class="img-fluid figure-img"></p>
+<figcaption>label propagation</figcaption>
+</figure>
+</div>
 <ol type="1">
 <li><p><strong>Inicialización</strong>: Cada nodo recibe una etiqueta inicial. Por lo general, cada nodo comienza con una etiqueta única o aleatoria. En este caso, asumimos que cada nodo está en su propia comunidad.</p></li>
 <li><p><strong>Propagación</strong>: En cada paso, cada nodo <strong>actualiza su etiqueta</strong> en función de las etiquetas de sus vecinos. La etiqueta que un nodo adoptará es la etiqueta más frecuente entre sus vecinos. Si varios vecinos tienen etiquetas diferentes, el nodo elige aleatoriamente entre las etiquetas más frecuentes.</p></li>

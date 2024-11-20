@@ -16,6 +16,8 @@ website:
         text: Minimal Análisis
       - href: clustering.qmd
         text: Clustering
+      - href: clustering_2.qmd
+        text: Clustering Enlaces
 
 format:
   html:
