@@ -18,6 +18,8 @@ website:
         text: Clustering
       - href: clustering_2.qmd
         text: Clustering Enlaces
+      - href: func_enric.qmd
+        text: Enriquecimiento Funcional
 
 format:
   html:

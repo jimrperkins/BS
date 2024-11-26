@@ -244,7 +244,7 @@ edges <- matrix(c("A", "B", "A", "C", "B", "C", "C", "D", "C", "E", "D", "E", "E
 g <- graph_from_edgelist(edges, directed = FALSE)
 
 # Generate all edge pairs
-edge_list <- get.edgelist(g)
+edge_list <- as_edgelist(g)
 edge_pairs <- combn(1:ecount(g), 2)
 
 # Calculate similarities between all pairs of edges
@@ -300,7 +300,7 @@ for (e in 1:ecount(g)) {
     node_comms[[node]] <- c(node_comms[[node]], clusters[e])
   }
 }
-node_comms <- lapply(node_comms, unique)  # Ensure unique memberships per node
+node_comms <- lapply(node_comms, unique) # Ensure unique memberships per node
 print(node_comms)
 ```
 
@@ -315,23 +315,84 @@ Esta técnica es especialmente útil para analizar redes biológicas, donde las 
 
 ## **Densidad de Partición y Corte del Dendrograma**
 
-La **densidad de partición** $D$ se calcula como la suma de las densidades de las comunidades $D(s)$ y se divide por el número total de comunidades $C$:
+Hay que cortar el árbol en un punto específico, determinado por donde se maximiza la densidad de partición.
 
-$$
-D = \frac{\sum_{s} D(s)}{C}
-$$
+### **Densidad de Partición**
 
-Donde $D(s)$ se calcula de la siguiente forma para cada comunidad:
+La **densidad de partición** es una medida que evalúa qué tan densamente están conectados los conjuntos de enlaces (aristas) dentro de una red. A diferencia de las métricas centradas en los nodos, la densidad de partición se enfoca en la **densidad interna de los subconjuntos de enlaces** (es decir, comunidades de aristas) y permite cuantificar la cohesión de estas comunidades. Su definición, basada en la sección de métodos de **Ahn et al. (2010)**, es la siguiente:
 
-$$
-D(s) = \frac{2m(s)}{n(s)(n(s)-1)}
-$$
+#### **Definición de Densidad de Partición**
 
-Donde:
-- $m(s)$ es el número de enlaces dentro de la comunidad $s$,
-- $n(s)$ es el número de nodos en la comunidad $s$.
+1. **Partición de la Red**:
+   - Para una red con $M$ enlaces (aristas), una partición $\{P_1, \dots, P_C\}$ divide los enlaces en $C$ subconjuntos, donde cada subconjunto $P_c$ tiene $m_c = |P_c|$ enlaces y $n_c$ nodos.
 
-Se usa esta medida para cortar el arbol MORE NEXT WEEK!.
+2. **Densidad Interna de Cada Subconjunto $P_c$**:
+   - La **densidad de partición** $D_c$ de un subconjunto $P_c$ se define como:
+     $$
+     D_c = \frac{m_c - (n_c - 1)}{\frac{1}{2}n_c(n_c - 1) - (n_c - 1)}
+     $$
+   - **Numerador**:
+     - $m_c$: Número actual de enlaces en $P_c$.
+     - $n_c - 1$: Número mínimo de enlaces necesarios para conectar $n_c$ nodos.
+     - $m_c - (n_c - 1)$: Exceso de enlaces por encima del mínimo necesario, representando "densidad" dentro de la comunidad.
+   - **Denominador**:
+     - $\frac{1}{2}n_c(n_c - 1)$: Número máximo de enlaces posibles para $n_c$ nodos (un subgrafo completamente conectado).
+     - $n_c - 1$: Número mínimo de enlaces.
+     - Esto normaliza $m_c$, asegurando que $D_c$ esté entre 0 y 1:
+       - $D_c = 0$: Cuando $P_c$ está mínimamente conectado.
+       - $D_c = 1$: Cuando $P_c$ está completamente conectado.
+
+3. **Casos Especiales**:
+   - $D_c = 0$ si $n_c = 2$, ya que no es posible ninguna estructura interna más allá de un solo enlace.
+
+4. **Densidad de Partición Total de la Red**:
+   - La **densidad de partición** $D$ para toda la red es el promedio ponderado de $D_c$ para todos los subconjuntos $\{P_1, \dots, P_C\}$, donde el peso depende de la fracción de enlaces en cada subconjunto:
+     $$
+     D = \frac{1}{M} \sum_{c=1}^C m_c D_c
+     $$
+   - $m_c/M$: Fracción de los enlaces totales presentes en el subconjunto $P_c$.
+   - Esto asegura que $D$ capture la tendencia general de la red hacia subconjuntos densamente conectados.
+
+### **Intuición**
+- La densidad de partición evalúa qué tan bien los enlaces están agrupados en comunidades cohesivas y densamente conectadas, en comparación con el rango de conectividad posible para cada grupo.
+- A diferencia de la modularidad, la densidad de partición no depende de un modelo nulo y mide directamente la conectividad interna de las comunidades.
+
+### **Ejemplos: Redes con Alta y Baja Densidad**
+
+Ambas redes tendrán los mismos nodos, pero diferentes configuraciones de enlaces para ilustrar cómo cambia la densidad de partición.
+
+#### **Red con Baja Densidad**
+- Nodos: A, B, C, D, E.
+- Enlaces: A-B, B-C, C-D, D-E (configuración tipo cadena lineal).
+
+#### **Red con Alta Densidad**
+- Nodos: A, B, C, D, E.
+- Enlaces: A-B, A-C, A-D, A-E, B-C, B-D, C-D, C-E, D-E (subgrafo casi completo).
+
+#### **Código en R**
+
+```{R}
+library(igraph)
+
+# Crear red de baja densidad
+nodes <- c("A", "B", "C", "D", "E")
+edges_low <- c("A", "B", "B", "C", "D", "E")
+low_density_net <- make_graph(edges = edges_low, directed = FALSE)
+
+# Crear red de alta densidad
+edges_high <- c("A", "B", "A", "C", "A", "D", "A", "E",
+                "B", "C", "B", "D", "C", "D", "C", "E", "D", "E")
+high_density_net <- make_graph(edges = edges_high, directed = FALSE)
+
+# Visualizar redes
+plot(low_density_net, main = "Red de Baja Densidad")
+plot(high_density_net, main = "Red de Alta Densidad")
+```
+
+### **Resultados**
+- **Red de Baja Densidad**: La densidad de partición será baja porque los enlaces forman una estructura lineal con muy pocos enlaces redundantes.
+- **Red de Alta Densidad**: La densidad de partición será alta porque los enlaces forman un subgrafo casi completo con muchas conexiones internas.
+
 
 ---
 

@@ -175,6 +175,10 @@ window.Quarto = {
     <a class="nav-link active" href="./clustering_2.html" aria-current="page"> 
 <span class="menu-text">Clustering Enlaces</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./func_enric.html"> 
+<span class="menu-text">Enriquecimiento Funcional</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -205,6 +209,10 @@ window.Quarto = {
   </ul></li>
   <li><a href="#densidad-de-partición-y-corte-del-dendrograma" id="toc-densidad-de-partición-y-corte-del-dendrograma" class="nav-link" data-scroll-target="#densidad-de-partición-y-corte-del-dendrograma"><strong>Densidad de Partición y Corte del Dendrograma</strong></a>
   <ul class="collapse">
+  <li><a href="#densidad-de-partición" id="toc-densidad-de-partición" class="nav-link" data-scroll-target="#densidad-de-partición"><strong>Densidad de Partición</strong></a></li>
+  <li><a href="#intuición" id="toc-intuición" class="nav-link" data-scroll-target="#intuición"><strong>Intuición</strong></a></li>
+  <li><a href="#ejemplos-redes-con-alta-y-baja-densidad" id="toc-ejemplos-redes-con-alta-y-baja-densidad" class="nav-link" data-scroll-target="#ejemplos-redes-con-alta-y-baja-densidad"><strong>Ejemplos: Redes con Alta y Baja Densidad</strong></a></li>
+  <li><a href="#resultados" id="toc-resultados" class="nav-link" data-scroll-target="#resultados"><strong>Resultados</strong></a></li>
   <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias"><strong>Referencias:</strong></a></li>
   </ul></li>
   </ul></li>
@@ -526,49 +534,45 @@ Attaching package: 'dendextend'</code></pre>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_edgelist</span>(edges, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate all edge pairs</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>edge_list <span class="ot">&lt;-</span> <span class="fu">get.edgelist</span>(g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `get.edgelist()` was deprecated in igraph 2.0.0.
-ℹ Please use `as_edgelist()` instead.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>edge_pairs <span class="ot">&lt;-</span> <span class="fu">combn</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ecount</span>(g), <span class="dv">2</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate similarities between all pairs of edges</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>similarities <span class="ot">&lt;-</span> <span class="fu">apply</span>(edge_pairs, <span class="dv">2</span>, <span class="cf">function</span>(pair) {</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  e1 <span class="ot">&lt;-</span> edge_list[pair[<span class="dv">1</span>], ]  <span class="co"># First edge</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  e2 <span class="ot">&lt;-</span> edge_list[pair[<span class="dv">2</span>], ]  <span class="co"># Second edge</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Neighbors of nodes in both edges</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  nodes_e1 <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">neighborhood</span>(g, <span class="at">order =</span> <span class="dv">1</span>, <span class="at">nodes =</span> e1)))</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  nodes_e2 <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">neighborhood</span>(g, <span class="at">order =</span> <span class="dv">1</span>, <span class="at">nodes =</span> e2)))</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate similarity</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>(<span class="fu">intersect</span>(nodes_e1, nodes_e2)) <span class="sc">/</span> <span class="fu">length</span>(<span class="fu">union</span>(nodes_e1, nodes_e2))</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Build a symmetric similarity matrix</span></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>sim_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="fu">ecount</span>(g), <span class="at">ncol =</span> <span class="fu">ecount</span>(g))</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">ncol</span>(edge_pairs))) {</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  sim_matrix[edge_pairs[<span class="dv">1</span>, i], edge_pairs[<span class="dv">2</span>, i]] <span class="ot">&lt;-</span> similarities[i]</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  sim_matrix[edge_pairs[<span class="dv">2</span>, i], edge_pairs[<span class="dv">1</span>, i]] <span class="ot">&lt;-</span> similarities[i]  <span class="co"># Symmetric</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(sim_matrix) <span class="ot">&lt;-</span> <span class="dv">1</span>  <span class="co"># Self-similarity is 1</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert similarity to distance</span></span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>dist_matrix <span class="ot">&lt;-</span> <span class="fu">as.dist</span>(<span class="dv">1</span> <span class="sc">-</span> sim_matrix)</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform hierarchical clustering</span></span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>(dist_matrix, <span class="at">method =</span> <span class="st">"complete"</span>)</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the dendrogram</span></span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">as.dendrogram</span>(hc)</span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="fu">labels</span>(dd) <span class="ot">&lt;-</span> <span class="fu">apply</span>(edges, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="fu">paste</span>(x[<span class="dv">1</span>], x[<span class="dv">2</span>], <span class="at">sep=</span><span class="st">"_"</span>))[<span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">3</span>)]</span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dd, <span class="at">main =</span> <span class="st">"Dendrograma de Enlaces"</span>, <span class="at">xlab =</span> <span class="st">"Enlaces"</span>, <span class="at">ylab =</span> <span class="st">"Altura"</span>, <span class="at">sub =</span> <span class="st">""</span>)</span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Cut the tree at a specific height</span></span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>cut_height <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a><span class="co"># rect.hclust(hc, h = cut_height, border = "red")  # Highlight cut branches</span></span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> cut_height, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>edge_list <span class="ot">&lt;-</span> <span class="fu">as_edgelist</span>(g)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>edge_pairs <span class="ot">&lt;-</span> <span class="fu">combn</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ecount</span>(g), <span class="dv">2</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate similarities between all pairs of edges</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>similarities <span class="ot">&lt;-</span> <span class="fu">apply</span>(edge_pairs, <span class="dv">2</span>, <span class="cf">function</span>(pair) {</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  e1 <span class="ot">&lt;-</span> edge_list[pair[<span class="dv">1</span>], ]  <span class="co"># First edge</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  e2 <span class="ot">&lt;-</span> edge_list[pair[<span class="dv">2</span>], ]  <span class="co"># Second edge</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Neighbors of nodes in both edges</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  nodes_e1 <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">neighborhood</span>(g, <span class="at">order =</span> <span class="dv">1</span>, <span class="at">nodes =</span> e1)))</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  nodes_e2 <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">neighborhood</span>(g, <span class="at">order =</span> <span class="dv">1</span>, <span class="at">nodes =</span> e2)))</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate similarity</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>(<span class="fu">intersect</span>(nodes_e1, nodes_e2)) <span class="sc">/</span> <span class="fu">length</span>(<span class="fu">union</span>(nodes_e1, nodes_e2))</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Build a symmetric similarity matrix</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>sim_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="fu">ecount</span>(g), <span class="at">ncol =</span> <span class="fu">ecount</span>(g))</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">ncol</span>(edge_pairs))) {</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  sim_matrix[edge_pairs[<span class="dv">1</span>, i], edge_pairs[<span class="dv">2</span>, i]] <span class="ot">&lt;-</span> similarities[i]</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  sim_matrix[edge_pairs[<span class="dv">2</span>, i], edge_pairs[<span class="dv">1</span>, i]] <span class="ot">&lt;-</span> similarities[i]  <span class="co"># Symmetric</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(sim_matrix) <span class="ot">&lt;-</span> <span class="dv">1</span>  <span class="co"># Self-similarity is 1</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert similarity to distance</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>dist_matrix <span class="ot">&lt;-</span> <span class="fu">as.dist</span>(<span class="dv">1</span> <span class="sc">-</span> sim_matrix)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform hierarchical clustering</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>(dist_matrix, <span class="at">method =</span> <span class="st">"complete"</span>)</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the dendrogram</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">as.dendrogram</span>(hc)</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="fu">labels</span>(dd) <span class="ot">&lt;-</span> <span class="fu">apply</span>(edges, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="fu">paste</span>(x[<span class="dv">1</span>], x[<span class="dv">2</span>], <span class="at">sep=</span><span class="st">"_"</span>))[<span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">3</span>)]</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dd, <span class="at">main =</span> <span class="st">"Dendrograma de Enlaces"</span>, <span class="at">xlab =</span> <span class="st">"Enlaces"</span>, <span class="at">ylab =</span> <span class="st">"Altura"</span>, <span class="at">sub =</span> <span class="st">""</span>)</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Cut the tree at a specific height</span></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>cut_height <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co"># rect.hclust(hc, h = cut_height, border = "red")  # Highlight cut branches</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> cut_height, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -576,13 +580,13 @@ Attaching package: 'dendextend'</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get clusters and Assign clusters to edges</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">cutree</span>(hc, <span class="at">h =</span> cut_height)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(g)<span class="sc">$</span>community <span class="ot">&lt;-</span> clusters</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>edge_colors <span class="ot">&lt;-</span> <span class="fu">rainbow</span>(<span class="fu">length</span>(<span class="fu">unique</span>(clusters)))[clusters]</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the network with edge communities</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">edge.color =</span> edge_colors, <span class="at">vertex.color =</span> <span class="st">"gray"</span>, <span class="at">vertex.label.color =</span> <span class="st">"black"</span>,</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Comunidades de Enlaces y Pertenencia Múltiple"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get clusters and Assign clusters to edges</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">cutree</span>(hc, <span class="at">h =</span> cut_height)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(g)<span class="sc">$</span>community <span class="ot">&lt;-</span> clusters</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>edge_colors <span class="ot">&lt;-</span> <span class="fu">rainbow</span>(<span class="fu">length</span>(<span class="fu">unique</span>(clusters)))[clusters]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the network with edge communities</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">edge.color =</span> edge_colors, <span class="at">vertex.color =</span> <span class="st">"gray"</span>, <span class="at">vertex.label.color =</span> <span class="st">"black"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Comunidades de Enlaces y Pertenencia Múltiple"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -590,16 +594,16 @@ Attaching package: 'dendextend'</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check node memberships</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>node_comms <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (e <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ecount</span>(g)) {</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  edge <span class="ot">&lt;-</span> <span class="fu">ends</span>(g, e)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (node <span class="cf">in</span> edge) {</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    node_comms[[node]] <span class="ot">&lt;-</span> <span class="fu">c</span>(node_comms[[node]], clusters[e])</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>node_comms <span class="ot">&lt;-</span> <span class="fu">lapply</span>(node_comms, unique)  <span class="co"># Ensure unique memberships per node</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(node_comms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check node memberships</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>node_comms <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (e <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ecount</span>(g)) {</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  edge <span class="ot">&lt;-</span> <span class="fu">ends</span>(g, e)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (node <span class="cf">in</span> edge) {</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    node_comms[[node]] <span class="ot">&lt;-</span> <span class="fu">c</span>(node_comms[[node]], clusters[e])</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>node_comms <span class="ot">&lt;-</span> <span class="fu">lapply</span>(node_comms, unique) <span class="co"># Ensure unique memberships per node</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(node_comms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$A
 [1] 1
@@ -634,17 +638,121 @@ $F
 </section>
 <section id="densidad-de-partición-y-corte-del-dendrograma" class="level2">
 <h2 class="anchored" data-anchor-id="densidad-de-partición-y-corte-del-dendrograma"><strong>Densidad de Partición y Corte del Dendrograma</strong></h2>
-<p>La <strong>densidad de partición</strong> <span class="math inline">\(D\)</span> se calcula como la suma de las densidades de las comunidades <span class="math inline">\(D(s)\)</span> y se divide por el número total de comunidades <span class="math inline">\(C\)</span>:</p>
-<p><span class="math display">\[
-D = \frac{\sum_{s} D(s)}{C}
-\]</span></p>
-<p>Donde <span class="math inline">\(D(s)\)</span> se calcula de la siguiente forma para cada comunidad:</p>
-<p><span class="math display">\[
-D(s) = \frac{2m(s)}{n(s)(n(s)-1)}
-\]</span></p>
-<p>Donde: - <span class="math inline">\(m(s)\)</span> es el número de enlaces dentro de la comunidad <span class="math inline">\(s\)</span>, - <span class="math inline">\(n(s)\)</span> es el número de nodos en la comunidad <span class="math inline">\(s\)</span>.</p>
-<p>Se usa esta medida para cortar el arbol MORE NEXT WEEK!.</p>
+<p>Hay que cortar el árbol en un punto específico, determinado por donde se maximiza la densidad de partición.</p>
+<section id="densidad-de-partición" class="level3">
+<h3 class="anchored" data-anchor-id="densidad-de-partición"><strong>Densidad de Partición</strong></h3>
+<p>La <strong>densidad de partición</strong> es una medida que evalúa qué tan densamente están conectados los conjuntos de enlaces (aristas) dentro de una red. A diferencia de las métricas centradas en los nodos, la densidad de partición se enfoca en la <strong>densidad interna de los subconjuntos de enlaces</strong> (es decir, comunidades de aristas) y permite cuantificar la cohesión de estas comunidades. Su definición, basada en la sección de métodos de <strong>Ahn et al.&nbsp;(2010)</strong>, es la siguiente:</p>
+<section id="definición-de-densidad-de-partición" class="level4">
+<h4 class="anchored" data-anchor-id="definición-de-densidad-de-partición"><strong>Definición de Densidad de Partición</strong></h4>
+<ol type="1">
+<li><strong>Partición de la Red</strong>:
+<ul>
+<li>Para una red con <span class="math inline">\(M\)</span> enlaces (aristas), una partición <span class="math inline">\(\{P_1, \dots, P_C\}\)</span> divide los enlaces en <span class="math inline">\(C\)</span> subconjuntos, donde cada subconjunto <span class="math inline">\(P_c\)</span> tiene <span class="math inline">\(m_c = |P_c|\)</span> enlaces y <span class="math inline">\(n_c\)</span> nodos.</li>
+</ul></li>
+<li><strong>Densidad Interna de Cada Subconjunto <span class="math inline">\(P_c\)</span></strong>:
+<ul>
+<li>La <strong>densidad de partición</strong> <span class="math inline">\(D_c\)</span> de un subconjunto <span class="math inline">\(P_c\)</span> se define como: <span class="math display">\[
+D_c = \frac{m_c - (n_c - 1)}{\frac{1}{2}n_c(n_c - 1) - (n_c - 1)}
+\]</span></li>
+<li><strong>Numerador</strong>:
+<ul>
+<li><span class="math inline">\(m_c\)</span>: Número actual de enlaces en <span class="math inline">\(P_c\)</span>.</li>
+<li><span class="math inline">\(n_c - 1\)</span>: Número mínimo de enlaces necesarios para conectar <span class="math inline">\(n_c\)</span> nodos.</li>
+<li><span class="math inline">\(m_c - (n_c - 1)\)</span>: Exceso de enlaces por encima del mínimo necesario, representando “densidad” dentro de la comunidad.</li>
+</ul></li>
+<li><strong>Denominador</strong>:
+<ul>
+<li><span class="math inline">\(\frac{1}{2}n_c(n_c - 1)\)</span>: Número máximo de enlaces posibles para <span class="math inline">\(n_c\)</span> nodos (un subgrafo completamente conectado).</li>
+<li><span class="math inline">\(n_c - 1\)</span>: Número mínimo de enlaces.</li>
+<li>Esto normaliza <span class="math inline">\(m_c\)</span>, asegurando que <span class="math inline">\(D_c\)</span> esté entre 0 y 1:
+<ul>
+<li><span class="math inline">\(D_c = 0\)</span>: Cuando <span class="math inline">\(P_c\)</span> está mínimamente conectado.</li>
+<li><span class="math inline">\(D_c = 1\)</span>: Cuando <span class="math inline">\(P_c\)</span> está completamente conectado.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>Casos Especiales</strong>:
+<ul>
+<li><span class="math inline">\(D_c = 0\)</span> si <span class="math inline">\(n_c = 2\)</span>, ya que no es posible ninguna estructura interna más allá de un solo enlace.</li>
+</ul></li>
+<li><strong>Densidad de Partición Total de la Red</strong>:
+<ul>
+<li>La <strong>densidad de partición</strong> <span class="math inline">\(D\)</span> para toda la red es el promedio ponderado de <span class="math inline">\(D_c\)</span> para todos los subconjuntos <span class="math inline">\(\{P_1, \dots, P_C\}\)</span>, donde el peso depende de la fracción de enlaces en cada subconjunto: <span class="math display">\[
+D = \frac{1}{M} \sum_{c=1}^C m_c D_c
+\]</span></li>
+<li><span class="math inline">\(m_c/M\)</span>: Fracción de los enlaces totales presentes en el subconjunto <span class="math inline">\(P_c\)</span>.</li>
+<li>Esto asegura que <span class="math inline">\(D\)</span> capture la tendencia general de la red hacia subconjuntos densamente conectados.</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="intuición" class="level3">
+<h3 class="anchored" data-anchor-id="intuición"><strong>Intuición</strong></h3>
+<ul>
+<li>La densidad de partición evalúa qué tan bien los enlaces están agrupados en comunidades cohesivas y densamente conectadas, en comparación con el rango de conectividad posible para cada grupo.</li>
+<li>A diferencia de la modularidad, la densidad de partición no depende de un modelo nulo y mide directamente la conectividad interna de las comunidades.</li>
+</ul>
+</section>
+<section id="ejemplos-redes-con-alta-y-baja-densidad" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplos-redes-con-alta-y-baja-densidad"><strong>Ejemplos: Redes con Alta y Baja Densidad</strong></h3>
+<p>Ambas redes tendrán los mismos nodos, pero diferentes configuraciones de enlaces para ilustrar cómo cambia la densidad de partición.</p>
+<section id="red-con-baja-densidad" class="level4">
+<h4 class="anchored" data-anchor-id="red-con-baja-densidad"><strong>Red con Baja Densidad</strong></h4>
+<ul>
+<li>Nodos: A, B, C, D, E.</li>
+<li>Enlaces: A-B, B-C, C-D, D-E (configuración tipo cadena lineal).</li>
+</ul>
+</section>
+<section id="red-con-alta-densidad" class="level4">
+<h4 class="anchored" data-anchor-id="red-con-alta-densidad"><strong>Red con Alta Densidad</strong></h4>
+<ul>
+<li>Nodos: A, B, C, D, E.</li>
+<li>Enlaces: A-B, A-C, A-D, A-E, B-C, B-D, C-D, C-E, D-E (subgrafo casi completo).</li>
+</ul>
+</section>
+<section id="código-en-r" class="level4">
+<h4 class="anchored" data-anchor-id="código-en-r"><strong>Código en R</strong></h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear red de baja densidad</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>nodes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>edges_low <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>low_density_net <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="at">edges =</span> edges_low, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear red de alta densidad</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>edges_high <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"A"</span>, <span class="st">"D"</span>, <span class="st">"A"</span>, <span class="st">"E"</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"B"</span>, <span class="st">"D"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"C"</span>, <span class="st">"E"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>high_density_net <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="at">edges =</span> edges_high, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar redes</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(low_density_net, <span class="at">main =</span> <span class="st">"Red de Baja Densidad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(high_density_net, <span class="at">main =</span> <span class="st">"Red de Alta Densidad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_2_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="resultados" class="level3">
+<h3 class="anchored" data-anchor-id="resultados"><strong>Resultados</strong></h3>
+<ul>
+<li><strong>Red de Baja Densidad</strong>: La densidad de partición será baja porque los enlaces forman una estructura lineal con muy pocos enlaces redundantes.</li>
+<li><strong>Red de Alta Densidad</strong>: La densidad de partición será alta porque los enlaces forman un subgrafo casi completo con muchas conexiones internas.</li>
+</ul>
 <hr>
+</section>
 <section id="referencias" class="level3">
 <h3 class="anchored" data-anchor-id="referencias"><strong>Referencias:</strong></h3>
 <ol type="1">
