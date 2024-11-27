@@ -1,0 +1,458 @@
+---
+  title: "Análisis de Enriquecimiento Funcional: Visualización y Métodos Avanzados"
+---
+ 
+
+# Introducción
+
+Este tutorial amplía nuestra discusión previa sobre el Análisis de Sobre-representación (ORA, por sus siglas en inglés) y el Análisis de Enriquecimiento de Conjuntos de Genes (GSEA, por sus siglas en inglés). Nos enfocaremos en técnicas avanzadas para interpretar los resultados de enriquecimiento funcional mediante visualizaciones, enfoques basados en redes y métodos basados en la topología de rutas metabólicas. Finalmente, exploraremos técnicas de enriquecimiento que consideran ontologías, enfatizando las dependencias jerárquicas en los sistemas de clasificación funcional.
+
+# Visualización de Resultados de Enriquecimiento
+
+## Visualización del Análisis de Sobre-representación (ORA) con clusterProfiler
+
+### Teoría: ¿Qué es el ORA?
+
+El ORA evalúa si conjuntos de genes predefinidos, como términos de la Ontología Genética (GO, por sus siglas en inglés) o rutas metabólicas, están sobre-representados en un conjunto de genes de consulta en comparación con un conjunto de referencia. La significancia se evalúa utilizando pruebas estadísticas como la prueba exacta de Fisher o la prueba hipergeométrica.
+
+### Por qué la visualización es crucial
+
+La visualización de los resultados de ORA facilita la interpretación del significado biológico de las categorías enriquecidas al revelar patrones, relaciones y solapamientos. Esto puede guiar hipótesis y contextualizar hallazgos.
+
+### Tipos clave de visualización
+
+1. **Gráfico de puntos (Dot Plot)**: Muestra la significancia (valor p) y la magnitud del enriquecimiento (por ejemplo, número de genes o puntaje de enriquecimiento).
+2. **Gráfico de barras (Bar Plot)**: Destaca los términos más enriquecidos según su significancia o magnitud.
+3. **cnetplot**: Muestra las relaciones entre los genes de consulta y las categorías enriquecidas, ayudando a visualizar solapamientos.
+
+### Código de ejemplo: Realización de ORA y visualización de resultados
+
+```{r}
+# Cargar clusterProfiler y un conjunto de datos de ejemplo
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+# Lista de genes de ejemplo (genes diferencialmente expresados)
+genes <- c("HK1", "HK2", "GCK", "PFKM", "PFKP", "ALDOA", "ALDOC", "TPI1", 
+                      "GAPDH", "PGK1", "ENO1", "PKM", "LDHA", "LDHB")
+
+# Realizar ORA para términos de GO
+ego <- enrichGO(gene         = genes,
+                keyType      = "SYMBOL",
+                OrgDb        = org.Hs.eg.db,
+                ont          = "BP", # Proceso biológico
+                pAdjustMethod = "BH",
+                qvalueCutoff  = 0.05)
+
+# Gráfico de puntos
+dotplot(ego, showCategory = 10)
+
+# Gráfico de barras
+barplot(ego, showCategory = 10)
+
+# cnetplot
+cnetplot(ego, showCategory = 5, circular = TRUE, colorEdge = TRUE)
+```
+
+### Explicación
+
+- `enrichGO()`: Realiza ORA para procesos biológicos en la Ontología Genética.
+- `dotplot()`: Visualiza términos según su valor p y la proporción de genes.
+- `cnetplot()`: Explora las relaciones entre genes y términos.
+
+## Visualización del Análisis de Enriquecimiento de Conjuntos de Genes (GSEA) con clusterProfiler
+
+### Teoría: ¿Qué es el GSEA?
+
+El GSEA clasifica todos los genes según una métrica (por ejemplo, cambio de expresión) y calcula puntajes de enriquecimiento (ES, por sus siglas en inglés) para conjuntos de genes predefinidos. Identifica si los genes en los extremos de una lista clasificada están enriquecidos para términos o rutas específicas.
+
+### Tipos clave de visualización
+
+1. **Gráfico de puntaje de enriquecimiento (Enrichment Score Plot)**: Visualiza el ES en la lista clasificada para un único conjunto de genes.
+2. **Gráfico de resultados de GSEA**: Resume múltiples conjuntos de genes, sus ES y el margen de enriquecimiento.
+3. **cnetplot para GSEA**: Muestra relaciones y solapamientos entre conjuntos de genes.
+
+### Código de ejemplo: Realización de GSEA y visualización de resultados
+
+```{r}
+# Lista de genes clasificada de ejemplo
+library(org.Hs.eg.db)
+library(dplyr)
+
+# List of glycolysis-related genes (expand this list as necessary)
+glycolysis_genes <- c("HK1", "HK2", "GCK", "PFKM", "PFKP", "ALDOA", "ALDOC", "TPI1", 
+                      "GAPDH", "PGK1", "ENO1", "PKM", "LDHA", "LDHB")
+
+# Retrieve all human gene symbols from org.Hs.eg.db
+all_genes <- keys(org.Hs.eg.db, keytype = "SYMBOL")
+# Randomly sample 485 genes from the full list (excluding glycolysis genes)
+set.seed(123)  # Set seed for reproducibility
+random_genes <- sample(all_genes[!all_genes %in% glycolysis_genes], 485)
+
+# Combine glycolysis-related genes at the start of the list
+combined_genes <- c(glycolysis_genes, random_genes)
+
+# Assign higher FC values for glycolysis genes (1 to 3) and lower for others (-3 to 1)
+fc_values <- c(runif(length(glycolysis_genes), min = 1, max = 3),  # Higher FC for glycolysis genes
+               runif(length(random_genes), min = -3, max = 1.5))    # Lower FC for others
+
+# Create the gene list with fold changes and sort so decreasing
+gene_list <- setNames(fc_values, combined_genes)
+gene_list <- sort(gene_list, decreasing = TRUE)
+
+# Realizar GSEA
+gsea <- gseGO(geneList     = gene_list,
+              OrgDb        = org.Hs.eg.db,
+              keyType      = "SYMBOL",
+              ont          = "BP",
+              pvalueCutoff = 0.05)
+
+# Gráfico de puntaje de enriquecimiento
+gseaplot(gsea, geneSetID = 1, title = gsea$Description[1])
+
+# cnetplot para GSEA
+cnetplot(gsea, showCategory = 5)
+```
+
+### Explicación
+
+- `gseGO()`: Realiza GSEA para términos de la Ontología Genética.
+- `gseaplot()`: Resalta los picos de ES, mostrando dónde ocurre el enriquecimiento.
+- `cnetplot()`: Visualiza solapamientos entre términos.
+
+# Métodos Basados en Redes para el Enriquecimiento Funcional
+
+El enriquecimiento funcional basado en redes aprovecha las relaciones y la topología de las redes biológicas para obtener información sobre cómo los conjuntos de genes de consulta interactúan dentro del sistema global. Las redes ayudan a contextualizar los genes o proteínas en vías, complejos y sistemas de interacción, proporcionando una visión más integral de los procesos biológicos.
+
+## Análisis de Vecindad**
+
+### **Teoría**
+
+El análisis de vecindad se centra en el entorno local de la red que rodea a un gen o conjunto de genes de consulta. La idea es identificar funciones enriquecidas dentro de la "vecindad" de un conjunto de nodos en una red.
+
+- **Vecindad Local**: Los nodos directamente conectados al conjunto de consulta (vecinos de primer grado).
+- **Vecindad Extendida**: Nodos dentro de un radio definido (por ejemplo, vecinos de segundo o tercer grado).
+- **Implicaciones Funcionales**: Los genes con funciones biológicas similares suelen estar estrechamente conectados, como lo respalda el principio de "culpabilidad por asociación" en las redes biológicas.
+
+### **Pasos en el Enriquecimiento Basado en Vecindad**
+
+1. **Definir el Conjunto de Consulta**:
+   - Lista de genes de entrada (por ejemplo, genes diferencialmente expresados).
+   - Definir el radio o profundidad de la vecindad.
+
+2. **Construir la Red**:
+   - Fuente: Bases de datos públicas como STRING, BioGRID, o datos experimentales personalizados.
+   - Nodos: Proteínas o genes.
+   - Aristas: Interacciones como unión física o co-expresión.
+
+3. **Extraer la Vecindad**:
+   - Identificar los vecinos de primer grado o expandir más allá.
+   - Construir una subred.
+
+4. **Anotación Funcional**:
+   - Realizar análisis de enriquecimiento utilizando pruebas estadísticas.
+
+5. **Visualizar los Resultados**:
+   - Resaltar el conjunto de consulta y los términos enriquecidos en la red.
+
+---
+
+### **Código de Ejemplo: Análisis de Vecindad con igraph**
+
+Aquí se muestra cómo realizar un análisis de vecindad utilizando una red de ejemplo y datos funcionales simulados:
+
+```{r}
+library(igraph)
+library(igraph)
+
+# Step 1: Create a sparser network using Erdos-Renyi model
+set.seed(123)  # Set seed for reproducibility
+n <- 20  # Number of nodes
+g <- erdos.renyi.game(n = n, p = 0.2, directed = FALSE)  # 20 nodes, 20% chance of edge between any two nodes
+
+# Step 2: Assign character names to the nodes
+V(g)$name <- paste("G", 1:n, sep = "")  # Assign names G1, G2, ..., G20
+
+# Step 3: Visualize the complete network
+plot(g, vertex.label.color = "black", vertex.size = 30, 
+     vertex.color = "skyblue", main = "Sparse Gene Network (Erdos-Renyi)",
+     vertex.label = V(g)$name)  # Use character labels for the nodes
+
+# Step 4: Select two or three query genes (nodes) by their names
+query_genes <- c("G1", "G5", "G10")  # Use character labels for simplicity
+
+# Step 5: Extract the neighborhoods for each query gene (first-degree neighbors)
+neighborhoods <- lapply(query_genes, function(gene) {
+  neighbors(g, gene)  # Extract first-degree neighbors
+})
+
+# Step 6: Create an induced subgraph for each query gene and it's neighbours
+
+# Command: induced_subgraph
+
+# Step 7: combine subgraphs if possible
+
+# Step 8: Visualize the graph with the subgraph genes highlighted
+
+# Hint - need to override the following:
+V(g)$color 
+
+```
+
+---
+
+#### **Aplicación en el Mundo Real**
+
+El análisis de vecindad puede identificar vías o procesos biológicos enriquecidos en la vecindad de un gen asociado a enfermedades. Ejemplos incluyen:
+- **Investigación sobre el cáncer**: Descubrir vías enriquecidas en la vecindad de oncogenes.
+- **Neurobiología**: Analizar redes alrededor de genes clave en enfermedades neurodegenerativas.
+
+---
+
+### **2.2 Detección de Módulos**
+
+#### **Teoría**
+
+Los módulos (o clústeres) son subestructuras dentro de una red que están estrechamente conectadas, a menudo representando unidades funcionales como complejos proteicos o vías de señalización. Al identificar módulos y probar su enriquecimiento, podemos descubrir patrones funcionales ocultos.
+
+- **Definición**: Un módulo es un grupo de nodos con una mayor densidad de aristas dentro del grupo en comparación con el exterior.
+- **Relevancia Biológica**: Los módulos frecuentemente corresponden a vías biológicas o complejos.
+
+#### **Algoritmos de Clustering para Detección de Módulos**
+
+1. **Método Louvain**:
+   - Maximiza la modularidad (una medida de la estructura comunitaria).
+   - Adecuado para redes de gran escala.
+
+2. **Algoritmo Walktrap**:
+   - Identifica comunidades basándose en caminatas aleatorias cortas.
+   - Eficaz para redes más pequeñas.
+
+3. **Otros Métodos**:
+   - Infomap, Propagación de Etiquetas o Clustering Espectral.
+
+---
+
+#### **Pasos en el Enriquecimiento Basado en Módulos**
+
+1. Identificar los módulos en la red.
+2. Extraer los nodos dentro de cada módulo.
+3. Realizar análisis de enriquecimiento para los términos funcionales de cada módulo.
+
+---
+
+#### **Código de Ejemplo: Detección de Módulos con igraph**
+
+```{r}
+# Detect modules using Louvain
+louvain_modules <- cluster_louvain(g)
+
+# Assign colors to modules
+V(g)$color <- louvain_modules$membership
+
+# Visualize the network with modules
+plot(g, vertex.label.color = "black", vertex.size = 30, 
+     vertex.color = V(g)$color, main = "Louvain Modules")
+
+# Extract nodes from a module
+
+# Your turn! How can we get the genes for each of the modules, and use them to look for functional enrichment?
+
+```
+
+---
+
+### **2.3 Enriquecimiento Basado en Difusión**
+
+#### **Teoría**
+
+Los métodos de difusión propagan la información desde los nodos de consulta hacia sus vecinos en la red, simulando la propagación de señales biológicas. Este enfoque resalta los nodos conectados indirectamente que pueden contribuir a vías funcionales.
+
+- **Aplicaciones**:
+  - Priorizar genes candidatos a enfermedades.
+  - Encontrar miembros novedosos de vías.
+- **Métodos**: Caminatas aleatorias o técnicas de difusión de calor.
+
+---
+
+#### **Código de Ejemplo: Difusión por Caminata Aleatoria**
+
+```{R}
+# Load igraph library
+library(igraph)
+
+# Create a simple graph (you can modify this for your graph)
+set.seed(1)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+  node_count <- vcount(graph)
+  visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+  
+  for (walk in 1:walks) {
+    current_node <- start_node
+    for (i in 1:steps) {
+      visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+      
+      # Decide whether to restart or continue the random walk
+      if (runif(1) < restart_prob) {
+        current_node <- start_node  # Restart from the starting node
+      } else {
+        neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+        if (length(neighbors) == 0) break  # Stop if no neighbors are left
+        current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+      }
+    }
+  }
+  
+  # Calculate probabilities
+  prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+  return(prob)
+}
+
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph", 
+     vertex.size = V(g)$size, vertex.color = V(g)$color)
+```
+
+
+### **Aplicación en el Mundo Real**
+
+- **Descubrimiento de medicamentos**: Identificación de dianas indirectos para fármacos mediante la propagación de genes de enfermedades a través de una red de interacción proteína-proteína.
+- **Anotación funcional**: Asignación de funciones a genes no caracterizados basándose en sus perfiles de difusión.
+
+# Análisis basado en la topología de vías
+
+## Concepto
+
+El análisis basado en la topología de vías explora la estructura y la conectividad de las vías biológicas para identificar vías enriquecidas o alteradas en un conjunto de genes. Incorpora la conectividad de los genes y las proteínas dentro de las vías para mejorar la comprensión de los procesos biológicos.
+
+**Idea clave**: En lugar de centrarse solo en genes individuales, este enfoque evalúa cómo los genes están posicionados e interactúan dentro de las vías biológicas, considerando las relaciones entre los nodos (genes) y los bordes (interacciones).
+
+## Aplicaciones
+
+- **Identificación de vías alteradas en enfermedades**: Este enfoque se puede usar para descubrir vías biológicas alteradas asociadas a enfermedades, analizando cambios en las interacciones y expresión génica.
+
+- **Priorización de vías para el desarrollo de fármacos**: El análisis de la topología de vías puede guiar la identificación de posibles objetivos para fármacos, evaluando los nodos clave y las regiones regulatorias de las vías.
+
+---
+
+# Pathview: Visualización del mapeo de conjuntos de genes en el contexto de las vías
+
+**Pathview** es un paquete de R que permite la visualización basada en vías y el análisis de conjuntos de genes. Mapea los datos de expresión u otros tipos de datos a los mapas de vías (por ejemplo, KEGG) y permite a los usuarios visualizar dónde están ubicados los genes dentro de la vía. Esto ayuda a entender si los cambios en la expresión génica están concentrados en partes clave de la vía o si están más dispersos.
+
+## Cómo mejora Pathview el análisis
+
+- **Mapas de Vías**: Pathview superpone los datos de expresión génica a los mapas de vías y resalta los genes según su posición en la vía. Esto permite visualizar si los genes de consulta están en regiones importantes de la vía (como puntos de control metabólicos o nodos regulatorios).
+
+- **Posicionamiento de Genes**: Pathview ayuda a evaluar si los genes topológicamente importantes (aquellos en nodos centrales o hubs regulatorios) son afectados por el conjunto de genes de consulta.
+
+- **Expresión Diferencial**: Pathview también se integra con los datos de expresión diferencial para resaltar genes sobreexpresados y subexpresados a lo largo de la red de la vía.
+
+## Código de Ejemplo: Usando Pathview
+
+A continuación se muestra un ejemplo de cómo usar el paquete **Pathview** en R para visualizar datos de expresión génica en un mapa de vías:
+
+```{r pathview-ejemplo, warning=FALSE}
+# Instalar y cargar el paquete pathview
+BiocManager::install("pathview")
+library(pathview)
+data(gse16873.d)
+> pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = "04110",
++                      species = "hsa", out.suffix = "gse16873")
+```
+
+### Salida: Visualización de Pathview
+
+Pathview genera un mapa visual de la vía, con los genes resaltados según su nivel de expresión y su posición en la vía. Esto permite ver claramente las regiones de la vía que están más afectadas por el conjunto de genes.
+
+---
+
+## Análisis de Impacto de Vías de Señalización (SPIA)
+
+**Análisis de Impacto de Vías de Señalización (SPIA)** evalúa el impacto de los genes diferencialmente expresados (DEGs) sobre las vías biológicas. Combina la topología de la vía con la expresión génica para determinar el impacto general de un conjunto de genes en las vías, considerando tanto los efectos directos como los indirectos.
+
+### Objetivo: Identificar las vías de señalización afectadas
+
+El objetivo del SPIA es identificar qué vías de señalización están más afectadas por los cambios en la expresión génica. Este método es útil para comprender el contexto biológico más amplio de los cambios en la expresión génica, especialmente en estados patológicos.
+
+### Concepto clave
+
+SPIA integra la estructura de la vía (topología) con los datos de expresión génica para calcular un puntaje de impacto para cada vía. La topología de la vía y la expresión diferencial de los genes determinan qué tan significativos son los cambios en la vía.
+
+### Enfoque SPIA
+
+1. **Cambios en la Expresión Génica**: La expresión diferencial (por ejemplo, el cambio de log fold) representa cómo los genes se ven afectados en el conjunto de genes de consulta. Estos cambios pueden ser positivos (sobrerregulados) o negativos (subregulados).
+
+2. **Topología de la Vía**: La topología de la vía representa las interacciones moleculares (nodos: genes, bordes: interacciones) dentro de la vía. Esta estructura dicta cómo los cambios en la expresión génica se propagan a través de la vía.
+
+3. **Propagación de la Expresión**: Los cambios en la expresión génica se propagan a través de la red, afectando a los genes y vías descendentes. Un gen que se encuentra centralmente en la vía tiene un mayor impacto en la actividad global de la vía que un gen ubicado en la periferia.
+
+### Cómo funciona SPIA
+
+#### Paso 1: Identificar los Genes Diferencialmente Expresados (DEGs)
+
+El primer paso es identificar los genes de consulta que muestran cambios significativos en la expresión. Por lo general, estos genes provienen de un análisis de expresión diferencial, donde los cambios en el log fold indican genes sobreexpresados o subexpresados.
+
+#### Paso 2: Cálculo de la Topología y el Impacto
+
+- **Topología de la Vía**: Los mapas de la vía (por ejemplo, KEGG o Reactome) proporcionan la estructura de las interacciones génicas.
+  
+- **Propagación de la Expresión**: Los cambios de expresión se propagan a lo largo de la red. Si un gen en la vía se ve afectado, los genes descendentes también se impactan según su posición en la red.
+
+#### Paso 3: Puntaje de Impacto de la Vía
+
+Cada vía recibe un **Puntaje de Impacto** basado en la expresión diferencial y la estructura de la vía. El puntaje de impacto tiene en cuenta tanto:
+
+- **Impacto Directo**: El impacto de los DEGs que afectan directamente a los nodos de la vía.
+- **Impacto Indirecto**: Las conexiones de la vía (bordes) que influyen en la actividad general de la vía.
+
+### Ejemplo del Cálculo de SPIA
+
+En la práctica, puedes realizar SPIA como sigue:
+
+```{r spia-ejemplo, warning=FALSE}
+# Instalar y cargar el paquete SPIA
+# install.packages("SPIA")  # Descomenta si no tienes SPIA instalado
+library(SPIA)
+
+# Datos de DEG de ejemplo (log fold changes de cada gen)
+deg_data <- c(Gene1 = 2.5, Gene2 = -1.3, Gene3 = 1.2)
+
+# ID de vía KEGG para una vía de señalización
+id_via <- "hsa04010"  # Ejemplo: vía de señalización MAPK
+
+# Realizar el análisis SPIA
+spia_resultados <- spia(deg_data, pathway.id = id_via)
+print(spia_resultados)
+```
+
+### Salida de SPIA
+
+El resultado de SPIA incluye un puntaje de impacto para cada vía, indicando qué tan afectada está la vía por los cambios en la expresión génica. Las vías con un puntaje de impacto más alto están más afectadas por los cambios en la expresión génica.
+
+## Conclusión
+
+El análisis basado en la topología de vías es un enfoque poderoso para comprender cómo los genes están posicionados e interactúan dentro de las vías biológicas. Al usar herramientas como **Pathview** y **SPIA**, los investigadores pueden descubrir vías alteradas en enfermedades, priorizar vías para el desarrollo de fármacos y obtener información sobre el contexto biológico más amplio de los cambios en la expresión génica.
+
+---
