@@ -378,15 +378,14 @@ A continuación se muestra un ejemplo de cómo usar el paquete **Pathview** en R
 BiocManager::install("pathview")
 library(pathview)
 data(gse16873.d)
-> pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = "04110",
-+                      species = "hsa", out.suffix = "gse16873")
+pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = "04110",
+                      species = "hsa", out.suffix = "gse16873")
 ```
 
 ### Salida: Visualización de Pathview
 
 Pathview genera un mapa visual de la vía, con los genes resaltados según su nivel de expresión y su posición en la vía. Esto permite ver claramente las regiones de la vía que están más afectadas por el conjunto de genes.
 
----
 
 ## Análisis de Impacto de Vías de Señalización (SPIA)
 
@@ -427,32 +426,8 @@ Cada vía recibe un **Puntaje de Impacto** basado en la expresión diferencial y
 - **Impacto Directo**: El impacto de los DEGs que afectan directamente a los nodos de la vía.
 - **Impacto Indirecto**: Las conexiones de la vía (bordes) que influyen en la actividad general de la vía.
 
-### Ejemplo del Cálculo de SPIA
-
-En la práctica, puedes realizar SPIA como sigue:
-
-```{r spia-ejemplo, warning=FALSE}
-# Instalar y cargar el paquete SPIA
-# install.packages("SPIA")  # Descomenta si no tienes SPIA instalado
-library(SPIA)
-
-# Datos de DEG de ejemplo (log fold changes de cada gen)
-deg_data <- c(Gene1 = 2.5, Gene2 = -1.3, Gene3 = 1.2)
-
-# ID de vía KEGG para una vía de señalización
-id_via <- "hsa04010"  # Ejemplo: vía de señalización MAPK
-
-# Realizar el análisis SPIA
-spia_resultados <- spia(deg_data, pathway.id = id_via)
-print(spia_resultados)
-```
-
-### Salida de SPIA
-
-El resultado de SPIA incluye un puntaje de impacto para cada vía, indicando qué tan afectada está la vía por los cambios en la expresión génica. Las vías con un puntaje de impacto más alto están más afectadas por los cambios en la expresión génica.
-
 ## Conclusión
 
 El análisis basado en la topología de vías es un enfoque poderoso para comprender cómo los genes están posicionados e interactúan dentro de las vías biológicas. Al usar herramientas como **Pathview** y **SPIA**, los investigadores pueden descubrir vías alteradas en enfermedades, priorizar vías para el desarrollo de fármacos y obtener información sobre el contexto biológico más amplio de los cambios en la expresión génica.
 
----
+
