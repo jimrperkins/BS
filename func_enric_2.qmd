@@ -357,11 +357,11 @@ El análisis basado en la topología de vías explora la estructura y la conecti
 
 ---
 
-# Pathview: Visualización del mapeo de conjuntos de genes en el contexto de las vías
+## Pathview: Visualización del mapeo de conjuntos de genes en el contexto de las vías
 
 **Pathview** es un paquete de R que permite la visualización basada en vías y el análisis de conjuntos de genes. Mapea los datos de expresión u otros tipos de datos a los mapas de vías (por ejemplo, KEGG) y permite a los usuarios visualizar dónde están ubicados los genes dentro de la vía. Esto ayuda a entender si los cambios en la expresión génica están concentrados en partes clave de la vía o si están más dispersos.
 
-## Cómo mejora Pathview el análisis
+### Cómo mejora Pathview el análisis
 
 - **Mapas de Vías**: Pathview superpone los datos de expresión génica a los mapas de vías y resalta los genes según su posición en la vía. Esto permite visualizar si los genes de consulta están en regiones importantes de la vía (como puntos de control metabólicos o nodos regulatorios).
 
@@ -369,7 +369,7 @@ El análisis basado en la topología de vías explora la estructura y la conecti
 
 - **Expresión Diferencial**: Pathview también se integra con los datos de expresión diferencial para resaltar genes sobreexpresados y subexpresados a lo largo de la red de la vía.
 
-## Código de Ejemplo: Usando Pathview
+### Código de Ejemplo: Usando Pathview
 
 A continuación se muestra un ejemplo de cómo usar el paquete **Pathview** en R para visualizar datos de expresión génica en un mapa de vías:
 
@@ -384,7 +384,7 @@ pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = "04110",
 
 ### Salida: Visualización de Pathview
 
-Pathview genera un mapa visual de la vía, con los genes resaltados según su nivel de expresión y su posición en la vía. Esto permite ver claramente las regiones de la vía que están más afectadas por el conjunto de genes.
+Pathview genera un mapa visual de la vía, con los genes resaltados según su nivel de expresión y su posición en la vía. Esto permite ver claramente las regiones de la vía que están más afectadas por el conjunto de genes. Escribe la salida a disco
 
 
 ## Análisis de Impacto de Vías de Señalización (SPIA)
@@ -426,8 +426,8 @@ Cada vía recibe un **Puntaje de Impacto** basado en la expresión diferencial y
 - **Impacto Directo**: El impacto de los DEGs que afectan directamente a los nodos de la vía.
 - **Impacto Indirecto**: Las conexiones de la vía (bordes) que influyen en la actividad general de la vía.
 
-## Conclusión
-
 El análisis basado en la topología de vías es un enfoque poderoso para comprender cómo los genes están posicionados e interactúan dentro de las vías biológicas. Al usar herramientas como **Pathview** y **SPIA**, los investigadores pueden descubrir vías alteradas en enfermedades, priorizar vías para el desarrollo de fármacos y obtener información sobre el contexto biológico más amplio de los cambios en la expresión génica.
 
+# Topologia
 
+Para anadir - mientras tanto, puedes usar topGO en vez de clusterProfiler sobre tus genes HPO - notas diferencias? Hay manera de dar resultados parecidos?
