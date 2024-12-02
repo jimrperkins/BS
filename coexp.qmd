@@ -83,11 +83,6 @@ setwd("path/to/your/data")
 This is the first step of any network analysis. I show here how to load typical expression data, pre-process them into a format suitable for network analysis, and clean the data by removing obvious outlier samples. The expression data is contained in the file LiverFemale3600.csv, linked above. After starting an R session, we load the requisite packages and the data, after appropriately setting the working directory.
 
 ```{r data-input}
-# Load necessary libraries
-library(dplyr)
-library(WGCNA)
-
-
 # Load expression data
 exp_data <- read.csv("LiverFemale3600.csv")
 
