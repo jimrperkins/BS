@@ -47,7 +47,8 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
 # Install WGCNA
-BiocManager::install("WGCNA")
+if (!requireNamespace("WGCNA", quietly = TRUE))
+  BiocManager::install("WGCNA")
 
 # Load the required library
 library(WGCNA)
