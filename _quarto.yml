@@ -20,6 +20,8 @@ website:
         text: Clustering Enlaces
       - href: func_enric.qmd
         text: Enriquecimiento Funcional
+      - href: coexp.qmd
+        text: Coexpression Analysis
 
 format:
   html:
