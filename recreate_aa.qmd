@@ -171,11 +171,12 @@ Is the network directed/undirected? How do we know?
 
 How could we change it to the other state?
 
-How can we color the network nodes such as those genes connected to both ALOX5 and PTGS1?
+How can we color the network nodes, such that those genes connected to both *ALOX5* and *PTGS1* are red, and those that are only connected to either ALOX5 or PTGS1 (but not both!) are coloured blue.
 
 # Conclusion
 
 In this tutorial, we:
+
 - Downloaded PPI data for arachidonic acid pathway genes.
 - Visualized and customized the network using `igraph`.
 - Filtered the network to focus on high-confidence interactions.
