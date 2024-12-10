@@ -22,6 +22,8 @@ website:
         text: Enriquecimiento Funcional
       - href: coexp.qmd
         text: Coexpression Analysis
+      - href: recreate_aa.qmd
+        text: Build a Pathway
 
 format:
   html:

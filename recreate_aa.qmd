@@ -1,0 +1,184 @@
+---
+title: "Tutorial: Representing and Investigating the Arachidonic Acid Metabolism Pathway Using STRINGdb and igraph"
+---
+
+# Introduction
+
+In this tutorial, we will explore the arachidonic acid metabolism pathway by constructing and analyzing a protein-protein interaction (PPI) network using data from STRINGdb and the `igraph` package in R. This tutorial will guide you through the process of:
+
+1. Downloading interaction data from STRINGdb.
+2. Visualizing the network using `igraph`.
+3. Calculating basic network metrics to better understand its structure.
+
+We will use two key genes involved in this pathway, **PTGS1** and **ALOX5**, to extract a small interaction network.
+
+This work is based on the paper of Perkins et al., 2015. The arachidonic acid pathway is a key pathway in inflammation, and includes the targets of AINES (aspirin, ibuprofen and company), COX1/2 (**PTGS1/PTGS2**). Here it is:
+
+![Arachidonic Acid Pathway](aa_pathway.png)
+
+*Perkins JR, Sanak M, Canto G, Blanca M, Cornejo-García JA. Unravelling adverse reactions to NSAIDs using systems biology. Trends Pharmacol Sci. 2015 Mar;36(3):172-80*
+
+# Preliminary Steps
+
+Before we start, let's set up the working environment.
+
+## Step 1: Set up your workspace
+1. Open your terminal.
+2. Create a new directory for this project:
+   ```bash
+   mkdir string_tutorial
+   ```
+3. Navigate to the new directory:
+   ```bash
+   cd string_tutorial
+   ```
+
+# Downloading Interaction Data
+
+STRINGdb provides an API to download PPI data. Let's retrieve interactions involving **PTGS1** and **ALOX5**.
+
+## Step 2: Use `curl` to download the network data
+Run the following command in your terminal to fetch the data:
+```bash
+curl -o string_ints.txt "https://string-db.org/api/tsv/interaction_partners?identifiers=PTGS1%0dALOX5"
+```
+
+This command saves the interaction data to a file named `string_ints.txt`. The data format is tab-separated values (TSV).
+
+## Step 3: Preview the file
+Use the `less` command to inspect the file:
+```bash
+less string_ints.txt
+```
+
+The file might be difficult to read due to its raw format. Let's load it into R for better analysis.
+
+
+# Loading and Exploring the Data in R
+
+## Step 4: Import the data
+Start by reading the [file](string_ints.txt){.external target="_blank"} into R:
+```{r}
+string_data <- read.csv("string_ints.txt", sep = "\t")
+head(string_data)
+```
+
+This displays the first few rows of the dataset. Each row represents an interaction between two proteins. The columns provide information such as interaction scores.
+
+## Step 5: Understand the dataset structure
+To better understand the dataset:
+
+- **What does each row represent?** Each row corresponds to a protein-protein interaction.
+- **What does each column represent?** Columns include protein identifiers and various interaction scores (explained below).
+
+Check the dimensions of the dataset:
+```{r}
+dim(string_data)
+```
+
+## Step 6: Explanation of Scores
+
+STRINGdb provides several interaction scores to evaluate the confidence and sources of protein-protein interactions. Below is a detailed explanation of each score:
+
+| **Column** | **Description**                                                                                                       |
+|------------|-----------------------------------------------------------------------------------------------------------------------|
+| **score**  | The combined interaction score, representing the overall confidence level of the interaction, calculated from all other scores. |
+| **nscore** | The neighborhood score, indicating the likelihood of interaction based on the presence of shared neighbors in the network. |
+| **fscore** | The fusion score, derived from genomic context and indicating whether the two proteins are part of the same operon or are likely co-transcribed. |
+| **pscore** | The phylogenetic profile score, based on co-occurrence of the proteins across multiple species, suggesting functional association. |
+| **ascore** | The co-expression score, calculated from experimental or computational evidence that the two genes/proteins are expressed together under similar conditions. |
+| **escore** | The experimental score, derived from curated experimental interaction data, such as co-immunoprecipitation or yeast two-hybrid assays. |
+| **dscore** | The database score, based on known interactions reported in curated biological databases, like KEGG or Reactome. |
+| **tscore** | The text mining score, obtained by mining scientific literature for co-mentions of the two proteins in relevant contexts. |
+
+These scores provide a comprehensive assessment of the interaction's reliability and the sources of evidence supporting it.
+
+
+
+# Constructing the Network
+
+We will use `igraph` to construct a network from the interaction data.
+
+## Step 7: Extract gene pairs
+First, select the columns containing the interacting proteins:
+```{r}
+gene_pairs <- string_data[, 3:4]
+```
+
+Convert these pairs into a matrix:
+```{r}
+gene_pairs_matrix <- as.matrix(gene_pairs)
+head(gene_pairs_matrix)
+```
+
+## Step 8: Create the igraph object
+Use the matrix to create a graph:
+```{r}
+library(igraph)
+network <- graph_from_edgelist(gene_pairs_matrix)
+```
+
+# Visualizing the Network
+
+## Step 9: Basic visualization
+Let's visualize the network:
+```{r}
+plot(network)
+```
+
+## Step 10: Customize the visualization
+Experiment with layouts and styling:
+```{r}
+plot(network, edge.color = "orange", vertex.color = "gray50")
+layout <- layout_in_circle(network)
+plot(network, layout = layout)
+
+layout <- layout_with_fr(network)
+plot(network, layout = layout)
+```
+
+Too many nodes? We can simplify the network by filtering interactions based on their scores.
+
+# Filtering and Simplifying the Network
+
+## Step 11: Filter interactions
+
+Keep only high-confidence interactions with a score > 0.92:
+
+```{r}
+string_subset <- subset(string_data, score > 0.92)
+gene_pairs_subset <- string_subset[, 3:4]
+gene_pairs_subset_matrix <- as.matrix(gene_pairs_subset)
+network <- graph_from_edgelist(gene_pairs_subset_matrix)
+plot(network)
+```
+
+# Calculating Network Metrics
+
+## Step 12: Degree distribution
+As we are more than aware by now, degree of a node is the number of connections it has. Let's calculate the degree for all nodes:
+
+```{r}
+deg <- degree(network, mode = "all")
+hist(deg, breaks = 1:vcount(network) - 1, main = "Histogram of Node Degree")
+```
+
+While not particularly informative in this case, degree distribution is a fundamental metric in network analysis.
+
+# Questions
+
+Is the network directed/undirected? How do we know?
+
+How could we change it to the other state?
+
+How can we color the network nodes such as those genes connected to both ALOX5 and PTGS1?
+
+# Conclusion
+
+In this tutorial, we:
+- Downloaded PPI data for arachidonic acid pathway genes.
+- Visualized and customized the network using `igraph`.
+- Filtered the network to focus on high-confidence interactions.
+- Calculated basic network metrics.
+
+We could also explore other metrics we've seen in class, such as clustering coefficients or centrality measures, and investigating biological insights from the network structure, e.g. by using clustering. However, take into account that the results will be severely biased by how the network was constructed. Why is that?
