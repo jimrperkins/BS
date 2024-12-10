@@ -182,4 +182,4 @@ In this tutorial, we:
 - Filtered the network to focus on high-confidence interactions.
 - Calculated basic network metrics.
 
-We could also explore other metrics we've seen in class, such as clustering coefficients or centrality measures, and investigating biological insights from the network structure, e.g. by using clustering. However, take into account that the results will be severely biased by how the network was constructed. Why is that?
+We could also explore other metrics we've seen in class, such as clustering coefficients or centrality measures, and investigating biological insights from the network structure, e.g. by using clustering. However, take into account that the results will be severely biased by how the network was constructed. But why is that?
