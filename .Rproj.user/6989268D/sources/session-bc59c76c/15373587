@@ -1,0 +1,31 @@
+{
+    "id": "15373587",
+    "path": "//wsl.localhost/Ubuntu/home/jim/BS/analisis_topo_2.qmd",
+    "project_path": "analisis_topo_2.qmd",
+    "type": "quarto_markdown",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1732009624586.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "rmdVisualMode": "false",
+        "rmdVisualWrapConfigured": "true",
+        "source_window_id": "",
+        "Source": "Source",
+        "docOutlineVisible": "1",
+        "cursorPosition": "5,0",
+        "scrollLine": "0",
+        "rmdVisualModeLocation": "2:0",
+        "rmdVisualCollapsedChunks": ""
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1732025573,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1732025573115,
+    "read_only": false,
+    "read_only_alternatives": []
+}

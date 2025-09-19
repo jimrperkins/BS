@@ -127,36 +127,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./analisis_topo.html"> 
-<span class="menu-text">Análisis y Topología (I)</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./analisis_topo_2.html"> 
-<span class="menu-text">Análisis y Topología (II)</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./minimal_analysis.html" aria-current="page"> 
 <span class="menu-text">Minimal Análisis</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./clustering.html"> 
-<span class="menu-text">Clustering</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./clustering_2.html"> 
-<span class="menu-text">Clustering Enlaces</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./func_enric.html"> 
-<span class="menu-text">Enriquecimiento Funcional</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./coexp.html"> 
-<span class="menu-text">Coexpression Analysis</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./recreate_aa.html"> 
-<span class="menu-text">Build a Pathway</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -275,13 +247,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few genes</span></span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(genes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>               id    name
-1    NCBIGene:396 ARHGDIA
-2   NCBIGene:1286  COL4A4
-3   NCBIGene:1285  COL4A3
-4  NCBIGene:57728   WDR19
-5   NCBIGene:3075     CFH
-6 NCBIGene:254428 SLC41A1</code></pre>
+<pre><code>              id  name
+1  NCBIGene:2335   FN1
+2  NCBIGene:4311   MME
+3  NCBIGene:7369  UMOD
+4 NCBIGene:55644 OSGEP
+5 NCBIGene:11277 TREX1
+6 NCBIGene:57728 WDR19</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all the genes (uncomment)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># print(genes)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -304,30 +276,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(STRINGdb)</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize STRINGdb with the appropriate version and species</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>string_db <span class="ot">&lt;-</span> STRINGdb<span class="sc">$</span><span class="fu">new</span>(<span class="at">version =</span> <span class="st">"12"</span>, <span class="at">species =</span> <span class="dv">9606</span>, <span class="at">score_threshold =</span> <span class="dv">800</span>, <span class="at">input_directory =</span> <span class="st">""</span>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch interactions for the gene list</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace 'genes' with your actual gene list variable</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>gene_ids <span class="ot">&lt;-</span> genes<span class="sc">$</span>name  <span class="co"># Adjust according to your downloaded data structure</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>string_ids <span class="ot">&lt;-</span> string_db<span class="sc">$</span><span class="fu">map</span>( genes, <span class="st">"name"</span>, <span class="at">removeUnmappedRows =</span> <span class="cn">TRUE</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>string_db <span class="ot">&lt;-</span> STRINGdb<span class="sc">$</span><span class="fu">new</span>(<span class="at">species =</span> <span class="dv">9606</span>, <span class="at">score_threshold =</span> <span class="dv">800</span>, <span class="at">input_directory =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>WARNING: You didn't specify a version of the STRING database to use. Hence we will use STRING  12.0 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch interactions for the gene list</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace 'genes' with your actual gene list variable</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>gene_ids <span class="ot">&lt;-</span> genes<span class="sc">$</span>name  <span class="co"># Adjust according to your downloaded data structure</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>string_ids <span class="ot">&lt;-</span> string_db<span class="sc">$</span><span class="fu">map</span>( genes, <span class="st">"name"</span>, <span class="at">removeUnmappedRows =</span> <span class="cn">TRUE</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Warning:  we couldn't map to STRING 5% of your identifiers</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>interaction_network <span class="ot">&lt;-</span> string_db<span class="sc">$</span><span class="fu">get_interactions</span>(string_ids<span class="sc">$</span>STRING_id)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>interaction_network <span class="ot">&lt;-</span> <span class="fu">unique</span>(interaction_network[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]) <span class="co"># necessary step to remove duplicate interactions</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>interaction_network<span class="sc">$</span>to <span class="ot">&lt;-</span> string_ids<span class="sc">$</span>name[<span class="fu">match</span>(interaction_network<span class="sc">$</span>to, string_ids<span class="sc">$</span>STRING_id)]</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>interaction_network<span class="sc">$</span>from <span class="ot">&lt;-</span> string_ids<span class="sc">$</span>name[<span class="fu">match</span>(interaction_network<span class="sc">$</span>from, string_ids<span class="sc">$</span>STRING_id)]</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few rows of the interaction network</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(interaction_network)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>interaction_network <span class="ot">&lt;-</span> string_db<span class="sc">$</span><span class="fu">get_interactions</span>(string_ids<span class="sc">$</span>STRING_id)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>interaction_network <span class="ot">&lt;-</span> <span class="fu">unique</span>(interaction_network[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]) <span class="co"># necessary step to remove duplicate interactions</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>interaction_network<span class="sc">$</span>to <span class="ot">&lt;-</span> string_ids<span class="sc">$</span>name[<span class="fu">match</span>(interaction_network<span class="sc">$</span>to, string_ids<span class="sc">$</span>STRING_id)]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>interaction_network<span class="sc">$</span>from <span class="ot">&lt;-</span> string_ids<span class="sc">$</span>name[<span class="fu">match</span>(interaction_network<span class="sc">$</span>from, string_ids<span class="sc">$</span>STRING_id)]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few rows of the interaction network</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(interaction_network)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      from     to
-1   NUP107  NUP85
-3    ITGB4  LAMA5
-5   NUP107 NUP133
-7    NUP85 NUP133
-9      VHL  EPAS1
-11 TMEM127  KIF1B</code></pre>
+<pre><code>     from     to
+1  NUP107  NUP85
+3   ITGB4  LAMA5
+5      C3  CFHR5
+7  NUP107 NUP133
+9   NUP85 NUP133
+11    VHL  EPAS1</code></pre>
 </div>
 </div>
 </section>
@@ -336,12 +310,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>En esta sección, convertiremos la red de interacción obtenida de STRINGdb al formato <strong>igraph</strong>.</p>
 <p>Primero, asegúrate de tener instalado y cargado el paquete igraph (OK - you probably already have this.. I hope!):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install igraph if it's not already installed</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"igraph"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"igraph"</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install igraph if it's not already installed</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"igraph"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"igraph"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'igraph'</code></pre>
@@ -362,8 +336,8 @@ Attaching package: 'igraph'</code></pre>
 <p>Para convertir la red de interacción que hemos obtenido de STRINGdb a un objeto igraph, utilizaremos la función <code>graph_from_data_frame()</code>, que permite crear una red a partir de un data frame que contiene las interacciones.</p>
 <p>Asumamos que interaction_network tiene al menos dos columnas: gene1 y gene2, que representan los nodos conectados. La conversión se realiza de la siguiente manera:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the interaction network downloaded from STRING into igraph format</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(interaction_network, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the interaction network downloaded from STRING into igraph format</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(interaction_network, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="cálculo-de-propiedades-de-la-red" class="level3">
@@ -373,17 +347,17 @@ Attaching package: 'igraph'</code></pre>
 <h4 class="anchored" data-anchor-id="número-de-nodos-y-aristas">Número de Nodos y Aristas</h4>
 <p>Podemos calcular el número total de nodos y aristas en la red utilizando las funciones gorder() y gsize():</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate numbers of nodes and edges</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>num_nodes <span class="ot">&lt;-</span> <span class="fu">gorder</span>(g)  <span class="co"># Number of nodes</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>num_edges <span class="ot">&lt;-</span> <span class="fu">gsize</span>(g)  <span class="co"># Number of edges</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of nodes:"</span>, num_nodes, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate numbers of nodes and edges</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>num_nodes <span class="ot">&lt;-</span> <span class="fu">gorder</span>(g)  <span class="co"># Number of nodes</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>num_edges <span class="ot">&lt;-</span> <span class="fu">gsize</span>(g)  <span class="co"># Number of edges</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of nodes:"</span>, num_nodes, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of nodes: 144 </code></pre>
+<pre><code>Number of nodes: 151 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of edges:"</span>, num_edges, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of edges:"</span>, num_edges, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of edges: 315 </code></pre>
+<pre><code>Number of edges: 334 </code></pre>
 </div>
 </div>
 </section>
@@ -391,14 +365,14 @@ Attaching package: 'igraph'</code></pre>
 <h4 class="anchored" data-anchor-id="grado-promedio-de-los-nodos">Grado Promedio de los Nodos</h4>
 <p>El grado de un nodo es el número de conexiones que tiene. Podemos calcular el grado promedio de todos los nodos en la red:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the degree (grado) of every node</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>degree_values <span class="ot">&lt;-</span> <span class="fu">degree</span>(g)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the average</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>average_degree <span class="ot">&lt;-</span> <span class="fu">mean</span>(degree_values)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average degree of all nodes:"</span>, average_degree, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the degree (grado) of every node</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>degree_values <span class="ot">&lt;-</span> <span class="fu">degree</span>(g)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the average</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>average_degree <span class="ot">&lt;-</span> <span class="fu">mean</span>(degree_values)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average degree of all nodes:"</span>, average_degree, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Average degree of all nodes: 4.375 </code></pre>
+<pre><code>Average degree of all nodes: 4.423841 </code></pre>
 </div>
 </div>
 </section>
@@ -406,11 +380,11 @@ Attaching package: 'igraph'</code></pre>
 <h4 class="anchored" data-anchor-id="densidad-de-la-red">Densidad de la Red</h4>
 <p>La densidad de una red es una medida que indica qué tan conectados están los nodos entre sí. Se calcula como el número de aristas dividido por el número máximo posible de aristas:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the density of the network</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>network_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(g)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Network density:"</span>, network_density, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the density of the network</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>network_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(g)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Network density:"</span>, network_density, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Network density: 0.03059441 </code></pre>
+<pre><code>Network density: 0.02949227 </code></pre>
 </div>
 </div>
 </section>
@@ -418,13 +392,13 @@ Attaching package: 'igraph'</code></pre>
 <h4 class="anchored" data-anchor-id="centralidad">Centralidad</h4>
 <p>La centralidad nos ayuda a identificar los nodos más importantes dentro de la red. Podemos calcular diferentes medidas de centralidad, aqui vemos centralidad de cercanía:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Closeness Centrality (centralidad de cercanía)</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>centrality_closeness <span class="ot">&lt;-</span> <span class="fu">closeness</span>(g)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show results</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Closeness Centrality (first 5 nodos):"</span>, <span class="fu">head</span>(centrality_closeness, <span class="dv">5</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Closeness Centrality (centralidad de cercanía)</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>centrality_closeness <span class="ot">&lt;-</span> <span class="fu">closeness</span>(g)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show results</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Closeness Centrality (first 5 nodos):"</span>, <span class="fu">head</span>(centrality_closeness, <span class="dv">5</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Closeness Centrality (first 5 nodos): 0.1666667 0.003076923 0.1666667 0.003125 0.02439024 </code></pre>
+<pre><code>Closeness Centrality (first 5 nodos): 0.1666667 0.003003003 0.003378378 0.1666667 0.00310559 </code></pre>
 </div>
 </div>
 </section>
@@ -437,8 +411,8 @@ Attaching package: 'igraph'</code></pre>
 <section id="gráfico-básico" class="level3">
 <h3 class="anchored" data-anchor-id="gráfico-básico">Gráfico Básico</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic plot of the network</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">vertex.label.cex=</span><span class="fl">0.7</span>, <span class="at">edge.arrow.size=</span><span class="fl">0.5</span>,  <span class="at">main=</span><span class="st">"Basic Interaction Network"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic plot of the network</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">vertex.label.cex=</span><span class="fl">0.7</span>, <span class="at">edge.arrow.size=</span><span class="fl">0.5</span>,  <span class="at">main=</span><span class="st">"Basic Interaction Network"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -453,8 +427,8 @@ Attaching package: 'igraph'</code></pre>
 <section id="graficado-en-base-a-atributo-de-nodo" class="level4">
 <h4 class="anchored" data-anchor-id="graficado-en-base-a-atributo-de-nodo">Graficado en base a atributo de nodo</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic plot of the network</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.size=</span><span class="fu">degree</span>(g)<span class="sc">/</span><span class="dv">2</span>, <span class="at">edge.arrow.size=</span><span class="fl">0.7</span>, <span class="at">vertex.label.cex=</span><span class="fl">0.8</span>, <span class="at">main=</span><span class="st">"Network by degree"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic plot of the network</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.size=</span><span class="fu">degree</span>(g)<span class="sc">/</span><span class="dv">2</span>, <span class="at">edge.arrow.size=</span><span class="fl">0.7</span>, <span class="at">vertex.label.cex=</span><span class="fl">0.8</span>, <span class="at">main=</span><span class="st">"Network by degree"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -467,8 +441,8 @@ Attaching package: 'igraph'</code></pre>
 <section id="disposición-de-fruchterman-reingold" class="level4">
 <h4 class="anchored" data-anchor-id="disposición-de-fruchterman-reingold">Disposición de Fruchterman-Reingold</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>layout <span class="ot">&lt;-</span> <span class="fu">layout_with_fr</span>(g)  <span class="co"># Fruchterman-Reingold layout</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout =</span> layout, <span class="at">vertex.color =</span> <span class="st">"skyblue"</span>, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">edge.width =</span> <span class="fl">0.5</span>, <span class="at">main =</span> <span class="st">"Fruchterman-Reingold Layout"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>layout <span class="ot">&lt;-</span> <span class="fu">layout_with_fr</span>(g)  <span class="co"># Fruchterman-Reingold layout</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout =</span> layout, <span class="at">vertex.color =</span> <span class="st">"skyblue"</span>, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">edge.width =</span> <span class="fl">0.5</span>, <span class="at">main =</span> <span class="st">"Fruchterman-Reingold Layout"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -481,12 +455,12 @@ Attaching package: 'igraph'</code></pre>
 <section id="disposición-circular" class="level4">
 <h4 class="anchored" data-anchor-id="disposición-circular">Disposición Circular</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Help page access</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ?layout_in_circle  # Recuerda cómo acceder a las páginas de ayuda (commented)</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot with circular layout</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>circular_layout <span class="ot">&lt;-</span> <span class="fu">layout_in_circle</span>(g)</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout =</span> circular_layout, <span class="at">vertex.color =</span> <span class="st">"lightgreen"</span>, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label.cex=</span><span class="fl">0.8</span>,<span class="at">edge.width =</span> <span class="fl">0.5</span>, <span class="at">main =</span> <span class="st">"Circular Layout"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Help page access</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ?layout_in_circle  # Recuerda cómo acceder a las páginas de ayuda (commented)</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot with circular layout</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>circular_layout <span class="ot">&lt;-</span> <span class="fu">layout_in_circle</span>(g)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout =</span> circular_layout, <span class="at">vertex.color =</span> <span class="st">"lightgreen"</span>, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label.cex=</span><span class="fl">0.8</span>,<span class="at">edge.width =</span> <span class="fl">0.5</span>, <span class="at">main =</span> <span class="st">"Circular Layout"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -499,8 +473,8 @@ Attaching package: 'igraph'</code></pre>
 <section id="without-labels-to-better-see-the-structure" class="level4">
 <h4 class="anchored" data-anchor-id="without-labels-to-better-see-the-structure">Without labels to better see the structure</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.color =</span> <span class="st">"orange"</span>, <span class="at">vertex.size =</span> <span class="dv">5</span>,<span class="at">vertex.label=</span><span class="cn">NA</span>, <span class="at">edge.width =</span> <span class="fl">0.5</span>, <span class="at">main =</span> <span class="st">"Nicely Layout"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">vertex.color =</span> <span class="st">"orange"</span>, <span class="at">vertex.size =</span> <span class="dv">5</span>,<span class="at">vertex.label=</span><span class="cn">NA</span>, <span class="at">edge.width =</span> <span class="fl">0.5</span>, <span class="at">main =</span> <span class="st">"Nicely Layout"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -518,11 +492,15 @@ Attaching package: 'igraph'</code></pre>
 <h3 class="anchored" data-anchor-id="qué-es-el-clustering">¿Qué es el clustering?</h3>
 <p>El clustering en redes es el proceso de identificar grupos de nodos (genes, en este caso) que están más densamente conectados entre sí que con otros nodos de la red. Este enfoque permite detectar módulos o clusters, que pueden representar vías de señalización o grupos funcionales de genes que operan juntos.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(interaction_network, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>cluster_louvain <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(g)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cluster_louvain, g, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">vertex.label=</span><span class="cn">NA</span>, <span class="at">edge.arrow.size=</span><span class="fl">0.2</span>, <span class="at">main=</span><span class="st">"Clustering with Louvain"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(interaction_network, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>cluster_louvain <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(g)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cluster_louvain, g, <span class="at">vertex.size=</span><span class="dv">5</span>, <span class="at">vertex.label=</span><span class="cn">NA</span>, <span class="at">edge.arrow.size=</span><span class="fl">0.2</span>, <span class="at">main=</span><span class="st">"Clustering with Louvain"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in xspline(cl$rescoords, shape = shape, open = FALSE, col = col, :
+semi-transparency is not supported on this device: reported only once per page</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -543,24 +521,24 @@ Attaching package: 'igraph'</code></pre>
 <p>Propósito: Determinar si ciertas funciones biológicas (por ejemplo, términos de Gene Ontology (GO), rutas de KEGG) están sobrerrepresentadas en un conjunto de genes de interés en comparación con un conjunto de fondo o referencia. Método: Se utiliza una prueba estadística (como la prueba exacta de Fisher) para evaluar si la frecuencia observada de un término es mayor de lo esperado al azar en el conjunto de interés.</p>
 <p>clusterProfiler ofrece la función enrichGO para realizar el análisis de Sobrerrepresentación para obtener enriquecimiento basado en términos de GO. Vamos a ejecutarlo sobre nuestros genes de interés.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"clusterProfiler"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"clusterProfiler"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"clusterProfiler"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"clusterProfiler"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code></code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"org.Hs.eg.db"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"org.Hs.eg.db"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"org.Hs.eg.db"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"org.Hs.eg.db"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code></code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>clusterProfiler v4.14.3 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+<pre><code>clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
 
 Please cite:
 
-Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
-clusterProfiler: an R package for comparing biological themes among
-gene clusters. OMICS: A Journal of Integrative Biology. 2012,
-16(5):284-287</code></pre>
+T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
+X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
+enrichment tool for interpreting omics data. The Innovation. 2021,
+2(3):100141</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
@@ -576,7 +554,7 @@ Attaching package: 'clusterProfiler'</code></pre>
 
     filter</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db) <span class="co"># Base de datos de genes humanos</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db) <span class="co"># Base de datos de genes humanos</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: AnnotationDbi</code></pre>
 </div>
@@ -587,13 +565,31 @@ Attaching package: 'clusterProfiler'</code></pre>
 <pre><code>Loading required package: BiocGenerics</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: generics</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'generics'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:igraph':
+
+    components, union</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'BiocGenerics'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:igraph':
 
-    normalize, path, union</code></pre>
+    normalize, path</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -605,10 +601,10 @@ Attaching package: 'BiocGenerics'</code></pre>
 
     anyDuplicated, aperm, append, as.data.frame, basename, cbind,
     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
-    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-    Position, rank, rbind, Reduce, rownames, sapply, saveRDS, setdiff,
-    table, tapply, union, unique, unsplit, which.max, which.min</code></pre>
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: Biobase</code></pre>
@@ -672,62 +668,62 @@ Attaching package: 'AnnotationDbi'</code></pre>
 
     select</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Execute ORA enrichment analysis</span></span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>enrich_results <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(</span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene          =</span> genes<span class="sc">$</span>name,      <span class="co"># Set of genes of interest (from HPO in this case)</span></span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">OrgDb         =</span> org.Hs.eg.db,        <span class="co"># Gene annotation database</span></span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">keyType       =</span> <span class="st">"SYMBOL"</span>,            <span class="co"># Type of gene identification (here, gene symbols)</span></span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ont           =</span> <span class="st">"BP"</span>,                <span class="co"># Ontology (BP: biological processes)</span></span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,                <span class="co"># Method for p-value adjustment</span></span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff  =</span> <span class="fl">0.05</span>,                <span class="co"># Significance threshold for p-value</span></span>
-<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">qvalueCutoff  =</span> <span class="fl">0.2</span>                  <span class="co"># Significance threshold for q-value</span></span>
-<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar resultados</span></span>
-<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(enrich_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Execute ORA enrichment analysis</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>enrich_results <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene          =</span> genes<span class="sc">$</span>name,      <span class="co"># Set of genes of interest (from HPO in this case)</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">OrgDb         =</span> org.Hs.eg.db,        <span class="co"># Gene annotation database</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">keyType       =</span> <span class="st">"SYMBOL"</span>,            <span class="co"># Type of gene identification (here, gene symbols)</span></span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ont           =</span> <span class="st">"BP"</span>,                <span class="co"># Ontology (BP: biological processes)</span></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,                <span class="co"># Method for p-value adjustment</span></span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff  =</span> <span class="fl">0.05</span>,                <span class="co"># Significance threshold for p-value</span></span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">qvalueCutoff  =</span> <span class="fl">0.2</span>                  <span class="co"># Significance threshold for q-value</span></span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar resultados</span></span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(enrich_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   ID
 GO:0072001 GO:0072001
 GO:0072006 GO:0072006
 GO:0001822 GO:0001822
 GO:0002460 GO:0002460
-GO:0032835 GO:0032835
 GO:0002443 GO:0002443
+GO:0032835 GO:0032835
                                                                                                                          Description
 GO:0072001                                                                                                  renal system development
 GO:0072006                                                                                                       nephron development
 GO:0001822                                                                                                        kidney development
 GO:0002460 adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
-GO:0032835                                                                                                    glomerulus development
 GO:0002443                                                                                               leukocyte mediated immunity
+GO:0032835                                                                                                    glomerulus development
            GeneRatio   BgRatio RichFactor FoldEnrichment   zScore       pvalue
-GO:0072001    33/190 332/18986 0.09939759       9.932435 16.50830 1.697005e-23
-GO:0072006    25/190 160/18986 0.15625000      15.613487 18.66312 7.189304e-23
-GO:0001822    32/190 322/18986 0.09937888       9.930566 16.25002 8.512395e-23
-GO:0002460    30/190 400/18986 0.07500000       7.494474 13.19868 6.235917e-18
-GO:0032835    15/190  72/18986 0.20833333      20.817982 16.93883 4.059773e-16
-GO:0002443    30/190 485/18986 0.06185567       6.181009 11.62083 1.213387e-15
+GO:0072001    33/206 336/18805 0.09821429       8.965629 15.50536 4.750250e-22
+GO:0072006    25/206 161/18805 0.15527950      14.174908 17.66871 8.177251e-22
+GO:0001822    32/206 325/18805 0.09846154       8.988200 15.28810 1.966311e-21
+GO:0002460    31/206 396/18805 0.07828283       7.146158 13.00919 7.020551e-18
+GO:0002443    31/206 483/18805 0.06418219       5.858962 11.38530 1.853153e-15
+GO:0032835    15/206  73/18805 0.20547945      18.757481 15.99796 1.954155e-15
                p.adjust       qvalue
-GO:0072001 6.070188e-20 4.322898e-20
-GO:0072006 1.014961e-19 7.228068e-20
-GO:0001822 1.014961e-19 7.228068e-20
-GO:0002460 5.576469e-15 3.971295e-15
-GO:0032835 2.904362e-13 2.068348e-13
-GO:0002443 7.233807e-13 5.151572e-13
+GO:0072001 1.481718e-18 1.042384e-18
+GO:0072006 1.481718e-18 1.042384e-18
+GO:0001822 2.375304e-18 1.671020e-18
+GO:0002460 6.360619e-15 4.474677e-15
+GO:0002443 1.180310e-12 8.303445e-13
+GO:0032835 1.180310e-12 8.303445e-13
                                                                                                                                                                                                     geneID
-GO:0072001 COL4A4/COL4A3/LAMB2/SGPL1/PTPRO/NUP133/PAX2/WT1/NUP160/CD2AP/NUP107/PLCE1/MYO1E/JAG1/NUP85/ITGA3/SEC61A1/REN/NPHS1/NPHS2/MAGI2/LAMA5/FOXC2/HNF1B/MME/NPHP3/MYOCD/KANK2/UMOD/GATA3/TREX1/RET/NF1
-GO:0072006                                           COL4A4/COL4A3/LAMB2/PTPRO/NUP133/PAX2/WT1/NUP160/CD2AP/NUP107/PLCE1/MYO1E/JAG1/NUP85/ITGA3/SEC61A1/NPHS1/NPHS2/MAGI2/LAMA5/FOXC2/HNF1B/UMOD/GATA3/RET
-GO:0001822       COL4A4/COL4A3/LAMB2/SGPL1/PTPRO/NUP133/PAX2/WT1/NUP160/CD2AP/NUP107/PLCE1/MYO1E/JAG1/NUP85/ITGA3/SEC61A1/REN/NPHS1/NPHS2/MAGI2/LAMA5/FOXC2/HNF1B/MME/NPHP3/KANK2/UMOD/GATA3/TREX1/RET/NF1
-GO:0002460                          C1QA/C3/JAG1/EMP2/WAS/IL12A/C4A/HLA-B/IL10/IL23R/TLR4/STAT4/FOXP3/CFI/CD81/ADA/JAK1/PRKCD/GATA3/TREX1/FCGR2A/FCGR2B/FCGR3B/HLA-DRB1/IGHG1/TNFAIP3/CR2/TNFSF4/C4B/PDCD1
-GO:0032835                                                                                                           COL4A4/COL4A3/LAMB2/PTPRO/PAX2/WT1/CD2AP/PLCE1/MYO1E/JAG1/NPHS1/NPHS2/MAGI2/FOXC2/RET
-GO:0002443                     C1QA/C3/JAG1/EMP2/DNASE1L3/WAS/IL12A/C4A/KLRC4/HLA-B/IL10/IL23R/TLR4/FOXP3/CFI/CD81/PRKCD/GATA3/TREX1/FCGR2A/FCGR2B/DNASE1/FCGR3B/HLA-DRB1/IGHG1/CR2/TNFSF4/C4B/ITGAM/PDCD1
+GO:0072001 MME/UMOD/TREX1/RET/NPHS1/NF1/GATA3/COL4A4/COL4A3/WT1/FOXC2/HNF1B/NUP107/LAMB2/CD2AP/PAX2/PLCE1/NPHS2/PTPRO/NUP85/NUP133/MYO1E/LAMA5/MAGI2/NUP160/KANK2/SGPL1/REN/SEC61A1/JAG1/ITGA3/NPHP3/MYOCD
+GO:0072006                                           UMOD/RET/NPHS1/GATA3/COL4A4/COL4A3/WT1/FOXC2/HNF1B/NUP107/LAMB2/CD2AP/PAX2/PLCE1/NPHS2/PTPRO/NUP85/NUP133/MYO1E/LAMA5/MAGI2/NUP160/SEC61A1/JAG1/ITGA3
+GO:0001822       MME/UMOD/TREX1/RET/NPHS1/NF1/GATA3/COL4A4/COL4A3/WT1/FOXC2/HNF1B/NUP107/LAMB2/CD2AP/PAX2/PLCE1/NPHS2/PTPRO/NUP85/NUP133/MYO1E/LAMA5/MAGI2/NUP160/KANK2/SGPL1/REN/SEC61A1/JAG1/ITGA3/NPHP3
+GO:0002460                      TREX1/GATA3/WAS/C4A/IL10/STAT4/HLA-B/IL12A/TLR4/IL23R/EMP2/ADA/JAG1/C1QA/C3/CD81/PRKCD/JAK1/FOXP3/IGHG1/CR2/FCGR3B/TNFSF4/PDCD1/TNFAIP3/FCGR2B/C4B/HLA-DRB1/FCGR2A/CFI/IL6
+GO:0002443                 TREX1/GATA3/DNASE1L3/WAS/C4A/IL10/HLA-B/IL12A/TLR4/KLRC4/IL23R/EMP2/JAG1/C1QA/C3/CD81/PRKCD/FOXP3/IGHG1/ITGAM/CR2/DNASE1/FCGR3B/TNFSF4/PDCD1/FCGR2B/C4B/HLA-DRB1/FCGR2A/CFI/IL6
+GO:0032835                                                                                                           RET/NPHS1/COL4A4/COL4A3/WT1/FOXC2/LAMB2/CD2AP/PAX2/PLCE1/NPHS2/PTPRO/MYO1E/MAGI2/JAG1
            Count
 GO:0072001    33
 GO:0072006    25
 GO:0001822    32
-GO:0002460    30
-GO:0032835    15
-GO:0002443    30</code></pre>
+GO:0002460    31
+GO:0002443    31
+GO:0032835    15</code></pre>
 </div>
 </div>
 <p>En la tabla, las filas son terminos GO, y los de mas columnas son propiedades importantes</p>
@@ -736,18 +732,19 @@ GO:0002443    30</code></pre>
 <h3 class="anchored" data-anchor-id="visualización-de-los-resultados-de-enriquecimiento">Visualización de los Resultados de Enriquecimiento</h3>
 <p>clusterProfiler permite visualizar términos GO enriquecidos con dotplot y barplot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"enrichplot"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"enrichplot"</span>)</span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"enrichplot"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"enrichplot"</span>)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>enrichplot v1.26.2 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+<pre><code>enrichplot v1.28.4 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
 
 Please cite:
 
-G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
-5(6):100722</code></pre>
+Guangchuang Yu, Li-Gen Wang, and Qing-Yu He. ChIPseeker: an
+R/Bioconductor package for ChIP peak annotation, comparison and
+visualization. Bioinformatics. 2015, 31(14):2382-2383</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dotplot to visualize enriched GO terms</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(enrich_results, <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment for Abnormal Renal Corpuscle Morphology"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dotplot to visualize enriched GO terms</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(enrich_results, <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment for Abnormal Renal Corpuscle Morphology"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -755,8 +752,22 @@ G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Barplot as an alternative</span></span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(enrich_results, <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment Barplot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Barplot as an alternative</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(enrich_results, <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment Barplot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in fortify(object, showCategory = showCategory, by = x, ...): Arguments in `...` must be used.
+✖ Problematic argument:
+• by = x
+ℹ Did you misspell an argument name?</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`.
+ℹ See also `vignette("ggplot2-in-packages")` for more information.
+ℹ The deprecated feature was likely used in the enrichplot package.
+  Please report the issue at
+  &lt;https://github.com/GuangchuangYu/enrichplot/issues&gt;.</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -768,8 +779,8 @@ G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
 <section id="también-podemos-exportar-los-resultados-a-csv-o-visualizarlos-en-tablas." class="level4">
 <h4 class="anchored" data-anchor-id="también-podemos-exportar-los-resultados-a-csv-o-visualizarlos-en-tablas.">También podemos exportar los resultados a CSV o visualizarlos en tablas.</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert results to data frame and export to CSV (not run)</span></span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv2</span>(<span class="fu">as.data.frame</span>(enrich_results), <span class="at">file =</span> <span class="st">"GO_Enrichment_Abnormal_Renal_Corpuscle.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert results to data frame and export to CSV (not run)</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv2</span>(<span class="fu">as.data.frame</span>(enrich_results), <span class="at">file =</span> <span class="st">"GO_Enrichment_Abnormal_Renal_Corpuscle.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -785,80 +796,84 @@ G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
 </ul>
 <p>El siguiente código ilustra cómo extraer los genes de cada cluster en el grafo previamente agrupado del termino HPO.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>cluster_membership <span class="ot">&lt;-</span> <span class="fu">membership</span>(<span class="fu">cluster_louvain</span>(g)) <span class="co"># Louvain clustering on the graph</span></span>
-<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Split genes by cluster</span></span>
-<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>genes_clusters <span class="ot">&lt;-</span> <span class="fu">split</span>(<span class="fu">V</span>(g)<span class="sc">$</span>name, cluster_membership)  <span class="co"># Names of genes by cluster</span></span>
-<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the genes in each cluster. What pathways/GO terms do you think might be enriched?</span></span>
-<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(genes_clusters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>cluster_membership <span class="ot">&lt;-</span> <span class="fu">membership</span>(<span class="fu">cluster_louvain</span>(g)) <span class="co"># Louvain clustering on the graph</span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Split genes by cluster</span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>genes_clusters <span class="ot">&lt;-</span> <span class="fu">split</span>(<span class="fu">V</span>(g)<span class="sc">$</span>name, cluster_membership)  <span class="co"># Names of genes by cluster</span></span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the genes in each cluster. What pathways/GO terms do you think might be enriched?</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(genes_clusters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`1`
 [1] "NUP107" "NUP85"  "NUP133" "NUP205" "NUP93"  "NUP160" "NUP37" 
 
 $`2`
- [1] "ITGB4"   "VHL"     "LAMA5"   "ITGA3"   "PLEC"    "AMMECR1" "COL4A5" 
- [8] "FN1"     "COL4A3"  "EPAS1"   "LAMB2"   "CD151"   "ACSL4"   "KCNE5"  
-[15] "SPP1"    "COL4A4" 
+ [1] "ITGB4"   "LAMA5"   "ITGA3"   "PLEC"    "AMMECR1" "COL4A5"  "COL4A3" 
+ [8] "LAMB2"   "CD151"   "ACSL4"   "KCNE5"   "COL4A4" 
 
 $`3`
+[1] "C3"    "APOE"  "CFH"   "C1QA"  "CFI"   "C4A"   "CFHR5" "CR2"   "C4B"  
+
+$`4`
+ [1] "VHL"     "CD81"    "IL23R"   "FCGR2A"  "STAT4"   "PTPN22"  "CASP10" 
+ [8] "PDCD1"   "FN1"     "SCARB2"  "IRAK1"   "FOXP3"   "TLR4"    "GATA3"  
+[15] "MMP1"    "IFNGR1"  "TLR7"    "DNMT3A"  "FASLG"   "IL6"     "IL10"   
+[22] "TNIP1"   "IRF5"    "TRIM8"   "FCGR2B"  "FCGR3B"  "TNFSF4"  "SOCS1"  
+[29] "EPAS1"   "ETS1"    "SPP1"    "MECP2"   "TNFAIP3" "ITGAM"   "CTLA4"  
+[36] "FAS"     "JAK1"   
+
+$`5`
  [1] "TMEM127"  "SDHA"     "SLC25A11" "MDH2"     "RET"      "MT-CO1"  
  [7] "MT-ATP6"  "MT-ND6"   "MT-ND1"   "MT-ND5"   "MT-CO2"   "MT-ND4"  
 [13] "MT-CO3"   "MT-ND2"   "DLST"     "SDHAF2"   "FH"       "NF1"     
 [19] "MT-ND3"   "SDHC"     "SDHB"     "SDHD"     "KIF1B"    "FAH"     
 
-$`4`
- [1] "CD81"   "APOE"   "FCGR2A" "C3"     "SCARB2" "IRAK1"  "TLR4"   "CFH"   
- [9] "DNMT3A" "C1QA"   "CFI"    "C4A"    "FCGR2B" "TLR7"   "FCGR3B" "CR2"   
-[17] "MECP2"  "C4B"    "ITGAM" 
-
-$`5`
+$`6`
 [1] "OSGEP"  "GON7"   "TPRKB"  "LAGE3"  "TP53RK" "YRDC"  
 
-$`6`
-[1] "COQ2"  "COQ8B" "COQ6" 
-
 $`7`
+[1] "COQ2"  "COQ8B" "COQ6"  "APTX" 
+
+$`8`
  [1] "ACTN4"   "ANLN"    "APOL1"   "TRPC6"   "KIRREL1" "CD2AP"   "LMX1B"  
  [8] "NPHS2"   "PLCE1"   "PAX2"    "NPHS1"   "WT1"     "INF2"   
 
-$`8`
+$`9`
 [1] "BLK"   "BANK1"
 
-$`9`
- [1] "ERAP1"    "IL23R"    "STAT4"    "PTPN22"   "CASP10"   "PDCD1"   
- [7] "FOXP3"    "GATA3"    "HLA-DRB1" "HLA-DPA1" "HLA-B"    "FASLG"   
-[13] "IFNGR1"   "IL10"     "TNIP1"    "IRF5"     "TRIM8"    "TNFSF4"  
-[19] "SOCS1"    "ETS1"     "HLA-DPB1" "TNFAIP3"  "CTLA4"    "FAS"     
-[25] "JAK1"    
-
 $`10`
-[1] "ZAP70" "MYO1E" "ARPC5" "WAS"   "WIPF1"
+[1] "ERAP1"    "HLA-DRB1" "HLA-DPA1" "HLA-B"    "TAPBP"    "HLA-DPB1"
 
 $`11`
-[1] "LMNB2" "LMNA" 
+[1] "NEK8"  "NPHP3"
 
 $`12`
-[1] "NOP10" "DKC1" 
+[1] "ZAP70" "MYO1E" "ARPC5" "WAS"   "WIPF1"
 
 $`13`
+[1] "LMNB2" "LMNA" 
+
+$`14`
+[1] "NOP10" "DKC1" 
+
+$`15`
  [1] "OCRL"    "CLCNKB"  "REN"     "KCNJ1"   "UMOD"    "CLCN5"   "SLC12A3"
  [8] "SLC12A1" "HNF1B"   "BSND"   
 
-$`14`
+$`16`
 [1] "DNASE2" "DNASE1"
 
-$`15`
+$`17`
 [1] "MMACHC" "MTRR"  
 
-$`16`
+$`18`
 [1] "ARHGDIA" "KANK2"  
 
-$`17`
+$`19`
 [1] "G6PC1"   "SLC37A4"
 
-$`18`
+$`20`
 [1] "SOX18" "FOXC2"</code></pre>
 </div>
 </div>
@@ -867,34 +882,34 @@ $`18`
 <h4 class="anchored" data-anchor-id="aplicación-del-análisis-de-enriquecimiento-ora-en-cada-cluster">Aplicación del Análisis de Enriquecimiento ORA en Cada Cluster</h4>
 <p>Con los genes divididos por clusters, aplicaremos el análisis de enriquecimiento Over-Representation Analysis (ORA) en cada uno. Esto permite identificar procesos biológicos o funciones moleculares específicas para los genes de cada grupo. Usaremos el paquete clusterProfiler y nos enfocaremos en el análisis de enriquecimiento GO.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize an empty list to store enrichment results for each cluster (not run)</span></span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>enrichment_results_clusters <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop over each cluster to perform enrichment analysis</span></span>
-<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(genes_clusters)) {</span>
-<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># cat(i, "\n")</span></span>
-<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Perform GO enrichment for the current cluster</span></span>
-<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>  enrichment_results_clusters[[i]] <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(</span>
-<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene          =</span> genes_clusters[[i]],   <span class="co"># Set of genes for the current cluster</span></span>
-<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">OrgDb         =</span> org.Hs.eg.db,          <span class="co"># Database for gene annotation</span></span>
-<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">keyType       =</span> <span class="st">"SYMBOL"</span>,              <span class="co"># Identifier type (e.g., gene symbols)</span></span>
-<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ont           =</span> <span class="st">"BP"</span>,                  <span class="co"># Ontology (BP: Biological Process)</span></span>
-<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,                  <span class="co"># Method for p-value adjustment</span></span>
-<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalueCutoff  =</span> <span class="fl">0.05</span>,                  <span class="co"># Significance threshold for p-value</span></span>
-<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">qvalueCutoff  =</span> <span class="fl">0.2</span>                    <span class="co"># Significance threshold for q-value</span></span>
-<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-19"><a href="#cb69-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize results for the first cluster as an example</span></span>
-<span id="cb69-20"><a href="#cb69-20" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(enrichment_results_clusters[[<span class="dv">1</span>]], <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment for Cluster 1"</span>)</span>
-<span id="cb69-21"><a href="#cb69-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-22"><a href="#cb69-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Save enrichment results to CSV files for each cluster</span></span>
-<span id="cb69-23"><a href="#cb69-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(enrichment_results_clusters)) {</span>
-<span id="cb69-24"><a href="#cb69-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv2</span>(</span>
-<span id="cb69-25"><a href="#cb69-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>(enrichment_results_clusters[[i]]),  <span class="co"># Convert to data frame for saving</span></span>
-<span id="cb69-26"><a href="#cb69-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">file =</span> <span class="fu">paste0</span>(<span class="st">"enrichment_cluster_"</span>, i, <span class="st">".csv"</span>)   <span class="co"># File name based on cluster index</span></span>
-<span id="cb69-27"><a href="#cb69-27" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb69-28"><a href="#cb69-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize an empty list to store enrichment results for each cluster (not run)</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>enrichment_results_clusters <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop over each cluster to perform enrichment analysis</span></span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(genes_clusters)) {</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># cat(i, "\n")</span></span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Perform GO enrichment for the current cluster</span></span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>  enrichment_results_clusters[[i]] <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(</span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene          =</span> genes_clusters[[i]],   <span class="co"># Set of genes for the current cluster</span></span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">OrgDb         =</span> org.Hs.eg.db,          <span class="co"># Database for gene annotation</span></span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">keyType       =</span> <span class="st">"SYMBOL"</span>,              <span class="co"># Identifier type (e.g., gene symbols)</span></span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ont           =</span> <span class="st">"BP"</span>,                  <span class="co"># Ontology (BP: Biological Process)</span></span>
+<span id="cb78-13"><a href="#cb78-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,                  <span class="co"># Method for p-value adjustment</span></span>
+<span id="cb78-14"><a href="#cb78-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalueCutoff  =</span> <span class="fl">0.05</span>,                  <span class="co"># Significance threshold for p-value</span></span>
+<span id="cb78-15"><a href="#cb78-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">qvalueCutoff  =</span> <span class="fl">0.2</span>                    <span class="co"># Significance threshold for q-value</span></span>
+<span id="cb78-16"><a href="#cb78-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb78-17"><a href="#cb78-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb78-18"><a href="#cb78-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-19"><a href="#cb78-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize results for the first cluster as an example</span></span>
+<span id="cb78-20"><a href="#cb78-20" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(enrichment_results_clusters[[<span class="dv">1</span>]], <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment for Cluster 1"</span>)</span>
+<span id="cb78-21"><a href="#cb78-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-22"><a href="#cb78-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Save enrichment results to CSV files for each cluster</span></span>
+<span id="cb78-23"><a href="#cb78-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(enrichment_results_clusters)) {</span>
+<span id="cb78-24"><a href="#cb78-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv2</span>(</span>
+<span id="cb78-25"><a href="#cb78-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>(enrichment_results_clusters[[i]]),  <span class="co"># Convert to data frame for saving</span></span>
+<span id="cb78-26"><a href="#cb78-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">file =</span> <span class="fu">paste0</span>(<span class="st">"enrichment_cluster_"</span>, i, <span class="st">".csv"</span>)   <span class="co"># File name based on cluster index</span></span>
+<span id="cb78-27"><a href="#cb78-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb78-28"><a href="#cb78-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

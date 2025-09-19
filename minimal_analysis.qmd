@@ -73,7 +73,7 @@ if (!requireNamespace("STRINGdb", quietly = TRUE)) {
 library(STRINGdb)
 
 # Initialize STRINGdb with the appropriate version and species
-string_db <- STRINGdb$new(version = "12", species = 9606, score_threshold = 800, input_directory = "")
+string_db <- STRINGdb$new(species = 9606, score_threshold = 800, input_directory = "")
 
 # Fetch interactions for the gene list
 # Replace 'genes' with your actual gene list variable

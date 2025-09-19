@@ -1,0 +1,32 @@
+{
+    "id": "34BF35CD",
+    "path": "//wsl.localhost/Ubuntu/home/jim/BS/func_enric.qmd",
+    "project_path": "func_enric.qmd",
+    "type": "quarto_markdown",
+    "hash": "0",
+    "contents": "",
+    "dirty": true,
+    "created": 1732718823260.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "200,126",
+        "scrollLine": "191",
+        "rmdVisualMode": "false",
+        "rmdVisualWrapConfigured": "true",
+        "docOutlineVisible": "1",
+        "rmdVisualModeLocation": "2:0",
+        "rmdVisualCollapsedChunks": ""
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1732629822,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1732719595946,
+    "read_only": false,
+    "read_only_alternatives": []
+}

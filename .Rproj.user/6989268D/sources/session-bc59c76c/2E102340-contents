@@ -1,0 +1,60 @@
+pac_exp <- read.csv2(file = "norm_pac.csv", row.names=1)
+cont_exp <- read.csv2(file = "norm_cont.csv", row.names=1)
+
+
+
+
+pac_exp[] <- lapply(pac_exp, as.numeric) 
+cont_exp[] <- lapply(cont_exp, as.numeric)
+
+library(FactoMineR)
+library(factoextra)
+
+# PCA(cont_exp, scale.unit = TRUE, ncp = 5, graph = TRUE)
+
+res.pca.cont <- PCA(t(cont_exp), graph = FALSE, scale=TRUE)
+
+colind <- ifelse(grepl("T9", colnames(cont_exp)), "Stimulated (T9)", "Unstimulated")
+
+pdf("controls_pca.pdf")
+fviz_pca_ind(res.pca.cont,
+              # geom.ind = "point", # show points only (nbut not "text")
+              col.ind = colind, # color by groups
+              palette = c("#0d7328", "darkgrey"),
+              addEllipses = TRUE, # Concentration ellipses
+              legend.title = "Groups", title="Healthy Controls"
+)
+dev.off()
+  
+res.pca.pac <- PCA(t(pac_exp), graph = FALSE, scale=TRUE)
+colind <- ifelse(grepl("T9", colnames(pac_exp)), "Stimulated (T9)", "Unstimulated")
+
+pdf("patients_pca.pdf")
+fviz_pca_ind(res.pca.pac,
+             # geom.ind = "point", # show points only (nbut not "text")
+             col.ind = colind, # color by groups
+             palette = c("#0d7328", "darkgrey"),
+             addEllipses = TRUE, # Concentration ellipses
+             legend.title = "Groups", title="Patients"
+)
+dev.off()
+  
+  
+  
+  
+data.pca.cont <- prcomp(cont_exp)
+
+fviz_pca_ind(res.pca
+
+fviz_pca_var(data.pca.cont, col.var = "black")
+
+
+
+data.pca.pac <- princomp(pac_exp)
+
+fviz_pca_var(data.pca.pac, col.var = "red")
+
+
+data_normalized <- scale(cont_exp)
+
+data.pca <- princomp(data_normalized)

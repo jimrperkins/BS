@@ -1,6 +1,16 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - index.qmd
+    - minimal_analysis.qmd
+    # - analisis_topo.qmd
+    # - analisis_topo_2.qmd
+    # - clustering.qmd
+    # - clustering_2.qmd
+    # - func_enric.qmd
+    # - coexp.qmd
+    # - recreate_aa.qmd
 
 website:
   title: "Biología de Sistemas"
@@ -8,22 +18,22 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: analisis_topo.qmd
-        text: Análisis y Topología (I)
-      - href: analisis_topo_2.qmd
-        text: Análisis y Topología (II)
       - href: minimal_analysis.qmd
         text: Minimal Análisis
-      - href: clustering.qmd
-        text: Clustering
-      - href: clustering_2.qmd
-        text: Clustering Enlaces
-      - href: func_enric.qmd
-        text: Enriquecimiento Funcional
-      - href: coexp.qmd
-        text: Coexpression Analysis
-      - href: recreate_aa.qmd
-        text: Build a Pathway
+      # - href: analisis_topo.qmd
+      #   text: Análisis y Topología (I)
+      # - href: analisis_topo_2.qmd
+      #   text: Análisis y Topología (II)
+      # - href: clustering.qmd
+      #   text: Clustering
+      # - href: clustering_2.qmd
+      #   text: Clustering Enlaces
+      # - href: func_enric.qmd
+      #   text: Enriquecimiento Funcional
+      # - href: coexp.qmd
+      #   text: Coexpression Analysis
+      # - href: recreate_aa.qmd
+      #   text: Build a Pathway
 
 format:
   html:

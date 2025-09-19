@@ -1,0 +1,512 @@
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(123)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(111)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(333)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(3222)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(123)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(12)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(11)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(11)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+probabilities
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(1)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+# Load igraph library
+library(igraph)
+# Create a simple graph (you can modify this for your graph)
+set.seed(1)
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)
+# Set the starting node for the random walk (e.g., node 1)
+start_node <- 1
+# Function to perform random walk with restart
+random_walk_with_restart <- function(graph, start_node, steps = 1000, walks = 10, restart_prob = 0.1) {
+node_count <- vcount(graph)
+visited <- rep(0, node_count)  # Vector to keep track of visits to each node
+for (walk in 1:walks) {
+current_node <- start_node
+for (i in 1:steps) {
+visited[current_node] <- visited[current_node] + 1  # Mark the node as visited
+# Decide whether to restart or continue the random walk
+if (runif(1) < restart_prob) {
+current_node <- start_node  # Restart from the starting node
+} else {
+neighbors <- neighbors(graph, current_node)  # Get neighbors of current node
+if (length(neighbors) == 0) break  # Stop if no neighbors are left
+current_node <- sample(neighbors, 1)  # Choose a random neighbor to move to
+}
+}
+}
+# Calculate probabilities
+prob <- visited / sum(visited)  # Normalize the visits to get probabilities
+return(prob)
+}
+# Run the random walk with restart simulation
+set.seed(321)
+probabilities <- random_walk_with_restart(g, start_node, steps = 1000, walks = 10, restart_prob = 0.1)
+# Normalize the probabilities to create more distinct color contrasts
+probabilities <- (probabilities - min(probabilities)) / (max(probabilities) - min(probabilities))
+# Set node colors: use a reversed color palette (red for high probability, blue for low probability)
+V(g)$color <- rev(heat.colors(length(probabilities)))[floor(probabilities * length(probabilities)) + 1]
+# Highlight the start node with a different color (e.g., green)
+V(g)$color[start_node] <- "green"
+# Increase the size of the start node for emphasis
+V(g)$size <- ifelse(1:vcount(g) == start_node, 30, 20)
+# Plot the graph with improved color contrast
+plot(g, vertex.label = NA, main = "Random Walk with Restart Diffusion on Graph",
+vertex.size = V(g)$size, vertex.color = V(g)$color)
+source("~/.active-rstudio-document", echo=TRUE)
+install.packages("pathview")
+BiocManager::install("pathview")
+library(pathview)
+exp_genes <- c(
+"GAPDH" = 2.5,  # Gen sobreexpresado
+"HK2" = -1.3,   # Gen subexpresado
+"PFK1" = 1.2,   # Gen sobreexpresado
+"ALDOA" = 0.5   # Gen con expresión moderada
+)
+# ID de la vía KEGG para Glicólisis (hsa00010)
+id_via <- "hsa00010"
+# Visualizar la vía con los datos de expresión génica
+pathview(gene.data = exp_genes, pathway.id = id_via, species = "hsa")
+exp_genes <- c(
+"hsa:2597" = 2.5,  # GAPDH - Gen sobreexpresado
+"hsa:3142" = -1.3, # HK2 - Gen subexpresado
+"hsa:5225" = 1.2,  # PFK1 - Gen sobreexpresado
+"hsa:2247" = 0.5   # ALDOA - Gen con expresión moderada
+)
+# ID de la vía KEGG para Glicólisis (hsa00010)
+id_via <- "hsa00010"
+# Visualizar la vía con los datos de expresión génica
+pathview(gene.data = exp_genes, pathway.id = id_via, species = "hsa")
+data(gse16873.d)
+pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = "04110",
++ species = "hsa", out.suffix = "gse16873")
+data(gse16873.d)
+pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = "04110",
+species = "hsa", out.suffix = "gse16873")
+gse16873.d[, 1]
+pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = "04110",
+species = "hsa", out.suffix = "gse16873")
+pv.out
+plot(pv.out)
+library(SPIA)
+BiocManager::install("SPIA")
+library(pathview)
+data(gse16873.d)
+pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = "04110",
+species = "hsa", out.suffix = "gse16873")
+getwd()
+dir()
+library(igraph)
