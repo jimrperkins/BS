@@ -4,7 +4,7 @@ project:
   render:
     - index.qmd
     - minimal_analysis.qmd
-    # - analisis_topo.qmd
+    - analisis_topo.qmd
     # - analisis_topo_2.qmd
     # - clustering.qmd
     # - clustering_2.qmd
@@ -20,8 +20,8 @@ website:
         text: Home
       - href: minimal_analysis.qmd
         text: Minimal Análisis
-      # - href: analisis_topo.qmd
-      #   text: Análisis y Topología (I)
+      - href: analisis_topo.qmd
+        text: Análisis y Topología (I)
       # - href: analisis_topo_2.qmd
       #   text: Análisis y Topología (II)
       # - href: clustering.qmd
