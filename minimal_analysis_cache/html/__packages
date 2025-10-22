@@ -1,0 +1,13 @@
+httr
+jsonlite
+STRINGdb
+igraph
+clusterProfiler
+generics
+BiocGenerics
+Biobase
+S4Vectors
+IRanges
+AnnotationDbi
+org.Hs.eg.db
+enrichplot

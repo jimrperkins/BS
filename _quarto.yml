@@ -20,7 +20,7 @@ website:
         text: Home
       - href: minimal_analysis.qmd
         text: Minimal Análisis
-      - href: analisis_topo.qmd
+      - href: analisis_topo_1.qmd
         text: Análisis y Topología (I)
       # - href: analisis_topo_2.qmd
       #   text: Análisis y Topología (II)
