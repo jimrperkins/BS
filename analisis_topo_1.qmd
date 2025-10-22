@@ -179,5 +179,5 @@ La modularidad, al permitir identificar estas estructuras funcionales dentro de 
 
 Exploración de la conectividad: ER vs. Scale-Free con mismo tamaño
 
-Crea dos redes con aproximadamente el mismo número de nodos y aristas: una red aleatoria Erdős–Rényi y otra scale-free.
-Elimina nodos aleatoriamente de cada red y observa cómo cambia la conectividad. Reflexiona sobre cuál es más robusta frente a mutaciones o fallos de proteínas en un sistema biológico y por qué.
+Crea dos redes con aproximadamente el mismo número de nodos y aristas: una red aleatoria Erdős–Rényi y otra scale-free. Plotearlas.
+Ahora, elimina nodos aleatoriamente de cada red y observa cómo cambia la conectividad, ploteando las redes. Reflexiona sobre cuál es más robusta frente a mutaciones o fallos de proteínas en un sistema biológico y por qué.
