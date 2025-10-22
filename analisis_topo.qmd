@@ -638,3 +638,10 @@ degree_distribution <- degree(g_sf)
 hist(degree_distribution, breaks=50, main="Distribución de Grado de una Red de Escala Libre", 
      xlab="Grado", ylab="Frecuencia")
 ```
+
+# Exercicio
+
+Exploración de la conectividad: ER vs. Scale-Free con mismo tamaño
+
+Crea dos redes con aproximadamente el mismo número de nodos y aristas: una red aleatoria Erdős–Rényi y otra scale-free. Plotearlas.
+Ahora, elimina nodos aleatoriamente de cada red y observa cómo cambia la conectividad, ploteando las redes. Reflexiona sobre cuál es más robusta frente a mutaciones o fallos de proteínas en un sistema biológico y por qué.
