@@ -26,6 +26,10 @@ Una **Interfaz de Programación de Aplicaciones (API)** permite que diferentes a
 Para usar la API, aquí hay un ejemplo de cómo obtener genes programáticamente. Primero, necesitamos instalar y cargar las bibliotecas necesarias:
 
 ```{r}
+# If you are using Windows, your computer may have problems accessing servers
+#Sys.setenv(CURL_SSL_BACKEND = "openssl") # Necessary step to reinstall curl for use in Windows
+#install.packages("curl", force=TRUE, dependencies = TRUE)
+
 # Install necessary packages if not already installed
 if (!requireNamespace("httr", quietly = TRUE)) {
   install.packages("httr")

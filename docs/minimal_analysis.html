@@ -232,36 +232,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Una <strong>Interfaz de Programación de Aplicaciones (API)</strong> permite que diferentes aplicaciones de software se comuniquen entre sí. En nuestro caso, nos permite acceder programáticamente a datos de la HPO. Puedes usar una API para obtener automáticamente la lista de genes sin tener que descargarla manualmente. PUEDES USAR OTRAS LENGUAJES DE PROGAMACION SI PREFERIS</p>
 <p>Para usar la API, aquí hay un ejemplo de cómo obtener genes programáticamente. Primero, necesitamos instalar y cargar las bibliotecas necesarias:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install necessary packages if not already installed</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"httr"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"httr"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"jsonlite"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"jsonlite"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># API request to get genes associated with the HPO term for abnormal renal corpuscle morphology</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>hpo_id <span class="ot">&lt;-</span> <span class="st">"HP:0031263"</span>  <span class="co"># HPO ID for abnormal renal corpuscle morphology</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://ontology.jax.org/api/network/annotation/"</span>, hpo_id)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>response <span class="ot">&lt;-</span> <span class="fu">GET</span>(url)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">content</span>(response, <span class="at">as =</span> <span class="st">"text"</span>, <span class="at">encoding =</span> <span class="st">"UTF-8"</span>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(data)<span class="sc">$</span>genes</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If you are using Windows, your computer may have problems accessing servers</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Sys.setenv(CURL_SSL_BACKEND = "openssl") # Necessary step to reinstall curl for use in Windows</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("curl", force=TRUE, dependencies = TRUE)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Install necessary packages if not already installed</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"httr"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"httr"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"jsonlite"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"jsonlite"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># API request to get genes associated with the HPO term for abnormal renal corpuscle morphology</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>hpo_id <span class="ot">&lt;-</span> <span class="st">"HP:0031263"</span>  <span class="co"># HPO ID for abnormal renal corpuscle morphology</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://ontology.jax.org/api/network/annotation/"</span>, hpo_id)</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few genes</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(genes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>response <span class="ot">&lt;-</span> <span class="fu">GET</span>(url)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">content</span>(response, <span class="at">as =</span> <span class="st">"text"</span>, <span class="at">encoding =</span> <span class="st">"UTF-8"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(data)<span class="sc">$</span>genes</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few genes</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(genes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              id  name
-1  NCBIGene:2335   FN1
-2  NCBIGene:4311   MME
-3  NCBIGene:7369  UMOD
-4 NCBIGene:55644 OSGEP
-5 NCBIGene:11277 TREX1
-6 NCBIGene:57728 WDR19</code></pre>
+<pre><code>                  id   name
+1     NCBIGene:81494  CFHR5
+2 NCBIGene:100147744 RNU7-1
+3      NCBIGene:9722 NOS1AP
+4      NCBIGene:7369   UMOD
+5      NCBIGene:2625  GATA3
+6      NCBIGene:1287 COL4A5</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all the genes (uncomment)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># print(genes)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -361,11 +365,11 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of nodes:"</span>, num_nodes, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of nodes: 151 </code></pre>
+<pre><code>Number of nodes: 152 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of edges:"</span>, num_edges, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of edges: 334 </code></pre>
+<pre><code>Number of edges: 336 </code></pre>
 </div>
 </div>
 </section>
@@ -380,7 +384,7 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>average_degree <span class="ot">&lt;-</span> <span class="fu">mean</span>(degree_values)</span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average degree of all nodes:"</span>, average_degree, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Average degree of all nodes: 4.423841 </code></pre>
+<pre><code>Average degree of all nodes: 4.421053 </code></pre>
 </div>
 </div>
 </section>
@@ -392,7 +396,7 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>network_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(g)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Network density:"</span>, network_density, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Network density: 0.02949227 </code></pre>
+<pre><code>Network density: 0.02927849 </code></pre>
 </div>
 </div>
 </section>
@@ -406,7 +410,7 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show results</span></span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Closeness Centrality (first 5 nodos):"</span>, <span class="fu">head</span>(centrality_closeness, <span class="dv">5</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Closeness Centrality (first 5 nodos): 0.1666667 0.003003003 0.003378378 0.1666667 0.00310559 </code></pre>
+<pre><code>Closeness Centrality (first 5 nodos): 0.1666667 0.00295858 0.003344482 0.1666667 0.003067485 </code></pre>
 </div>
 </div>
 </section>
@@ -543,10 +547,9 @@ semi-transparency is not supported on this device: reported only once per page</
 
 Please cite:
 
-T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-enrichment tool for interpreting omics data. The Innovation. 2021,
-2(3):100141</code></pre>
+S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
+W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
+multiomics data. Nature Protocols. 2024, 19(11):3292-3320</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
@@ -695,43 +698,43 @@ GO:0072001 GO:0072001
 GO:0072006 GO:0072006
 GO:0001822 GO:0001822
 GO:0002460 GO:0002460
-GO:0002443 GO:0002443
 GO:0032835 GO:0032835
+GO:0002443 GO:0002443
                                                                                                                          Description
 GO:0072001                                                                                                  renal system development
 GO:0072006                                                                                                       nephron development
 GO:0001822                                                                                                        kidney development
 GO:0002460 adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
-GO:0002443                                                                                               leukocyte mediated immunity
 GO:0032835                                                                                                    glomerulus development
+GO:0002443                                                                                               leukocyte mediated immunity
            GeneRatio   BgRatio RichFactor FoldEnrichment   zScore       pvalue
-GO:0072001    33/206 336/18805 0.09821429       8.965629 15.50536 4.750250e-22
-GO:0072006    25/206 161/18805 0.15527950      14.174908 17.66871 8.177251e-22
-GO:0001822    32/206 325/18805 0.09846154       8.988200 15.28810 1.966311e-21
-GO:0002460    31/206 396/18805 0.07828283       7.146158 13.00919 7.020551e-18
-GO:0002443    31/206 483/18805 0.06418219       5.858962 11.38530 1.853153e-15
-GO:0032835    15/206  73/18805 0.20547945      18.757481 15.99796 1.954155e-15
+GO:0072001    33/207 336/18805 0.09821429       8.922317 15.45886 5.562061e-22
+GO:0072006    25/207 161/18805 0.15527950      14.106430 17.61996 9.235263e-22
+GO:0001822    32/207 325/18805 0.09846154       8.944779 15.24227 2.290441e-21
+GO:0002460    31/207 396/18805 0.07828283       7.111636 12.96782 8.100770e-18
+GO:0032835    15/207  73/18805 0.20547945      18.666865 15.95534 2.100682e-15
+GO:0002443    31/207 483/18805 0.06418219       5.830658 11.34673 2.128505e-15
                p.adjust       qvalue
-GO:0072001 1.481718e-18 1.042384e-18
-GO:0072006 1.481718e-18 1.042384e-18
-GO:0001822 2.375304e-18 1.671020e-18
-GO:0002460 6.360619e-15 4.474677e-15
-GO:0002443 1.180310e-12 8.303445e-13
-GO:0032835 1.180310e-12 8.303445e-13
+GO:0072001 1.685897e-18 1.182114e-18
+GO:0072006 1.685897e-18 1.182114e-18
+GO:0001822 2.787466e-18 1.954510e-18
+GO:0002460 7.393978e-15 5.184493e-15
+GO:0032835 1.295195e-12 9.081620e-13
+GO:0002443 1.295195e-12 9.081620e-13
                                                                                                                                                                                                     geneID
-GO:0072001 MME/UMOD/TREX1/RET/NPHS1/NF1/GATA3/COL4A4/COL4A3/WT1/FOXC2/HNF1B/NUP107/LAMB2/CD2AP/PAX2/PLCE1/NPHS2/PTPRO/NUP85/NUP133/MYO1E/LAMA5/MAGI2/NUP160/KANK2/SGPL1/REN/SEC61A1/JAG1/ITGA3/NPHP3/MYOCD
-GO:0072006                                           UMOD/RET/NPHS1/GATA3/COL4A4/COL4A3/WT1/FOXC2/HNF1B/NUP107/LAMB2/CD2AP/PAX2/PLCE1/NPHS2/PTPRO/NUP85/NUP133/MYO1E/LAMA5/MAGI2/NUP160/SEC61A1/JAG1/ITGA3
-GO:0001822       MME/UMOD/TREX1/RET/NPHS1/NF1/GATA3/COL4A4/COL4A3/WT1/FOXC2/HNF1B/NUP107/LAMB2/CD2AP/PAX2/PLCE1/NPHS2/PTPRO/NUP85/NUP133/MYO1E/LAMA5/MAGI2/NUP160/KANK2/SGPL1/REN/SEC61A1/JAG1/ITGA3/NPHP3
-GO:0002460                      TREX1/GATA3/WAS/C4A/IL10/STAT4/HLA-B/IL12A/TLR4/IL23R/EMP2/ADA/JAG1/C1QA/C3/CD81/PRKCD/JAK1/FOXP3/IGHG1/CR2/FCGR3B/TNFSF4/PDCD1/TNFAIP3/FCGR2B/C4B/HLA-DRB1/FCGR2A/CFI/IL6
-GO:0002443                 TREX1/GATA3/DNASE1L3/WAS/C4A/IL10/HLA-B/IL12A/TLR4/KLRC4/IL23R/EMP2/JAG1/C1QA/C3/CD81/PRKCD/FOXP3/IGHG1/ITGAM/CR2/DNASE1/FCGR3B/TNFSF4/PDCD1/FCGR2B/C4B/HLA-DRB1/FCGR2A/CFI/IL6
-GO:0032835                                                                                                           RET/NPHS1/COL4A4/COL4A3/WT1/FOXC2/LAMB2/CD2AP/PAX2/PLCE1/NPHS2/PTPRO/MYO1E/MAGI2/JAG1
+GO:0072001 UMOD/GATA3/COL4A4/COL4A3/LAMB2/NUP107/PLCE1/NUP160/KANK2/PTPRO/NUP85/NUP133/PAX2/LAMA5/NPHS1/MYO1E/WT1/CD2AP/MAGI2/NPHS2/SGPL1/NF1/RET/TREX1/MME/HNF1B/FOXC2/MYOCD/NPHP3/SEC61A1/JAG1/REN/ITGA3
+GO:0072006                                           UMOD/GATA3/COL4A4/COL4A3/LAMB2/NUP107/PLCE1/NUP160/PTPRO/NUP85/NUP133/PAX2/LAMA5/NPHS1/MYO1E/WT1/CD2AP/MAGI2/NPHS2/RET/HNF1B/FOXC2/SEC61A1/JAG1/ITGA3
+GO:0001822       UMOD/GATA3/COL4A4/COL4A3/LAMB2/NUP107/PLCE1/NUP160/KANK2/PTPRO/NUP85/NUP133/PAX2/LAMA5/NPHS1/MYO1E/WT1/CD2AP/MAGI2/NPHS2/SGPL1/NF1/RET/TREX1/MME/HNF1B/FOXC2/NPHP3/SEC61A1/JAG1/REN/ITGA3
+GO:0002460                      GATA3/EMP2/ADA/TREX1/PRKCD/FOXP3/JAK1/CD81/HLA-B/TLR4/STAT4/IL12A/IL10/IL23R/C4A/IL6/HLA-DRB1/CFI/C3/C1QA/WAS/JAG1/TNFAIP3/C4B/FCGR2B/TNFSF4/CR2/PDCD1/FCGR3B/IGHG1/FCGR2A
+GO:0032835                                                                                                           COL4A4/COL4A3/LAMB2/PLCE1/PTPRO/PAX2/NPHS1/MYO1E/WT1/CD2AP/MAGI2/NPHS2/RET/FOXC2/JAG1
+GO:0002443                 GATA3/EMP2/TREX1/PRKCD/FOXP3/CD81/KLRC4/HLA-B/TLR4/IL12A/IL10/IL23R/C4A/IL6/HLA-DRB1/CFI/C3/C1QA/WAS/DNASE1L3/JAG1/DNASE1/C4B/FCGR2B/TNFSF4/CR2/ITGAM/PDCD1/FCGR3B/IGHG1/FCGR2A
            Count
 GO:0072001    33
 GO:0072006    25
 GO:0001822    32
 GO:0002460    31
-GO:0002443    31
-GO:0032835    15</code></pre>
+GO:0032835    15
+GO:0002443    31</code></pre>
 </div>
 </div>
 <p>En la tabla, las filas son terminos GO, y los de mas columnas son propiedades importantes</p>
@@ -747,9 +750,8 @@ GO:0032835    15</code></pre>
 
 Please cite:
 
-Guangchuang Yu, Li-Gen Wang, and Qing-Yu He. ChIPseeker: an
-R/Bioconductor package for ChIP peak annotation, comparison and
-visualization. Bioinformatics. 2015, 31(14):2382-2383</code></pre>
+G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+5(6):100722</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dotplot to visualize enriched GO terms</span></span>
 <span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(enrich_results, <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment for Abnormal Renal Corpuscle Morphology"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -821,7 +823,7 @@ $`2`
  [8] "LAMB2"   "CD151"   "ACSL4"   "KCNE5"   "COL4A4" 
 
 $`3`
-[1] "C3"    "APOE"  "CFH"   "C1QA"  "CFI"   "C4A"   "CFHR5" "CR2"   "C4B"  
+[1] "C3"    "CFH"   "C1QA"  "CFI"   "C4A"   "CFHR5" "CR2"   "C4B"  
 
 $`4`
  [1] "VHL"     "CD81"    "IL23R"   "FCGR2A"  "STAT4"   "PTPN22"  "CASP10" 
@@ -844,8 +846,9 @@ $`7`
 [1] "COQ2"  "COQ8B" "COQ6"  "APTX" 
 
 $`8`
- [1] "ACTN4"   "ANLN"    "APOL1"   "TRPC6"   "KIRREL1" "CD2AP"   "LMX1B"  
- [8] "NPHS2"   "PLCE1"   "PAX2"    "NPHS1"   "WT1"     "INF2"   
+ [1] "ACTN4"   "APOE"    "APOL1"   "ANLN"    "TRPC6"   "KIRREL1" "CD2AP"  
+ [8] "LMX1B"   "NPHS2"   "PLCE1"   "PAX2"    "NPHS1"   "APOA4"   "WT1"    
+[15] "INF2"   
 
 $`9`
 [1] "BLK"   "BANK1"
