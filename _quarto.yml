@@ -6,8 +6,8 @@ project:
     - minimal_analysis.qmd
     - analisis_topo.qmd
     - analisis_topo_2.qmd
-    # - clustering.qmd
-    # - clustering_2.qmd
+    - clustering.qmd
+    - clustering_2.qmd
     # - func_enric.qmd
     # - coexp.qmd
     # - recreate_aa.qmd
@@ -24,8 +24,8 @@ website:
         text: Análisis y Topología (I)
       - href: analisis_topo_2.qmd
         text: Análisis y Topología (II)
-      # - href: clustering.qmd
-      #   text: Clustering
+      - href: clustering.qmd
+        text: Clustering
       # - href: clustering_2.qmd
       #   text: Clustering Enlaces
       # - href: func_enric.qmd

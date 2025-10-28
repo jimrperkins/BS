@@ -167,6 +167,10 @@ window.Quarto = {
     <a class="nav-link active" href="./analisis_topo_2.html" aria-current="page"> 
 <span class="menu-text">Análisis y Topología (II)</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./clustering.html"> 
+<span class="menu-text">Clustering</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -237,6 +241,14 @@ window.Quarto = {
   <li><a href="#asortatividad-positiva" id="toc-asortatividad-positiva" class="nav-link" data-scroll-target="#asortatividad-positiva"><strong>Asortatividad Positiva</strong></a></li>
   <li><a href="#asortatividad-negativa" id="toc-asortatividad-negativa" class="nav-link" data-scroll-target="#asortatividad-negativa"><strong>Asortatividad Negativa</strong></a></li>
   <li><a href="#comparación-en-biología" id="toc-comparación-en-biología" class="nav-link" data-scroll-target="#comparación-en-biología"><strong>Comparación en Biología</strong></a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#ejercicio" id="toc-ejercicio" class="nav-link" data-scroll-target="#ejercicio">Ejercicio</a>
+  <ul class="collapse">
+  <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones">Instrucciones</a>
+  <ul class="collapse">
+  <li><a href="#parte-1-creacion-y-visulalizacion" id="toc-parte-1-creacion-y-visulalizacion" class="nav-link" data-scroll-target="#parte-1-creacion-y-visulalizacion">Parte 1: Creacion y visulalizacion</a></li>
+  <li><a href="#parte-2-cálculo-de-métricas-topológicas" id="toc-parte-2-cálculo-de-métricas-topológicas" class="nav-link" data-scroll-target="#parte-2-cálculo-de-métricas-topológicas">Parte 2: Cálculo de Métricas Topológicas</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -749,6 +761,81 @@ En redes aéreas, los aeropuertos internacionales (hubs) están conectados con a
 <li>La <strong>asortatividad negativa</strong> mejora la flexibilidad y la integración en sistemas jerárquicos, como en la regulación metabólica o genética.</li>
 </ul>
 <p>Ambos patrones reflejan estrategias de diseño adaptativas que optimizan la funcionalidad en redes biológicas y tecnológicas.</p>
+</section>
+</section>
+</section>
+<section id="ejercicio" class="level1">
+<h1>Ejercicio</h1>
+<p>Aplicar conceptos de <strong>modularidad</strong>, <strong>densidad de aristas</strong>, <strong>dispersión</strong>, <strong>longitud promedio de camino</strong> y <strong>asortatividad de grado</strong> para analizar la estructura y funcionalidad de redes biológicas utilizando <strong>R</strong> y la librería <strong>igraph</strong>.</p>
+<section id="instrucciones" class="level2">
+<h2 class="anchored" data-anchor-id="instrucciones">Instrucciones</h2>
+<section id="parte-1-creacion-y-visulalizacion" class="level3">
+<h3 class="anchored" data-anchor-id="parte-1-creacion-y-visulalizacion">Parte 1: Creacion y visulalizacion</h3>
+<ol type="1">
+<li>Crea dos redes en R:
+<ul>
+<li>Una <strong>red modular</strong>, con comunidades internas densas (<code>sample_islands</code>).</li>
+<li>Una <strong>red aleatoria</strong>, sin comunidades claras (<code>sample_gnp</code>).</li>
+</ul></li>
+<li>Visualiza ambas redes y <strong>describe las diferencias visuales</strong>:
+<ul>
+<li>Conectividad</li>
+<li>Agrupamiento</li>
+<li>Presencia de comunidades</li>
+</ul></li>
+</ol>
+<p>¿Qué diferencias visuales observas entre ambas redes en términos de conectividad y agrupamiento?</p>
+</section>
+<section id="parte-2-cálculo-de-métricas-topológicas" class="level3">
+<h3 class="anchored" data-anchor-id="parte-2-cálculo-de-métricas-topológicas">Parte 2: Cálculo de Métricas Topológicas</h3>
+<p>Calcula las siguientes métricas para ambas redes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 33%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Propiedad</th>
+<th>Función en R</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Modularidad</td>
+<td><code>modularity(cluster_louvain(red))</code></td>
+<td>Evalúa la existencia de comunidades</td>
+</tr>
+<tr class="even">
+<td>Densidad</td>
+<td><code>edge_density(red)</code></td>
+<td>Proporción de conexiones existentes</td>
+</tr>
+<tr class="odd">
+<td>Dispersión</td>
+<td><code>1 - edge_density(red)</code></td>
+<td>Grado de especificidad</td>
+</tr>
+<tr class="even">
+<td>Longitud promedio de camino</td>
+<td><code>mean_distance(red)</code></td>
+<td>Eficiencia en la comunicación</td>
+</tr>
+<tr class="odd">
+<td>Diámetro</td>
+<td><code>diameter(red)</code></td>
+<td>Máxima distancia entre nodos</td>
+</tr>
+<tr class="even">
+<td>Asortatividad</td>
+<td><code>assortativity_degree(red)</code></td>
+<td>Tendencia de nodos similares a conectarse</td>
+</tr>
+</tbody>
+</table>
+<p>Representa los resultados como una table (data.frame) para comparar valores entre redes.</p>
 
 
 </section>
