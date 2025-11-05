@@ -111,20 +111,6 @@ A lo largo de este tutorial, se abordarán cinco métodos principales de cluster
 
 Cada método será descrito en detalle, con explicaciones teóricas, ventajas, desventajas, y ejemplos ilustrativos. Además, se destacarán las mejores prácticas para aplicar estos métodos en el contexto de biología de sistemas y otras áreas.
 
-### Referencias Clave
-
-Labusek N, Mouloud Y, Köster C, Diesterbeck E, Tertel T, Wiek C, Hanenberg H, Horn PA, Felderhoff-Müser U, Bendix I, Giebel B, Herz J. Extracellular vesicles from immortalized mesenchymal stromal cells protect against neonatal hypoxic-ischemic brain injury. Inflamm Regen. 2023 Apr 17;43(1):24. doi: 10.1186/s41232-023-00274-6. PMID: 37069694; PMCID: PMC10108458.
-
-Nielsen J, Keasling JD. Engineering Cellular Metabolism. Cell. 2016 Mar 10;164(6):1185-1197. doi: 10.1016/j.cell.2016.02.004. PMID: 26967285.
-
-Gordon DE, Jang GM, Bouhaddou M, Xu J, Obernier K, White KM, O'Meara MJ, Rezelj VV, Guo JZ, Swaney DL, Tummino TA, Hüttenhain R, Kaake RM, Richards AL, Tutuncuoglu B, Foussard H, Batra J, Haas K, Modak M, Kim M, Haas P, Polacco BJ, Braberg H, Fabius JM, Eckhardt M, Soucheray M, Bennett MJ, Cakir M, McGregor MJ, Li Q, Meyer B, Roesch F, Vallet T, Mac Kain A, Miorin L, Moreno E, Naing ZZC, Zhou Y, Peng S, Shi Y, Zhang Z, Shen W, Kirby IT, Melnyk JE, Chorba JS, Lou K, Dai SA, Barrio-Hernandez I, Memon D, Hernandez-Armenta C, Lyu J, Mathy CJP, Perica T, Pilla KB, Ganesan SJ, Saltzberg DJ, Rakesh R, Liu X, Rosenthal SB, Calviello L, Venkataramanan S, Liboy-Lugo J, Lin Y, Huang XP, Liu Y, Wankowicz SA, Bohn M, Safari M, Ugur FS, Koh C, Savar NS, Tran QD, Shengjuler D, Fletcher SJ, O'Neal MC, Cai Y, Chang JCJ, Broadhurst DJ, Klippsten S, Sharp PP, Wenzell NA, Kuzuoglu-Ozturk D, Wang HY, Trenker R, Young JM, Cavero DA, Hiatt J, Roth TL, Rathore U, Subramanian A, Noack J, Hubert M, Stroud RM, Frankel AD, Rosenberg OS, Verba KA, Agard DA, Ott M, Emerman M, Jura N, von Zastrow M, Verdin E, Ashworth A, Schwartz O, d'Enfert C, Mukherjee S, Jacobson M, Malik HS, Fujimori DG, Ideker T, Craik CS, Floor SN, Fraser JS, Gross JD, Sali A, Roth BL, Ruggero D, Taunton J, Kortemme T, Beltrao P, Vignuzzi M, García-Sastre A, Shokat KM, Shoichet BK, Krogan NJ. A SARS-CoV-2 protein interaction map reveals targets for drug repurposing. Nature. 2020 Jul;583(7816):459-468. doi: 10.1038/s41586-020-2286-9. Epub 2020 Apr 30. PMID: 32353859; PMCID: PMC7431030.
-
-Buenrostro JD, Corces MR, Lareau CA, Wu B, Schep AN, Aryee MJ, Majeti R, Chang HY, Greenleaf WJ. Integrated Single-Cell Analysis Maps the Continuous Regulatory Landscape of Human Hematopoietic Differentiation. Cell. 2018 May 31;173(6):1535-1548.e16. doi: 10.1016/j.cell.2018.03.074. Epub 2018 Apr 26. PMID: 29706549; PMCID: PMC5989727.
-
-Saxton RA, Sabatini DM. mTOR Signaling in Growth, Metabolism, and Disease. Cell. 2017 Mar 9;168(6):960-976. doi: 10.1016/j.cell.2017.02.004. Erratum in: Cell. 2017 Apr 6;169(2):361-371. doi: 10.1016/j.cell.2017.03.035. PMID: 28283069; PMCID: PMC5394987.
-
-------------------------------------------------------------------------
-
 # **Clustering Basado en *centralidad de intermediación de enlaces* (Edge Betweenness Clustering)**
 
 El clustering basado en betweenness de aristas es un método jerárquico que identifica comunidades en redes dividiendo la estructura mediante la eliminación iterativa de las aristas con mayor **betweenness**. Este algoritmo es particularmente útil en biología de sistemas para analizar redes de interacción proteína-proteína (PPI), rutas metabólicas y redes de regulación génica, donde las comunidades corresponden a módulos funcionales biológicos.
@@ -180,7 +166,7 @@ Para comprender cómo funciona el clustering basado en betweenness, podemos visu
 ```{r}
 library(igraph)
 library(netUtils)  # For LFR network generation
-
+set.seed(100)
 # Generate a LFR benchmark network with clear communities
 n <- 100  # Number of nodes
 tau1 <- 3  # Degree distribution exponent for nodes
@@ -246,6 +232,10 @@ for (i in 1:20) {
 **Desventajas**:\
 - Es computacionalmente intensivo, especialmente para redes grandes, debido a la necesidad de recalcular betweenness iterativamente.\
 - Puede ser sensible a pequeñas variaciones en la estructura de la red, lo que afecta la estabilidad de los resultados.
+
+## Ejercicio
+
+Despues de la iteracion n. 20 del algoritmo, vemos que la modularidad sigue creciendo. Expandir el codigo para encontrar el punto con modularidad maximo. Cuantos iteraciones hace falta para encontrar la modularidad optima? Que pasaria en otros redes por ejemplo los generados por sample_islands?
 
 # **Clustering Basado en Walktrap**
 
@@ -358,8 +348,8 @@ plot_walktrap_progression <- function(graph, walktrap, step) {
   
   plot(graph, 
        vertex.color = node_colors, 
-       vertex.label = NA, 
-       main = paste("Step", length(walktrap$merges) - step + 1, 
+       # vertex.label = NA, 
+       main = paste("Step", nrow(walktrap$merges) - step + 1, 
                     "-", step, "Clusters"),
        layout = layout_with_fr)
 }
@@ -535,9 +525,14 @@ En resumen, la principal diferencia radica en la **simplificación del grafo**: 
 
 #### **Ventajas y Desventajas**
 
-**Ventajas**: - **Rápido y escalable**: Louvain es eficiente, lo que lo hace adecuado para redes grandes con miles o incluso millones de nodos. - **Capacidad de detectar comunidades a múltiples escalas**: El proceso jerárquico permite identificar comunidades en diferentes niveles de granularidad. - **Interpretable en biología**: La modularidad se ajusta muy bien al análisis de redes biológicas, ya que las **comunidades reflejan posibles funciones biológicas** o procesos celulares, como vías metabólicas, complejos proteicos, o grupos de genes relacionados.
+**Ventajas**: 
+- **Rápido y escalable**: Louvain es eficiente, lo que lo hace adecuado para redes grandes con miles o incluso millones de nodos. 
+- **Capacidad de detectar comunidades a múltiples escalas**: El proceso jerárquico permite identificar comunidades en diferentes niveles de granularidad. 
+- **Interpretable en biología**: La modularidad se ajusta muy bien al análisis de redes biológicas, ya que las **comunidades reflejan posibles funciones biológicas** o procesos celulares, como vías metabólicas, complejos proteicos, o grupos de genes relacionados.
 
-**Desventajas**: - **No siempre encuentra la partición global óptima**: Aunque el algoritmo es eficiente, debido a su naturaleza heurística, los resultados pueden variar dependiendo de la red de entrada. - **Reducción de resolución**: En redes con comunidades pequeñas y dispersas, el algoritmo puede no identificar correctamente comunidades de tamaño pequeño, lo que puede afectar su capacidad para detectar subestructuras en redes muy finas.
+**Desventajas**: 
+- **No siempre encuentra la partición global óptima**: Aunque el algoritmo es eficiente, debido a su naturaleza heurística, los resultados pueden variar dependiendo de la red de entrada. 
+- **Reducción de resolución**: En redes con comunidades pequeñas y dispersas, el algoritmo puede no identificar correctamente comunidades de tamaño pequeño, lo que puede afectar su capacidad para detectar subestructuras en redes muy finas.
 
 #### **Ejemplo en R: Algoritmo Louvain**
 
@@ -572,7 +567,7 @@ En este ejemplo, el algoritmo **Louvain** detecta comunidades dentro de una red 
 
 El algoritmo **Infomap** es un enfoque de clustering basado en la teoría de la información, diseñado para encontrar comunidades en redes complejas. En lugar de basarse directamente en medidas de modularidad o distancia entre nodos, como en los métodos anteriores, Infomap utiliza un enfoque inspirado en el **mapa de flujo de información**. Su objetivo es dividir la red de tal manera que se minimice la cantidad total de información necesaria para describir los movimientos de un "paseador" aleatorio a través de la red, lo que se traduce en la identificación de comunidades.
 
-Este algoritmo es muy adecuado para redes con estructuras jerárquicas y comunidades con una fuerte organización interna. En el contexto de **biología de sistemas**, Infomap ha demostrado ser útil para identificar módulos funcionales en redes de interacción proteína-proteína (PPI), redes metabólicas, y redes de regulación genética, donde los módulos corresponden a grupos de genes o proteínas que están estrechamente relacionados funcionalmente.
+Este algoritmo es muy adecuado para redes con estructuras jerárquicas y comunidades con una fuerte organización interna.
 
 ### **¿Cómo Funciona el Algoritmo Infomap?**
 
@@ -697,3 +692,4 @@ Aquí está el proceso paso a paso:
 **Ventajas**: - **Escalabilidad**: El algoritmo es muy eficiente, especialmente en redes grandes, ya que no requiere el cálculo de métricas complejas, como la modularidad. - **Simplicidad**: Es un algoritmo simple de entender e implementar. No requiere ninguna información de la estructura global de la red, solo las conexiones locales entre los nodos.
 
 **Desventajas**: - **Estabilidad**: Puede ser sensible al orden de los nodos en las iteraciones. En redes con estructuras complejas o de gran tamaño, la convergencia puede ser lenta o inestable. - **Dependencia de la inicialización**: Los resultados pueden depender de cómo se asignan las etiquetas iniciales. En algunos casos, el algoritmo puede dar lugar a particiones inadecuadas si no se tiene en cuenta la conectividad entre los nodos. - **Comunidad solapada**: No es adecuado para detectar comunidades solapadas, donde un nodo pertenece a varias comunidades al mismo tiempo.
+
