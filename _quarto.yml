@@ -8,7 +8,7 @@ project:
     - analisis_topo_2.qmd
     - clustering.qmd
     - clustering_2.qmd
-    # - func_enric.qmd
+    - func_enric.qmd
     # - coexp.qmd
     # - recreate_aa.qmd
 
@@ -28,8 +28,8 @@ website:
         text: Clustering
       # - href: clustering_2.qmd
       #   text: Clustering Enlaces
-      # - href: func_enric.qmd
-      #   text: Enriquecimiento Funcional
+      - href: func_enric.qmd
+        text: Enriquecimiento Funcional
       # - href: coexp.qmd
       #   text: Coexpression Analysis
       # - href: recreate_aa.qmd

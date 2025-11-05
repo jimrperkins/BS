@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Análisis de Enriquecimiento Funcional (Functional Enrichment Analysis, FEA) con R – Biología de Sistemas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Biología de Sistemas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./minimal_analysis.html"> 
+<span class="menu-text">Minimal Análisis</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./analisis_topo.html"> 
+<span class="menu-text">Análisis y Topología (I)</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./analisis_topo_2.html"> 
+<span class="menu-text">Análisis y Topología (II)</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./clustering.html"> 
+<span class="menu-text">Clustering</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./func_enric.html" aria-current="page"> 
+<span class="menu-text">Enriquecimiento Funcional</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a>
+  <ul class="collapse">
+  <li><a href="#definición" id="toc-definición" class="nav-link" data-scroll-target="#definición">Definición:</a></li>
+  <li><a href="#idea-clave" id="toc-idea-clave" class="nav-link" data-scroll-target="#idea-clave">Idea clave:</a></li>
+  </ul></li>
+  <li><a href="#conjunto-de-genes-de-consulta" id="toc-conjunto-de-genes-de-consulta" class="nav-link" data-scroll-target="#conjunto-de-genes-de-consulta">Conjunto de Genes de Consulta</a>
+  <ul class="collapse">
+  <li><a href="#ejemplos-de-conjuntos-de-genes-de-consulta" id="toc-ejemplos-de-conjuntos-de-genes-de-consulta" class="nav-link" data-scroll-target="#ejemplos-de-conjuntos-de-genes-de-consulta">Ejemplos de conjuntos de genes de consulta:</a></li>
+  </ul></li>
+  <li><a href="#sistema-de-clasificación-funcional" id="toc-sistema-de-clasificación-funcional" class="nav-link" data-scroll-target="#sistema-de-clasificación-funcional">Sistema de Clasificación Funcional</a>
+  <ul class="collapse">
+  <li><a href="#bases-de-datos-de-vías" id="toc-bases-de-datos-de-vías" class="nav-link" data-scroll-target="#bases-de-datos-de-vías">1. <strong>Bases de datos de vías</strong>:</a>
+  <ul class="collapse">
+  <li><a href="#ejemplos-de-bases-de-datos-de-vías" id="toc-ejemplos-de-bases-de-datos-de-vías" class="nav-link" data-scroll-target="#ejemplos-de-bases-de-datos-de-vías">Ejemplos de bases de datos de vías:</a></li>
+  </ul></li>
+  <li><a href="#ontologías" id="toc-ontologías" class="nav-link" data-scroll-target="#ontologías">2. <strong>Ontologías</strong>:</a>
+  <ul class="collapse">
+  <li><a href="#ejemplos-de-ontologías" id="toc-ejemplos-de-ontologías" class="nav-link" data-scroll-target="#ejemplos-de-ontologías">Ejemplos de ontologías:</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#métodos-de-análisis-de-enriquecimiento-funcional" id="toc-métodos-de-análisis-de-enriquecimiento-funcional" class="nav-link" data-scroll-target="#métodos-de-análisis-de-enriquecimiento-funcional">Métodos de Análisis de Enriquecimiento Funcional</a>
+  <ul class="collapse">
+  <li><a href="#análisis-de-sobrerrepresentación-ora" id="toc-análisis-de-sobrerrepresentación-ora" class="nav-link" data-scroll-target="#análisis-de-sobrerrepresentación-ora">Análisis de Sobrerrepresentación (ORA)</a>
+  <ul class="collapse">
+  <li><a href="#cómo-calcula-el-p-valor-el-test-exacto-de-fisher" id="toc-cómo-calcula-el-p-valor-el-test-exacto-de-fisher" class="nav-link" data-scroll-target="#cómo-calcula-el-p-valor-el-test-exacto-de-fisher">¿Cómo calcula el p-valor el test exacto de Fisher?</a></li>
+  <li><a href="#tabla-de-contingencia" id="toc-tabla-de-contingencia" class="nav-link" data-scroll-target="#tabla-de-contingencia">Tabla de contingencia:</a></li>
+  </ul></li>
+  <li><a href="#implementación-de-ora-en-clusterprofiler" id="toc-implementación-de-ora-en-clusterprofiler" class="nav-link" data-scroll-target="#implementación-de-ora-en-clusterprofiler">Implementación de ORA en <strong>clusterProfiler</strong></a>
+  <ul class="collapse">
+  <li><a href="#cargar-el-paquete" id="toc-cargar-el-paquete" class="nav-link" data-scroll-target="#cargar-el-paquete">1. <strong>Cargar el Paquete</strong></a></li>
+  <li><a href="#definir-los-genes-de-interés" id="toc-definir-los-genes-de-interés" class="nav-link" data-scroll-target="#definir-los-genes-de-interés">2. <strong>Definir los Genes de Interés</strong></a></li>
+  <li><a href="#realizar-el-análisis-de-sobrerrepresentación" id="toc-realizar-el-análisis-de-sobrerrepresentación" class="nav-link" data-scroll-target="#realizar-el-análisis-de-sobrerrepresentación">3. <strong>Realizar el Análisis de Sobrerrepresentación</strong></a></li>
+  <li><a href="#visualizar-los-resultados" id="toc-visualizar-los-resultados" class="nav-link" data-scroll-target="#visualizar-los-resultados">4. <strong>Visualizar los Resultados</strong></a></li>
+  </ul></li>
+  <li><a href="#gene-set-enrichment-analysis-gsea" id="toc-gene-set-enrichment-analysis-gsea" class="nav-link" data-scroll-target="#gene-set-enrichment-analysis-gsea">Gene Set Enrichment Analysis (GSEA)</a>
+  <ul class="collapse">
+  <li><a href="#cómo-funciona-gsea" id="toc-cómo-funciona-gsea" class="nav-link" data-scroll-target="#cómo-funciona-gsea">¿Cómo funciona GSEA?</a></li>
+  <li><a href="#puntuación-de-enriquecimiento-es-y-el-hit-score" id="toc-puntuación-de-enriquecimiento-es-y-el-hit-score" class="nav-link" data-scroll-target="#puntuación-de-enriquecimiento-es-y-el-hit-score">Puntuación de Enriquecimiento (ES) y el <strong>Hit Score</strong></a></li>
+  <li><a href="#normalización-de-la-puntuación-de-enriquecimiento-es" id="toc-normalización-de-la-puntuación-de-enriquecimiento-es" class="nav-link" data-scroll-target="#normalización-de-la-puntuación-de-enriquecimiento-es">Normalización de la Puntuación de Enriquecimiento (ES)</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-de-gsea-con-r" id="toc-ejemplo-de-gsea-con-r" class="nav-link" data-scroll-target="#ejemplo-de-gsea-con-r">Ejemplo de GSEA con R</a>
+  <ul class="collapse">
+  <li><a href="#instalar-y-cargar-las-bibliotecas-necesarias" id="toc-instalar-y-cargar-las-bibliotecas-necesarias" class="nav-link" data-scroll-target="#instalar-y-cargar-las-bibliotecas-necesarias">1. <strong>Instalar y cargar las bibliotecas necesarias</strong></a></li>
+  <li><a href="#preparar-los-datos-de-entrada" id="toc-preparar-los-datos-de-entrada" class="nav-link" data-scroll-target="#preparar-los-datos-de-entrada">2. <strong>Preparar los datos de entrada</strong></a></li>
+  <li><a href="#realizar-el-análisis-de-gsea" id="toc-realizar-el-análisis-de-gsea" class="nav-link" data-scroll-target="#realizar-el-análisis-de-gsea">3. <strong>Realizar el análisis de GSEA</strong></a></li>
+  <li><a href="#interpretación-de-los-resultados" id="toc-interpretación-de-los-resultados" class="nav-link" data-scroll-target="#interpretación-de-los-resultados">4. <strong>Interpretación de los resultados</strong></a></li>
+  <li><a href="#ejemplo-de-buena-puntuación-de-gsea" id="toc-ejemplo-de-buena-puntuación-de-gsea" class="nav-link" data-scroll-target="#ejemplo-de-buena-puntuación-de-gsea">5. <strong>Ejemplo de buena puntuación de GSEA</strong></a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones">Conclusiones</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Análisis de Enriquecimiento Funcional (Functional Enrichment Analysis, FEA) con R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introducción" class="level1">
+<h1>Introducción</h1>
+<p>El <strong>análisis de enriquecimiento funcional (Functional Enrichment Analysis, FEA)</strong> es una metodología utilizada para identificar las categorías biológicas o procesos (por ejemplo, vías metabólicas, funciones moleculares) que están sobrerrepresentadas en un conjunto de genes frente a un conjunto de fondo.</p>
+<section id="definición" class="level2">
+<h2 class="anchored" data-anchor-id="definición">Definición:</h2>
+<p>El análisis de enriquecimiento funcional identifica temas o procesos biológicos (como rutas o funciones moleculares) que están sobre-representados en un conjunto de genes comparado con un conjunto de fondo.</p>
+</section>
+<section id="idea-clave" class="level2">
+<h2 class="anchored" data-anchor-id="idea-clave">Idea clave:</h2>
+<p>El FEA ayuda a interpretar la relevancia biológica de grandes conjuntos de datos, como aquellos obtenidos en experimentos de genómica o transcriptómica, proporcionando contexto biológico para los hallazgos.</p>
+<p>El FEA generalmente involucra tres componentes principales:</p>
+<ol type="1">
+<li><strong>Conjunto de genes de consulta</strong> (por ejemplo, conjunto de genes sin ordenar o clasificado).</li>
+<li><strong>Sistema de clasificación funcional</strong> – bases de datos de vías, ontologías y otras categorías funcionales.</li>
+<li><strong>Algoritmo de enriquecimiento</strong> – compara los genes de consulta con el sistema de clasificación funcional para identificar categorías sobrerrepresentadas.</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="conjunto-de-genes-de-consulta" class="level1">
+<h1>Conjunto de Genes de Consulta</h1>
+<p>El <strong>conjunto de genes de consulta</strong> es el punto de partida en el análisis de enriquecimiento funcional. Este conjunto puede estar compuesto por genes asociados a un fenotipo, genes implicados en una expresión diferencial, o genes identificados en módulos de co-expresión.</p>
+<section id="ejemplos-de-conjuntos-de-genes-de-consulta" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplos-de-conjuntos-de-genes-de-consulta">Ejemplos de conjuntos de genes de consulta:</h2>
+<ul>
+<li><strong>Listas no ordenadas</strong>: Genes asociados a un fenotipo, como los genes relacionados con términos de <strong>HPO</strong> (Human Phenotype Ontology), genes implicados en expresión diferencial, módulos de co-expresión o hubs de red.</li>
+<li><strong>Listas ordenadas</strong>: Genes ordenados por cambios en la expresión (por ejemplo, log2 de cambio en la expresión o significancia estadística).</li>
+</ul>
+<p>Estos conjuntos de genes se comparan luego con una base de datos de categorías funcionales para identificar términos o procesos enriquecidos en el conjunto de interés.</p>
+<hr>
+</section>
+</section>
+<section id="sistema-de-clasificación-funcional" class="level1">
+<h1>Sistema de Clasificación Funcional</h1>
+<p>El <strong>sistema de clasificación funcional</strong> organiza el significado biológico de los genes a través de diferentes recursos, como bases de datos de vías o ontologías. Estos sistemas permiten vincular los genes a funciones biológicas conocidas y procesos celulares.</p>
+<section id="bases-de-datos-de-vías" class="level2">
+<h2 class="anchored" data-anchor-id="bases-de-datos-de-vías">1. <strong>Bases de datos de vías</strong>:</h2>
+<p>Son colecciones de interacciones moleculares y procesos que representan rutas biológicas como transducción de señales, vías metabólicas y regulación génica.</p>
+<section id="ejemplos-de-bases-de-datos-de-vías" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplos-de-bases-de-datos-de-vías">Ejemplos de bases de datos de vías:</h3>
+<ul>
+<li><strong>KEGG (Kyoto Encyclopedia of Genes and Genomes)</strong>: Vías metabólicas y de señalización.</li>
+<li><strong>Reactome</strong>: Eventos moleculares detallados en rutas biológicas.</li>
+<li><strong>BioCarta</strong>: Procesos celulares y vías de señalización.</li>
+</ul>
+</section>
+</section>
+<section id="ontologías" class="level2">
+<h2 class="anchored" data-anchor-id="ontologías">2. <strong>Ontologías</strong>:</h2>
+<p>Son representaciones jerárquicas de conceptos biológicos y sus relaciones. Permiten organizar el conocimiento biológico en términos amplios o específicos.</p>
+<section id="ejemplos-de-ontologías" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplos-de-ontologías">Ejemplos de ontologías:</h3>
+<ul>
+<li><strong>Gene Ontology (GO)</strong>:
+<ul>
+<li><strong>Biological Process (BP)</strong>: Funciones biológicas realizadas por un conjunto de genes.</li>
+<li><strong>Molecular Function (MF)</strong>: Actividades de los genes o proteínas individuales.</li>
+<li><strong>Cellular Component (CC)</strong>: Ubicaciones de los productos génicos dentro de las células.</li>
+</ul></li>
+<li><strong>Human Phenotype Ontology (HPO)</strong>: Anomalías fenotípicas asociadas con enfermedades humanas.</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="métodos-de-análisis-de-enriquecimiento-funcional" class="level1">
+<h1>Métodos de Análisis de Enriquecimiento Funcional</h1>
+<p>Los métodos más comunes para realizar un <strong>análisis de enriquecimiento funcional (FEA)</strong> son:</p>
+<ol type="1">
+<li><strong>Análisis de Sobrerrepresentación (ORA)</strong>: Este método identifica si las categorías funcionales predefinidas (por ejemplo, términos GO o vías KEGG) están sobrerrepresentadas en un conjunto de genes de consulta en comparación con un conjunto de fondo.</li>
+<li><strong>Gene Set Enrichment Analysis (GSEA)</strong>: A diferencia de ORA, GSEA no utiliza un umbral para seleccionar genes, sino que analiza la <strong>enriquecimiento a lo largo de una lista ordenada de genes</strong>.</li>
+</ol>
+<section id="análisis-de-sobrerrepresentación-ora" class="level2">
+<h2 class="anchored" data-anchor-id="análisis-de-sobrerrepresentación-ora">Análisis de Sobrerrepresentación (ORA)</h2>
+<section id="cómo-calcula-el-p-valor-el-test-exacto-de-fisher" class="level3">
+<h3 class="anchored" data-anchor-id="cómo-calcula-el-p-valor-el-test-exacto-de-fisher">¿Cómo calcula el p-valor el test exacto de Fisher?</h3>
+<p>El <strong>test exacto de Fisher</strong> se utiliza para calcular el p-valor en el análisis de sobrerrepresentación. A continuación, te muestro un ejemplo con valores reales.</p>
+<p>Imaginemos que estamos analizando el término GO <strong>GO:0007155</strong> (“adhesion celular”) en un conjunto de genes y queremos comprobar si está sobrerrepresentado en el conjunto de genes de consulta frente al fondo.</p>
+</section>
+<section id="tabla-de-contingencia" class="level3">
+<h3 class="anchored" data-anchor-id="tabla-de-contingencia">Tabla de contingencia:</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 32%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Genes con GO:0007155</strong></th>
+<th><strong>Genes sin GO:0007155</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Genes de Consulta</strong></td>
+<td>25</td>
+<td>75</td>
+</tr>
+<tr class="even">
+<td><strong>Genes de Fondo</strong></td>
+<td>100</td>
+<td>800</td>
+</tr>
+</tbody>
+</table>
+<p>#### Cálculo del p-valor:</p>
+<p>El <strong>p-valor</strong> se calcula con el <strong>test exacto de Fisher</strong> utilizando la siguiente fórmula:</p>
+<p><span class="math display">\[
+  P = \frac{(a+b)! (c+d)! (a+c)! (b+d)!}{a! b! c! d! (a+b+c+d)!}
+\]</span></p>
+<p>Donde:</p>
+<ul>
+<li><strong>a</strong> = 25 (genes de consulta con GO:0007155)</li>
+<li><strong>b</strong> = 75 (genes de consulta sin GO:0007155)</li>
+<li><strong>c</strong> = 100 (genes de fondo con GO:0007155)</li>
+<li><strong>d</strong> = 800 (genes de fondo sin GO:0007155)</li>
+</ul>
+<p>El cálculo se realiza con el siguiente código en R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tabla de contingencia</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">25</span>  <span class="co"># Genes de consulta con GO:0007155</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">75</span>  <span class="co"># Genes de consulta sin GO:0007155</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># Genes de fondo con GO:0007155</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="dv">800</span> <span class="co"># Genes de fondo sin GO:0007155</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizar el test exacto de Fisher</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>fisher_result <span class="ot">&lt;-</span> <span class="fu">fisher.test</span>(<span class="fu">matrix</span>(<span class="fu">c</span>(a, b, c, d), <span class="at">nrow =</span> <span class="dv">2</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el p-valor</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>fisher_result<span class="sc">$</span>p.value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0003224737</code></pre>
+</div>
+</div>
+<p>Este código devolverá el p-valor, que indica si el término <strong>GO:0007155</strong> está sobrerrepresentado en el conjunto de genes de consulta.</p>
+</section>
+</section>
+<section id="implementación-de-ora-en-clusterprofiler" class="level2">
+<h2 class="anchored" data-anchor-id="implementación-de-ora-en-clusterprofiler">Implementación de ORA en <strong>clusterProfiler</strong></h2>
+<p>Ahora que hemos cubierto la teoría, pasemos a la implementación práctica de ORA utilizando el paquete <strong>clusterProfiler</strong> en R.</p>
+<section id="cargar-el-paquete" class="level3">
+<h3 class="anchored" data-anchor-id="cargar-el-paquete">1. <strong>Cargar el Paquete</strong></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar el paquete clusterProfiler y base de datos humano</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+
+Please cite:
+
+Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
+clusterProfiler: an R package for comparing biological themes among
+gene clusters. OMICS: A Journal of Integrative Biology. 2012,
+16(5):284-287</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'clusterProfiler'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    filter</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: AnnotationDbi</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: stats4</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: BiocGenerics</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: generics</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'generics'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'BiocGenerics'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    IQR, mad, sd, var, xtabs</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Biobase</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: IRanges</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: S4Vectors</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'S4Vectors'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:clusterProfiler':
+
+    rename</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:utils':
+
+    findMatches</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    expand.grid, I, unname</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'IRanges'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:clusterProfiler':
+
+    slice</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'AnnotationDbi'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:clusterProfiler':
+
+    select</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>enrichplot v1.28.4 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+
+Please cite:
+
+Guangchuang Yu, Fei Li, Yide Qin, Xiaochen Bo, Yibo Wu and Shengqi
+Wang. GOSemSim: an R package for measuring semantic similarity among GO
+terms and gene products. Bioinformatics. 2010, 26(7):976-978</code></pre>
+</div>
+</div>
+</section>
+<section id="definir-los-genes-de-interés" class="level3">
+<h3 class="anchored" data-anchor-id="definir-los-genes-de-interés">2. <strong>Definir los Genes de Interés</strong></h3>
+<p>Supongamos que tenemos un conjunto de genes de interés que han sido identificados en un experimento (por ejemplo, genes asociados con cáncer).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lista de genes de interés (nombres reales de genes)</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>genes_of_interest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"BRCA1"</span>, <span class="st">"TP53"</span>, <span class="st">"EGFR"</span>, <span class="st">"MYC"</span>, <span class="st">"KRAS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="realizar-el-análisis-de-sobrerrepresentación" class="level3">
+<h3 class="anchored" data-anchor-id="realizar-el-análisis-de-sobrerrepresentación">3. <strong>Realizar el Análisis de Sobrerrepresentación</strong></h3>
+<p>Usamos la función <code>enrichGO()</code> para realizar el análisis de sobrerrepresentación de términos <strong>GO: Biological Process (BP)</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizar el análisis de ORA con términos GO: Biological Process</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>go_enrich <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(<span class="at">gene =</span> genes_of_interest, </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">OrgDb =</span> org.Hs.eg.db, </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>, </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">ont =</span> <span class="st">"BP"</span>, </span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,  <span class="co"># Ajuste de p-valor con método Benjamini-Hochberg</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>)   <span class="co"># Umbral de significancia</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(go_enrich))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   ID                                    Description GeneRatio
+GO:0009314 GO:0009314                          response to radiation       5/5
+GO:0060251 GO:0060251         regulation of glial cell proliferation       3/5
+GO:1902895 GO:1902895     positive regulation of miRNA transcription       3/5
+GO:0014009 GO:0014009                       glial cell proliferation       3/5
+GO:2000630 GO:2000630 positive regulation of miRNA metabolic process       3/5
+             BgRatio RichFactor FoldEnrichment   zScore       pvalue
+GO:0009314 442/18805 0.01131222       42.54525 14.41424 7.016434e-09
+GO:0060251  42/18805 0.07142857      268.64286 28.31786 1.032738e-07
+GO:1902895  56/18805 0.05357143      201.48214 24.50258 2.490896e-07
+GO:0014009  61/18805 0.04918033      184.96721 23.46958 3.232739e-07
+GO:2000630  67/18805 0.04477612      168.40299 22.38567 4.300919e-07
+               p.adjust       qvalue                   geneID Count
+GO:0009314 5.528950e-06 1.248187e-06 BRCA1/TP53/EGFR/MYC/KRAS     5
+GO:0060251 4.068988e-05 9.185933e-06           TP53/EGFR/KRAS     3
+GO:1902895 5.170988e-05 1.167375e-05            TP53/EGFR/MYC     3
+GO:0014009 5.170988e-05 1.167375e-05           TP53/EGFR/KRAS     3
+GO:2000630 5.170988e-05 1.167375e-05            TP53/EGFR/MYC     3</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizar-los-resultados" class="level3">
+<h3 class="anchored" data-anchor-id="visualizar-los-resultados">4. <strong>Visualizar los Resultados</strong></h3>
+<p>Podemos visualizar los resultados de ORA en un gráfico de puntos utilizando la función <code>dotplot()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los resultados de ORA</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(go_enrich)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="func_enric_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Este gráfico mostrará los términos de GO que están significativamente enriquecidos en el conjunto de genes de interés.</p>
+<hr>
+</section>
+</section>
+<section id="gene-set-enrichment-analysis-gsea" class="level2">
+<h2 class="anchored" data-anchor-id="gene-set-enrichment-analysis-gsea">Gene Set Enrichment Analysis (GSEA)</h2>
+<p>El <strong>Gene Set Enrichment Analysis (GSEA)</strong> es una metodología utilizada para determinar si los genes de un conjunto específico (o <strong>gene set</strong>) están distribuidos de manera <strong>enriquecida</strong> en las posiciones altas o bajas de una lista ordenada de genes. A diferencia de otros métodos, como el <strong>Análisis de Sobrerrepresentación (ORA)</strong>, GSEA no requiere un umbral predefinido para seleccionar genes significativos. En cambio, utiliza toda la lista de genes ordenados de acuerdo a una métrica, como el cambio en la expresión génica o el valor p, para identificar si las categorías funcionales (como <strong>Gene Ontology (GO)</strong> o vías de <strong>KEGG</strong>) están asociadas con genes más relevantes.</p>
+<section id="cómo-funciona-gsea" class="level3">
+<h3 class="anchored" data-anchor-id="cómo-funciona-gsea">¿Cómo funciona GSEA?</h3>
+<p>El algoritmo de GSEA calcula una <strong>puntuación de enriquecimiento (Enrichment Score, ES)</strong> para cada conjunto de genes basado en cómo estos genes se distribuyen en la lista ordenada de genes. Esta puntuación refleja cuán “enriquecidos” están los genes de un conjunto en las primeras o últimas posiciones de la lista.</p>
+</section>
+<section id="puntuación-de-enriquecimiento-es-y-el-hit-score" class="level3">
+<h3 class="anchored" data-anchor-id="puntuación-de-enriquecimiento-es-y-el-hit-score">Puntuación de Enriquecimiento (ES) y el <strong>Hit Score</strong></h3>
+<p>En GSEA, la <strong>puntuación de enriquecimiento (ES)</strong> se calcula utilizando un <strong>hit score</strong> que aumenta o disminuye conforme se recorre la lista de genes. El proceso es el siguiente:</p>
+<ol type="1">
+<li><p><strong>Ordenar los genes</strong>: Primero, se ordenan los genes en función de una métrica de interés (por ejemplo, el <strong>log2 fold change</strong> entre dos condiciones experimentales).</p></li>
+<li><p><strong>Puntuación del “hit”</strong>: A medida que se recorre la lista de genes ordenados, la puntuación aumenta cuando un gen que pertenece al conjunto de genes de interés (“hit”) aparece en la lista. Cada vez que un gen de la lista pertenece al conjunto de genes, se suma un valor positivo al <strong>hit score</strong>. En caso contrario, la puntuación disminuye, lo que puede causar que el <strong>hit score</strong> baje en valores negativos.</p></li>
+<li><p><strong>Máxima puntuación de hit (ES)</strong>: La puntuación de enriquecimiento (ES) es el valor máximo alcanzado por el <strong>hit score</strong> a medida que se avanza por la lista. Es decir, se recorre la lista de genes, acumulando el <strong>hit score</strong> conforme aparecen genes del conjunto de interés. La puntuación <strong>ES</strong> será el valor más alto que alcance el <strong>hit score</strong> durante todo el recorrido.</p></li>
+</ol>
+</section>
+<section id="normalización-de-la-puntuación-de-enriquecimiento-es" class="level3">
+<h3 class="anchored" data-anchor-id="normalización-de-la-puntuación-de-enriquecimiento-es">Normalización de la Puntuación de Enriquecimiento (ES)</h3>
+<p>La <strong>puntuación ES</strong> puede normalizarse para evitar sesgos debido al tamaño del conjunto de genes. La normalización se realiza dividiendo la puntuación <strong>ES</strong> entre el tamaño del conjunto de genes, lo que permite hacer comparaciones más justas entre diferentes conjuntos de genes.</p>
+<hr>
+</section>
+</section>
+<section id="ejemplo-de-gsea-con-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-de-gsea-con-r">Ejemplo de GSEA con R</h2>
+<p>En este ejemplo, utilizaremos una lista de genes ordenados por <strong>log2 fold change</strong> y realizaremos un análisis de GSEA para determinar si los conjuntos de genes asociados con ciertas vías están enriquecidos en los genes con mayor cambio de expresión.</p>
+<section id="instalar-y-cargar-las-bibliotecas-necesarias" class="level3">
+<h3 class="anchored" data-anchor-id="instalar-y-cargar-las-bibliotecas-necesarias">1. <strong>Instalar y cargar las bibliotecas necesarias</strong></h3>
+<p>Primero, necesitamos instalar y cargar los paquetes necesarios para realizar GSEA en R, como <code>clusterProfiler</code> y <code>org.Hs.eg.db</code> (base de datos de genes humanos).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar los paquetes necesarios (como con ORA)</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="preparar-los-datos-de-entrada" class="level3">
+<h3 class="anchored" data-anchor-id="preparar-los-datos-de-entrada">2. <strong>Preparar los datos de entrada</strong></h3>
+<p>Supongamos que tenemos una lista de genes ordenados por <strong>log2 fold change</strong>. Para este ejemplo, utilizamos genes simulados con su respectivo valor de log2 fold change.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define significant genes associated with apoptosis (example GO term)</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>significant_genes <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TP53"</span>, <span class="st">"BAX"</span>, <span class="st">"CASP3"</span>, <span class="st">"CASP8"</span>, <span class="st">"FAS"</span>, <span class="st">"FASLG"</span>, <span class="st">"BCL2"</span>, <span class="st">"BCL2L1"</span>,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"CYCS"</span>, <span class="st">"BAD"</span>, <span class="st">"BID"</span>, <span class="st">"DIABLO"</span>, <span class="st">"XIAP"</span>, <span class="st">"TRAF2"</span>, <span class="st">"TNFRSF10B"</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get 500 random gene symbols from org.Hs.eg.db (or another source)</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>all_genes <span class="ot">&lt;-</span> <span class="fu">keys</span>(org.Hs.eg.db, <span class="at">keytype =</span> <span class="st">"SYMBOL"</span>)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)  <span class="co"># Ensure reproducibility</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>random_genes <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">setdiff</span>(all_genes, significant_genes), <span class="dv">5000</span>)</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign log2FC values</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>log2FC_significant <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">length</span>(significant_genes), <span class="dv">2</span>, <span class="dv">5</span>)</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>log2FC_random <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">length</span>(random_genes), <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)  <span class="co"># Smaller log2FC for random genes</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a single data frame</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>gene_list <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gene =</span> <span class="fu">c</span>(significant_genes, random_genes),</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">log2FC =</span> <span class="fu">c</span>(log2FC_significant, log2FC_random)</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare named vector for gseGO input</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>gene_list_vector <span class="ot">&lt;-</span> <span class="fu">setNames</span>(gene_list<span class="sc">$</span>log2FC, gene_list<span class="sc">$</span>Gene)</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort gene list in descending order</span></span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>gene_list_vector <span class="ot">&lt;-</span> <span class="fu">sort</span>(gene_list_vector, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the top of the gene list</span></span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gene_list_vector)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     TP53       BAX       BAD      XIAP       BID TNFRSF10B 
+ 4.867681  4.811857  4.419787  4.299015  3.817163  3.776516 </code></pre>
+</div>
+</div>
+</section>
+<section id="realizar-el-análisis-de-gsea" class="level3">
+<h3 class="anchored" data-anchor-id="realizar-el-análisis-de-gsea">3. <strong>Realizar el análisis de GSEA</strong></h3>
+<p>Utilizamos el paquete <strong>clusterProfiler</strong> para realizar GSEA sobre los términos de <strong>Gene Ontology (GO)</strong> en el subdominio de <strong>Biological Process (BP)</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizar el análisis GSEA para los términos GO: Biological Process (BP)</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>gseGO_results <span class="ot">&lt;-</span> <span class="fu">gseGO</span>(</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">geneList =</span> gene_list_vector,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">OrgDb =</span> org.Hs.eg.db,  </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">ont =</span> <span class="st">"BP"</span>,            <span class="co"># Biological Process</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>using 'fgsea' for GSEA analysis, please cite Korotkevich et al (2019).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>preparing geneSet collections...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>GSEA analysis...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in fgseaMultilevel(pathways = pathways, stats = stats, minSize =
+minSize, : For some of the pathways the P-values were likely overestimated. For
+such pathways log2err is set to NA.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in fgseaMultilevel(pathways = pathways, stats = stats, minSize =
+minSize, : For some pathways, in reality P-values are less than 1e-10. You can
+set the `eps` argument to zero for better estimation.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>leading edge analysis...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>done...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">head</span>(gseGO_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   ID                                  Description setSize
+GO:0097190 GO:0097190                  apoptotic signaling pathway      26
+GO:0042981 GO:0042981              regulation of apoptotic process      54
+GO:0043065 GO:0043065     positive regulation of apoptotic process      25
+GO:0043068 GO:0043068 positive regulation of programmed cell death      25
+GO:0043067 GO:0043067          regulation of programmed cell death      55
+GO:0097191 GO:0097191        extrinsic apoptotic signaling pathway      17
+           enrichmentScore      NES pvalue     p.adjust       qvalue rank
+GO:0097190       0.8869388 3.219074  1e-10 2.447065e-09 7.032015e-10   15
+GO:0042981       0.7036296 3.114001  1e-10 2.447065e-09 7.032015e-10  106
+GO:0043065       0.8591146 3.112250  1e-10 2.447065e-09 7.032015e-10  106
+GO:0043068       0.8591146 3.112250  1e-10 2.447065e-09 7.032015e-10  106
+GO:0043067       0.7011631 3.104486  1e-10 2.447065e-09 7.032015e-10  106
+GO:0097191       0.9341198 3.076241  1e-10 2.447065e-09 7.032015e-10  106
+                            leading_edge
+GO:0097190 tags=54%, list=0%, signal=54%
+GO:0042981 tags=30%, list=2%, signal=29%
+GO:0043065 tags=56%, list=2%, signal=55%
+GO:0043068 tags=56%, list=2%, signal=55%
+GO:0043067 tags=29%, list=2%, signal=29%
+GO:0097191 tags=71%, list=2%, signal=69%
+                                                                                   core_enrichment
+GO:0097190          TP53/BAX/BAD/BID/TNFRSF10B/BCL2/CYCS/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2
+GO:0042981 TP53/BAX/BAD/XIAP/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2/TFRC/HTT
+GO:0043065           TP53/BAX/BAD/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2/HTT
+GO:0043068           TP53/BAX/BAD/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2/HTT
+GO:0043067 TP53/BAX/BAD/XIAP/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2/TFRC/HTT
+GO:0097191                      BAX/BAD/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/TRAF2/HTT</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los resultados</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gseaplot2</span>(gseGO_results, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> gseGO_results<span class="sc">$</span>Description[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `aes_()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`
+ℹ The deprecated feature was likely used in the enrichplot package.
+  Please report the issue at
+  &lt;https://github.com/GuangchuangYu/enrichplot/issues&gt;.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.
+ℹ The deprecated feature was likely used in the enrichplot package.
+  Please report the issue at
+  &lt;https://github.com/GuangchuangYu/enrichplot/issues&gt;.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in grid.Call.graphics(C_rect, x$x, x$y, x$width, x$height,
+resolveHJust(x$just, : semi-transparency is not supported on this device:
+reported only once per page</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="func_enric_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretación-de-los-resultados" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-de-los-resultados">4. <strong>Interpretación de los resultados</strong></h3>
+<p>La tabla muestra los <strong>términos GO</strong> enriquecidos. Los términos GO que tienen una puntuación de ES alta y valores de p bajos son los más significativos.</p>
+<p>El gráfico generado por <code>gseaplot2</code> demuestra que los genes relacionados con la apoptosis aparecen hacia el principio de la lista, lo que da como resultado un valor de enriquecimiento (ES) muy alto. Esto no debería sorprendernos, ya que forzamos que estos genes se encuentren al principio de la lista asignándoles valores de FC muy altos.</p>
+</section>
+<section id="ejemplo-de-buena-puntuación-de-gsea" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplo-de-buena-puntuación-de-gsea">5. <strong>Ejemplo de buena puntuación de GSEA</strong></h3>
+<p>Supongamos que en el conjunto de genes tenemos una vía de <strong>cáncer de mama</strong> que incluye genes como <strong>BRCA1</strong>, <strong>TP53</strong>, y <strong>PIK3CA</strong>. Si esta vía está bien representada en los genes con log2 fold change altos (es decir, los genes más diferenciales), el valor de ES será alto, indicando que esta vía está enriquecida en los genes más relevantes.</p>
+<p>El análisis de GSEA nos ayudará a identificar si las vías relacionadas con el <strong>cáncer de mama</strong> están particularmente enriquecidas en genes con alto cambio de expresión, lo que podría sugerir que estos genes son importantes para el fenotipo observado.</p>
+</section>
+</section>
+</section>
+<section id="conclusiones" class="level1">
+<h1>Conclusiones</h1>
+<p>El análisis de enriquecimiento funcional es una herramienta poderosa para interpretar los resultados de estudios de genómica, transcriptómica y otros datos ómicos. Utilizando herramientas como <strong>clusterProfiler</strong> en R, podemos realizar análisis detallados de enriquecimiento y obtener información relevante sobre los procesos biológicos involucrados.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
