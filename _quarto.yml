@@ -26,10 +26,12 @@ website:
         text: Análisis y Topología (II)
       - href: clustering.qmd
         text: Clustering
-      # - href: clustering_2.qmd
-      #   text: Clustering Enlaces
+      - href: clustering_2.qmd
+        text: Clustering Enlaces
       - href: func_enric.qmd
         text: Enriquecimiento Funcional
+      # - href: func_enric_2.qmd
+      # text: Enriquecimiento Funcional (II)
       # - href: coexp.qmd
       #   text: Coexpression Analysis
       # - href: recreate_aa.qmd

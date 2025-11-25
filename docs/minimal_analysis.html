@@ -143,6 +143,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Clustering</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./clustering_2.html"> 
+<span class="menu-text">Clustering Enlaces</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./func_enric.html"> 
 <span class="menu-text">Enriquecimiento Funcional</span></a>
   </li>  
@@ -267,13 +271,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few genes</span></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(genes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                  id   name
-1     NCBIGene:81494  CFHR5
-2 NCBIGene:100147744 RNU7-1
-3      NCBIGene:9722 NOS1AP
-4      NCBIGene:7369   UMOD
-5      NCBIGene:2625  GATA3
-6      NCBIGene:1287 COL4A5</code></pre>
+<pre><code>              id   name
+1 NCBIGene:84942  WDR73
+2 NCBIGene:10677   AVIL
+3  NCBIGene:1285 COL4A3
+4 NCBIGene:54443   ANLN
+5  NCBIGene:9863  MAGI2
+6  NCBIGene:7827  NPHS2</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all the genes (uncomment)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># print(genes)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -373,11 +377,11 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of nodes:"</span>, num_nodes, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of nodes: 152 </code></pre>
+<pre><code>Number of nodes: 151 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of edges:"</span>, num_edges, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of edges: 336 </code></pre>
+<pre><code>Number of edges: 335 </code></pre>
 </div>
 </div>
 </section>
@@ -392,7 +396,7 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>average_degree <span class="ot">&lt;-</span> <span class="fu">mean</span>(degree_values)</span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average degree of all nodes:"</span>, average_degree, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Average degree of all nodes: 4.421053 </code></pre>
+<pre><code>Average degree of all nodes: 4.437086 </code></pre>
 </div>
 </div>
 </section>
@@ -404,7 +408,7 @@ Attaching package: 'igraph'</code></pre>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>network_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(g)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Network density:"</span>, network_density, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Network density: 0.02927849 </code></pre>
+<pre><code>Network density: 0.02958057 </code></pre>
 </div>
 </div>
 </section>
@@ -555,9 +559,10 @@ semi-transparency is not supported on this device: reported only once per page</
 
 Please cite:
 
-S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
-W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
-multiomics data. Nature Protocols. 2024, 19(11):3292-3320</code></pre>
+T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
+X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
+enrichment tool for interpreting omics data. The Innovation. 2021,
+2(3):100141</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
@@ -706,43 +711,43 @@ GO:0072001 GO:0072001
 GO:0072006 GO:0072006
 GO:0001822 GO:0001822
 GO:0002460 GO:0002460
-GO:0032835 GO:0032835
 GO:0002443 GO:0002443
+GO:0032835 GO:0032835
                                                                                                                          Description
 GO:0072001                                                                                                  renal system development
 GO:0072006                                                                                                       nephron development
 GO:0001822                                                                                                        kidney development
 GO:0002460 adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
-GO:0032835                                                                                                    glomerulus development
 GO:0002443                                                                                               leukocyte mediated immunity
+GO:0032835                                                                                                    glomerulus development
            GeneRatio   BgRatio RichFactor FoldEnrichment   zScore       pvalue
-GO:0072001    33/207 336/18805 0.09821429       8.922317 15.45886 5.562061e-22
-GO:0072006    25/207 161/18805 0.15527950      14.106430 17.61996 9.235263e-22
-GO:0001822    32/207 325/18805 0.09846154       8.944779 15.24227 2.290441e-21
-GO:0002460    31/207 396/18805 0.07828283       7.111636 12.96782 8.100770e-18
-GO:0032835    15/207  73/18805 0.20547945      18.666865 15.95534 2.100682e-15
-GO:0002443    31/207 483/18805 0.06418219       5.830658 11.34673 2.128505e-15
+GO:0072001    33/206 336/18805 0.09821429       8.965629 15.50536 4.750250e-22
+GO:0072006    25/206 161/18805 0.15527950      14.174908 17.66871 8.177251e-22
+GO:0001822    32/206 325/18805 0.09846154       8.988200 15.28810 1.966311e-21
+GO:0002460    31/206 396/18805 0.07828283       7.146158 13.00919 7.020551e-18
+GO:0002443    31/206 483/18805 0.06418219       5.858962 11.38530 1.853153e-15
+GO:0032835    15/206  73/18805 0.20547945      18.757481 15.99796 1.954155e-15
                p.adjust       qvalue
-GO:0072001 1.685897e-18 1.182114e-18
-GO:0072006 1.685897e-18 1.182114e-18
-GO:0001822 2.787466e-18 1.954510e-18
-GO:0002460 7.393978e-15 5.184493e-15
-GO:0032835 1.295195e-12 9.081620e-13
-GO:0002443 1.295195e-12 9.081620e-13
+GO:0072001 1.492348e-18 1.045827e-18
+GO:0072006 1.492348e-18 1.045827e-18
+GO:0001822 2.392345e-18 1.676539e-18
+GO:0002460 6.406253e-15 4.489457e-15
+GO:0002443 1.188778e-12 8.330872e-13
+GO:0032835 1.188778e-12 8.330872e-13
                                                                                                                                                                                                     geneID
-GO:0072001 UMOD/GATA3/COL4A4/COL4A3/LAMB2/NUP107/PLCE1/NUP160/KANK2/PTPRO/NUP85/NUP133/PAX2/LAMA5/NPHS1/MYO1E/WT1/CD2AP/MAGI2/NPHS2/SGPL1/NF1/RET/TREX1/MME/HNF1B/FOXC2/MYOCD/NPHP3/SEC61A1/JAG1/REN/ITGA3
-GO:0072006                                           UMOD/GATA3/COL4A4/COL4A3/LAMB2/NUP107/PLCE1/NUP160/PTPRO/NUP85/NUP133/PAX2/LAMA5/NPHS1/MYO1E/WT1/CD2AP/MAGI2/NPHS2/RET/HNF1B/FOXC2/SEC61A1/JAG1/ITGA3
-GO:0001822       UMOD/GATA3/COL4A4/COL4A3/LAMB2/NUP107/PLCE1/NUP160/KANK2/PTPRO/NUP85/NUP133/PAX2/LAMA5/NPHS1/MYO1E/WT1/CD2AP/MAGI2/NPHS2/SGPL1/NF1/RET/TREX1/MME/HNF1B/FOXC2/NPHP3/SEC61A1/JAG1/REN/ITGA3
-GO:0002460                      GATA3/EMP2/ADA/TREX1/PRKCD/FOXP3/JAK1/CD81/HLA-B/TLR4/STAT4/IL12A/IL10/IL23R/C4A/IL6/HLA-DRB1/CFI/C3/C1QA/WAS/JAG1/TNFAIP3/C4B/FCGR2B/TNFSF4/CR2/PDCD1/FCGR3B/IGHG1/FCGR2A
-GO:0032835                                                                                                           COL4A4/COL4A3/LAMB2/PLCE1/PTPRO/PAX2/NPHS1/MYO1E/WT1/CD2AP/MAGI2/NPHS2/RET/FOXC2/JAG1
-GO:0002443                 GATA3/EMP2/TREX1/PRKCD/FOXP3/CD81/KLRC4/HLA-B/TLR4/IL12A/IL10/IL23R/C4A/IL6/HLA-DRB1/CFI/C3/C1QA/WAS/DNASE1L3/JAG1/DNASE1/C4B/FCGR2B/TNFSF4/CR2/ITGAM/PDCD1/FCGR3B/IGHG1/FCGR2A
+GO:0072001 COL4A3/MAGI2/NPHS2/MYO1E/NPHS1/NUP133/CD2AP/NUP107/PAX2/PLCE1/NUP160/PTPRO/WT1/NUP85/LAMA5/KANK2/LAMB2/SGPL1/FOXC2/HNF1B/UMOD/GATA3/COL4A4/TREX1/RET/NF1/MME/ITGA3/SEC61A1/REN/JAG1/MYOCD/NPHP3
+GO:0072006                                           COL4A3/MAGI2/NPHS2/MYO1E/NPHS1/NUP133/CD2AP/NUP107/PAX2/PLCE1/NUP160/PTPRO/WT1/NUP85/LAMA5/LAMB2/FOXC2/HNF1B/UMOD/GATA3/COL4A4/RET/ITGA3/SEC61A1/JAG1
+GO:0001822       COL4A3/MAGI2/NPHS2/MYO1E/NPHS1/NUP133/CD2AP/NUP107/PAX2/PLCE1/NUP160/PTPRO/WT1/NUP85/LAMA5/KANK2/LAMB2/SGPL1/FOXC2/HNF1B/UMOD/GATA3/COL4A4/TREX1/RET/NF1/MME/ITGA3/SEC61A1/REN/JAG1/NPHP3
+GO:0002460                      EMP2/ADA/WAS/TLR4/C4A/IL23R/STAT4/IL12A/IL10/HLA-B/GATA3/C4B/HLA-DRB1/TNFAIP3/FCGR2B/PDCD1/TREX1/TNFSF4/IGHG1/CR2/FCGR3B/FCGR2A/IL6/CD81/CFI/FOXP3/C1QA/C3/JAG1/JAK1/PRKCD
+GO:0002443                 EMP2/DNASE1L3/WAS/KLRC4/TLR4/C4A/IL23R/IL12A/IL10/HLA-B/GATA3/C4B/HLA-DRB1/ITGAM/FCGR2B/DNASE1/PDCD1/TREX1/TNFSF4/IGHG1/CR2/FCGR3B/FCGR2A/IL6/CD81/CFI/FOXP3/C1QA/C3/JAG1/PRKCD
+GO:0032835                                                                                                           COL4A3/MAGI2/NPHS2/MYO1E/NPHS1/CD2AP/PAX2/PLCE1/PTPRO/WT1/LAMB2/FOXC2/COL4A4/RET/JAG1
            Count
 GO:0072001    33
 GO:0072006    25
 GO:0001822    32
 GO:0002460    31
-GO:0032835    15
-GO:0002443    31</code></pre>
+GO:0002443    31
+GO:0032835    15</code></pre>
 </div>
 </div>
 <p>En la tabla, las filas son terminos GO, y los de mas columnas son propiedades importantes</p>
@@ -758,8 +763,9 @@ GO:0002443    31</code></pre>
 
 Please cite:
 
-G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
-5(6):100722</code></pre>
+Guangchuang Yu, Li-Gen Wang, and Qing-Yu He. ChIPseeker: an
+R/Bioconductor package for ChIP peak annotation, comparison and
+visualization. Bioinformatics. 2015, 31(14):2382-2383</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dotplot to visualize enriched GO terms</span></span>
 <span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(enrich_results, <span class="at">showCategory =</span> <span class="dv">10</span>, <span class="at">title =</span> <span class="st">"GO Enrichment for Abnormal Renal Corpuscle Morphology"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -851,7 +857,7 @@ $`6`
 [1] "OSGEP"  "GON7"   "TPRKB"  "LAGE3"  "TP53RK" "YRDC"  
 
 $`7`
-[1] "COQ2"  "COQ8B" "COQ6"  "APTX" 
+[1] "COQ2"  "COQ8B" "COQ6" 
 
 $`8`
  [1] "ACTN4"   "APOE"    "APOL1"   "ANLN"    "TRPC6"   "KIRREL1" "CD2AP"  
