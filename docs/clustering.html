@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.5.45">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -180,8 +180,8 @@ window.Quarto = {
 <span class="menu-text">Enriquecimiento Funcional</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./func_enric_2.html"> 
-<span class="menu-text">Enriquecimiento Funcional (II)</span></a>
+    <a class="nav-link" href="./coexp.html"> 
+<span class="menu-text">Coexpression Analysis</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -489,7 +489,7 @@ Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \frac{k_i k_j}{2m} \right] \delta(c_
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Attaching package: 'igraph'</code></pre>
+Adjuntando el paquete: 'igraph'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -601,7 +601,7 @@ new community sizes
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `clusters()` was deprecated in igraph 2.0.0.
-ℹ Please use `components()` instead.</code></pre>
+i Please use `components()` instead.</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -1233,7 +1233,7 @@ Que diferencia Louvain de Fast_greedy, si los dos intentan maximizar modularidad
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">erdos.renyi.game</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)  <span class="co"># Crear una red aleatoria</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `erdos.renyi.game()` was deprecated in igraph 0.8.0.
-ℹ Please use `sample_gnp()` instead.</code></pre>
+i Please use `sample_gnp()` instead.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar el algoritmo Louvain</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>louvain_cluster <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(g)</span>

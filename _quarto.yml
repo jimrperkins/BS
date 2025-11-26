@@ -9,8 +9,8 @@ project:
     - clustering.qmd
     - clustering_2.qmd
     - func_enric.qmd
-    - func_enric_2.qmd
-    # - coexp.qmd
+    # - func_enric_2.qmd
+    - coexp.qmd
     # - recreate_aa.qmd
 
 website:
@@ -31,10 +31,10 @@ website:
         text: Clustering Enlaces
       - href: func_enric.qmd
         text: Enriquecimiento Funcional
-      - href: func_enric_2.qmd
-        text: Enriquecimiento Funcional (II)
-      # - href: coexp.qmd
-      #   text: Coexpression Analysis
+      # - href: func_enric_2.qmd
+      #   text: Enriquecimiento Funcional (II)
+      - href: coexp.qmd
+        text: Coexpression Analysis
       # - href: recreate_aa.qmd
       #   text: Build a Pathway
 

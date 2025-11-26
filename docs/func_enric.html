@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.5.45">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -180,8 +180,8 @@ window.Quarto = {
 <span class="menu-text">Enriquecimiento Funcional</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./func_enric_2.html"> 
-<span class="menu-text">Enriquecimiento Funcional (II)</span></a>
+    <a class="nav-link" href="./coexp.html"> 
+<span class="menu-text">Coexpression Analysis</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -425,7 +425,7 @@ window.Quarto = {
 <pre><code></code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
+<pre><code>clusterProfiler v4.12.6 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
 
 Please cite:
 
@@ -435,7 +435,7 @@ multiomics data. Nature Protocols. 2024, 19(11):3292-3320</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Attaching package: 'clusterProfiler'</code></pre>
+Adjuntando el paquete: 'clusterProfiler'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:stats':
@@ -444,30 +444,17 @@ Attaching package: 'clusterProfiler'</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: AnnotationDbi</code></pre>
+<pre><code>Cargando paquete requerido: AnnotationDbi</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: stats4</code></pre>
+<pre><code>Cargando paquete requerido: stats4</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: BiocGenerics</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: generics</code></pre>
+<pre><code>Cargando paquete requerido: BiocGenerics</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Attaching package: 'generics'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
-    setequal, union</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'BiocGenerics'</code></pre>
+Adjuntando el paquete: 'BiocGenerics'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -477,15 +464,15 @@ Attaching package: 'BiocGenerics'</code></pre>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:base':
 
-    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
-    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
-    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
-    unsplit, which.max, which.min</code></pre>
+    Filter, Find, Map, Position, Reduce, anyDuplicated, aperm, append,
+    as.data.frame, basename, cbind, colnames, dirname, do.call,
+    duplicated, eval, evalq, get, grep, grepl, intersect, is.unsorted,
+    lapply, mapply, match, mget, order, paste, pmax, pmax.int, pmin,
+    pmin.int, rank, rbind, rownames, sapply, setdiff, table, tapply,
+    union, unique, unsplit, which.max, which.min</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: Biobase</code></pre>
+<pre><code>Cargando paquete requerido: Biobase</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Welcome to Bioconductor
@@ -495,14 +482,14 @@ Attaching package: 'BiocGenerics'</code></pre>
     'citation("Biobase")', and for packages 'citation("pkgname")'.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: IRanges</code></pre>
+<pre><code>Cargando paquete requerido: IRanges</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: S4Vectors</code></pre>
+<pre><code>Cargando paquete requerido: S4Vectors</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Attaching package: 'S4Vectors'</code></pre>
+Adjuntando el paquete: 'S4Vectors'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:clusterProfiler':
@@ -517,11 +504,11 @@ Attaching package: 'S4Vectors'</code></pre>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:base':
 
-    expand.grid, I, unname</code></pre>
+    I, expand.grid, unname</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Attaching package: 'IRanges'</code></pre>
+Adjuntando el paquete: 'IRanges'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:clusterProfiler':
@@ -530,7 +517,7 @@ Attaching package: 'IRanges'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Attaching package: 'AnnotationDbi'</code></pre>
+Adjuntando el paquete: 'AnnotationDbi'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:clusterProfiler':
@@ -540,58 +527,49 @@ Attaching package: 'AnnotationDbi'</code></pre>
 <div class="cell-output cell-output-stderr">
 <pre><code></code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>enrichplot v1.28.4 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
-
-Please cite:
-
-Guangchuang Yu, Fei Li, Yide Qin, Xiaochen Bo, Yibo Wu and Shengqi
-Wang. GOSemSim: an R package for measuring semantic similarity among GO
-terms and gene products. Bioinformatics. 2010, 26(7):976-978</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="definir-los-genes-de-interés" class="level3">
 <h3 class="anchored" data-anchor-id="definir-los-genes-de-interés">2. <strong>Definir los Genes de Interés</strong></h3>
 <p>Supongamos que tenemos un conjunto de genes de interés que han sido identificados en un experimento (por ejemplo, genes asociados con cáncer).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lista de genes de interés (nombres reales de genes)</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>genes_of_interest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"BRCA1"</span>, <span class="st">"TP53"</span>, <span class="st">"EGFR"</span>, <span class="st">"MYC"</span>, <span class="st">"KRAS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lista de genes de interés (nombres reales de genes)</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>genes_of_interest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"BRCA1"</span>, <span class="st">"TP53"</span>, <span class="st">"EGFR"</span>, <span class="st">"MYC"</span>, <span class="st">"KRAS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="realizar-el-análisis-de-sobrerrepresentación" class="level3">
 <h3 class="anchored" data-anchor-id="realizar-el-análisis-de-sobrerrepresentación">3. <strong>Realizar el Análisis de Sobrerrepresentación</strong></h3>
 <p>Usamos la función <code>enrichGO()</code> para realizar el análisis de sobrerrepresentación de términos <strong>GO: Biological Process (BP)</strong>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizar el análisis de ORA con términos GO: Biological Process</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>go_enrich <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(<span class="at">gene =</span> genes_of_interest, </span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">OrgDb =</span> org.Hs.eg.db, </span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>, </span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">ont =</span> <span class="st">"BP"</span>, </span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,  <span class="co"># Ajuste de p-valor con método Benjamini-Hochberg</span></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>)   <span class="co"># Umbral de significancia</span></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(go_enrich))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizar el análisis de ORA con términos GO: Biological Process</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>go_enrich <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(<span class="at">gene =</span> genes_of_interest, </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">OrgDb =</span> org.Hs.eg.db, </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>, </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">ont =</span> <span class="st">"BP"</span>, </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,  <span class="co"># Ajuste de p-valor con método Benjamini-Hochberg</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>)   <span class="co"># Umbral de significancia</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(go_enrich))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                   ID                                    Description GeneRatio
-GO:0009314 GO:0009314                          response to radiation       5/5
-GO:0060251 GO:0060251         regulation of glial cell proliferation       3/5
-GO:1902895 GO:1902895     positive regulation of miRNA transcription       3/5
-GO:0014009 GO:0014009                       glial cell proliferation       3/5
-GO:2000630 GO:2000630 positive regulation of miRNA metabolic process       3/5
+<pre><code>                   ID                                Description GeneRatio
+GO:0009314 GO:0009314                      response to radiation       5/5
+GO:0060251 GO:0060251     regulation of glial cell proliferation       3/5
+GO:1902895 GO:1902895 positive regulation of miRNA transcription       3/5
+GO:0014009 GO:0014009                   glial cell proliferation       3/5
+GO:0009416 GO:0009416                 response to light stimulus       4/5
              BgRatio RichFactor FoldEnrichment   zScore       pvalue
-GO:0009314 442/18805 0.01131222       42.54525 14.41424 7.016434e-09
-GO:0060251  42/18805 0.07142857      268.64286 28.31786 1.032738e-07
-GO:1902895  56/18805 0.05357143      201.48214 24.50258 2.490896e-07
-GO:0014009  61/18805 0.04918033      184.96721 23.46958 3.232739e-07
-GO:2000630  67/18805 0.04477612      168.40299 22.38567 4.300919e-07
+GO:0009314 431/18888 0.01160093       43.82367 14.63433 6.047484e-09
+GO:0060251  42/18888 0.07142857      269.82857 28.38059 1.019196e-07
+GO:1902895  56/18888 0.05357143      202.37143 24.55696 2.458247e-07
+GO:0014009  60/18888 0.05000000      188.88000 23.71838 3.033709e-07
+GO:0009416 321/18888 0.01246106       47.07290 13.54747 4.039848e-07
                p.adjust       qvalue                   geneID Count
-GO:0009314 5.528950e-06 1.248187e-06 BRCA1/TP53/EGFR/MYC/KRAS     5
-GO:0060251 4.068988e-05 9.185933e-06           TP53/EGFR/KRAS     3
-GO:1902895 5.170988e-05 1.167375e-05            TP53/EGFR/MYC     3
-GO:0014009 5.170988e-05 1.167375e-05           TP53/EGFR/KRAS     3
-GO:2000630 5.170988e-05 1.167375e-05            TP53/EGFR/MYC     3</code></pre>
+GO:0009314 4.837987e-06 1.031255e-06 BRCA1/TP53/EGFR/MYC/KRAS     5
+GO:0060251 4.076786e-05 8.689990e-06           TP53/EGFR/KRAS     3
+GO:1902895 4.735944e-05 1.009504e-05            TP53/EGFR/MYC     3
+GO:0014009 4.735944e-05 1.009504e-05           TP53/EGFR/KRAS     3
+GO:0009416 4.735944e-05 1.009504e-05       TP53/EGFR/MYC/KRAS     4</code></pre>
 </div>
 </div>
 </section>
@@ -599,8 +577,8 @@ GO:2000630 5.170988e-05 1.167375e-05            TP53/EGFR/MYC     3</code></pre>
 <h3 class="anchored" data-anchor-id="visualizar-los-resultados">4. <strong>Visualizar los Resultados</strong></h3>
 <p>Podemos visualizar los resultados de ORA en un gráfico de puntos utilizando la función <code>dotplot()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los resultados de ORA</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(go_enrich)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los resultados de ORA</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(go_enrich)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -642,47 +620,47 @@ GO:2000630 5.170988e-05 1.167375e-05            TP53/EGFR/MYC     3</code></pre>
 <h3 class="anchored" data-anchor-id="instalar-y-cargar-las-bibliotecas-necesarias">1. <strong>Instalar y cargar las bibliotecas necesarias</strong></h3>
 <p>Primero, necesitamos instalar y cargar los paquetes necesarios para realizar GSEA en R, como <code>clusterProfiler</code> y <code>org.Hs.eg.db</code> (base de datos de genes humanos).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar los paquetes necesarios (como con ORA)</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar los paquetes necesarios (como con ORA)</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="preparar-los-datos-de-entrada" class="level3">
 <h3 class="anchored" data-anchor-id="preparar-los-datos-de-entrada">2. <strong>Preparar los datos de entrada</strong></h3>
 <p>Supongamos que tenemos una lista de genes ordenados por <strong>log2 fold change</strong>. Para este ejemplo, utilizamos genes simulados con su respectivo valor de log2 fold change.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define significant genes associated with apoptosis (example GO term)</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>significant_genes <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TP53"</span>, <span class="st">"BAX"</span>, <span class="st">"CASP3"</span>, <span class="st">"CASP8"</span>, <span class="st">"FAS"</span>, <span class="st">"FASLG"</span>, <span class="st">"BCL2"</span>, <span class="st">"BCL2L1"</span>,</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"CYCS"</span>, <span class="st">"BAD"</span>, <span class="st">"BID"</span>, <span class="st">"DIABLO"</span>, <span class="st">"XIAP"</span>, <span class="st">"TRAF2"</span>, <span class="st">"TNFRSF10B"</span></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get 500 random gene symbols from org.Hs.eg.db (or another source)</span></span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>all_genes <span class="ot">&lt;-</span> <span class="fu">keys</span>(org.Hs.eg.db, <span class="at">keytype =</span> <span class="st">"SYMBOL"</span>)</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)  <span class="co"># Ensure reproducibility</span></span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>random_genes <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">setdiff</span>(all_genes, significant_genes), <span class="dv">5000</span>)</span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign log2FC values</span></span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>log2FC_significant <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">length</span>(significant_genes), <span class="dv">2</span>, <span class="dv">5</span>)</span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>log2FC_random <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">length</span>(random_genes), <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)  <span class="co"># Smaller log2FC for random genes</span></span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a single data frame</span></span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>gene_list <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gene =</span> <span class="fu">c</span>(significant_genes, random_genes),</span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">log2FC =</span> <span class="fu">c</span>(log2FC_significant, log2FC_random)</span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare named vector for gseGO input</span></span>
-<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>gene_list_vector <span class="ot">&lt;-</span> <span class="fu">setNames</span>(gene_list<span class="sc">$</span>log2FC, gene_list<span class="sc">$</span>Gene)</span>
-<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort gene list in descending order</span></span>
-<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>gene_list_vector <span class="ot">&lt;-</span> <span class="fu">sort</span>(gene_list_vector, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the top of the gene list</span></span>
-<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gene_list_vector)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define significant genes associated with apoptosis (example GO term)</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>significant_genes <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TP53"</span>, <span class="st">"BAX"</span>, <span class="st">"CASP3"</span>, <span class="st">"CASP8"</span>, <span class="st">"FAS"</span>, <span class="st">"FASLG"</span>, <span class="st">"BCL2"</span>, <span class="st">"BCL2L1"</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"CYCS"</span>, <span class="st">"BAD"</span>, <span class="st">"BID"</span>, <span class="st">"DIABLO"</span>, <span class="st">"XIAP"</span>, <span class="st">"TRAF2"</span>, <span class="st">"TNFRSF10B"</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get 500 random gene symbols from org.Hs.eg.db (or another source)</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>all_genes <span class="ot">&lt;-</span> <span class="fu">keys</span>(org.Hs.eg.db, <span class="at">keytype =</span> <span class="st">"SYMBOL"</span>)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)  <span class="co"># Ensure reproducibility</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>random_genes <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">setdiff</span>(all_genes, significant_genes), <span class="dv">5000</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign log2FC values</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>log2FC_significant <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">length</span>(significant_genes), <span class="dv">2</span>, <span class="dv">5</span>)</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>log2FC_random <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">length</span>(random_genes), <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)  <span class="co"># Smaller log2FC for random genes</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a single data frame</span></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>gene_list <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gene =</span> <span class="fu">c</span>(significant_genes, random_genes),</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">log2FC =</span> <span class="fu">c</span>(log2FC_significant, log2FC_random)</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare named vector for gseGO input</span></span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>gene_list_vector <span class="ot">&lt;-</span> <span class="fu">setNames</span>(gene_list<span class="sc">$</span>log2FC, gene_list<span class="sc">$</span>Gene)</span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort gene list in descending order</span></span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>gene_list_vector <span class="ot">&lt;-</span> <span class="fu">sort</span>(gene_list_vector, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the top of the gene list</span></span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gene_list_vector)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     TP53       BAX       BAD      XIAP       BID TNFRSF10B 
  4.867681  4.811857  4.419787  4.299015  3.817163  3.776516 </code></pre>
@@ -693,14 +671,14 @@ GO:2000630 5.170988e-05 1.167375e-05            TP53/EGFR/MYC     3</code></pre>
 <h3 class="anchored" data-anchor-id="realizar-el-análisis-de-gsea">3. <strong>Realizar el análisis de GSEA</strong></h3>
 <p>Utilizamos el paquete <strong>clusterProfiler</strong> para realizar GSEA sobre los términos de <strong>Gene Ontology (GO)</strong> en el subdominio de <strong>Biological Process (BP)</strong>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizar el análisis GSEA para los términos GO: Biological Process (BP)</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>gseGO_results <span class="ot">&lt;-</span> <span class="fu">gseGO</span>(</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">geneList =</span> gene_list_vector,</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">OrgDb =</span> org.Hs.eg.db,  </span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>,</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">ont =</span> <span class="st">"BP"</span>,            <span class="co"># Biological Process</span></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span></span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizar el análisis GSEA para los términos GO: Biological Process (BP)</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>gseGO_results <span class="ot">&lt;-</span> <span class="fu">gseGO</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">geneList =</span> gene_list_vector,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">OrgDb =</span> org.Hs.eg.db,  </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>,</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">ont =</span> <span class="st">"BP"</span>,            <span class="co"># Biological Process</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>using 'fgsea' for GSEA analysis, please cite Korotkevich et al (2019).</code></pre>
 </div>
@@ -709,11 +687,6 @@ GO:2000630 5.170988e-05 1.167375e-05            TP53/EGFR/MYC     3</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>GSEA analysis...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in fgseaMultilevel(pathways = pathways, stats = stats, minSize =
-minSize, : For some of the pathways the P-values were likely overestimated. For
-such pathways log2err is set to NA.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in fgseaMultilevel(pathways = pathways, stats = stats, minSize =
@@ -726,58 +699,39 @@ set the `eps` argument to zero for better estimation.</code></pre>
 <div class="cell-output cell-output-stderr">
 <pre><code>done...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">head</span>(gseGO_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">head</span>(gseGO_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   ID                                  Description setSize
-GO:0097190 GO:0097190                  apoptotic signaling pathway      26
-GO:0042981 GO:0042981              regulation of apoptotic process      54
-GO:0043065 GO:0043065     positive regulation of apoptotic process      25
-GO:0043068 GO:0043068 positive regulation of programmed cell death      25
-GO:0043067 GO:0043067          regulation of programmed cell death      55
-GO:0097191 GO:0097191        extrinsic apoptotic signaling pathway      17
+GO:0097190 GO:0097190                  apoptotic signaling pathway      30
+GO:0043065 GO:0043065     positive regulation of apoptotic process      28
+GO:0050790 GO:0050790             regulation of catalytic activity      48
+GO:0033554 GO:0033554                  cellular response to stress      51
+GO:0043068 GO:0043068 positive regulation of programmed cell death      29
+GO:0030162 GO:0030162                    regulation of proteolysis      34
            enrichmentScore      NES pvalue     p.adjust       qvalue rank
-GO:0097190       0.8869388 3.219074  1e-10 2.447065e-09 7.032015e-10   15
-GO:0042981       0.7036296 3.114001  1e-10 2.447065e-09 7.032015e-10  106
-GO:0043065       0.8591146 3.112250  1e-10 2.447065e-09 7.032015e-10  106
-GO:0043068       0.8591146 3.112250  1e-10 2.447065e-09 7.032015e-10  106
-GO:0043067       0.7011631 3.104486  1e-10 2.447065e-09 7.032015e-10  106
-GO:0097191       0.9341198 3.076241  1e-10 2.447065e-09 7.032015e-10  106
+GO:0097190       0.8535690 3.294993  1e-10 1.369811e-09 3.833168e-10   15
+GO:0043065       0.8307467 3.147352  1e-10 1.369811e-09 3.833168e-10   15
+GO:0050790       0.7245005 3.143861  1e-10 1.369811e-09 3.833168e-10   15
+GO:0033554       0.7086548 3.127930  1e-10 1.369811e-09 3.833168e-10   50
+GO:0043068       0.8217011 3.123487  1e-10 1.369811e-09 3.833168e-10   15
+GO:0030162       0.7728063 3.108032  1e-10 1.369811e-09 3.833168e-10   13
                             leading_edge
-GO:0097190 tags=54%, list=0%, signal=54%
-GO:0042981 tags=30%, list=2%, signal=29%
-GO:0043065 tags=56%, list=2%, signal=55%
-GO:0043068 tags=56%, list=2%, signal=55%
-GO:0043067 tags=29%, list=2%, signal=29%
-GO:0097191 tags=71%, list=2%, signal=69%
-                                                                                   core_enrichment
-GO:0097190          TP53/BAX/BAD/BID/TNFRSF10B/BCL2/CYCS/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2
-GO:0042981 TP53/BAX/BAD/XIAP/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2/TFRC/HTT
-GO:0043065           TP53/BAX/BAD/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2/HTT
-GO:0043068           TP53/BAX/BAD/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2/HTT
-GO:0043067 TP53/BAX/BAD/XIAP/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2/TFRC/HTT
-GO:0097191                      BAX/BAD/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/BCL2L1/CASP8/TRAF2/HTT</code></pre>
+GO:0097190 tags=47%, list=0%, signal=47%
+GO:0043065 tags=43%, list=0%, signal=43%
+GO:0050790 tags=25%, list=0%, signal=25%
+GO:0033554 tags=24%, list=1%, signal=24%
+GO:0043068 tags=41%, list=0%, signal=41%
+GO:0030162 tags=29%, list=0%, signal=30%
+                                                                          core_enrichment
+GO:0097190 TP53/BAX/BAD/BID/TNFRSF10B/BCL2/CYCS/FAS/DIABLO/FASLG/BCL2L1/CASP8/CASP3/TRAF2
+GO:0043065             TP53/BAX/BAD/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/CASP8/CASP3/TRAF2
+GO:0050790              TP53/BAX/BAD/XIAP/BID/TNFRSF10B/CYCS/FAS/DIABLO/FASLG/CASP8/TRAF2
+GO:0033554               TP53/BAX/BAD/XIAP/BID/TNFRSF10B/BCL2/FAS/BCL2L1/CASP3/TRAF2/E2F7
+GO:0043068             TP53/BAX/BAD/BID/TNFRSF10B/BCL2/FAS/DIABLO/FASLG/CASP8/CASP3/TRAF2
+GO:0030162                              TP53/BAX/BAD/XIAP/BID/CYCS/FAS/DIABLO/FASLG/CASP8</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los resultados</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gseaplot2</span>(gseGO_results, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> gseGO_results<span class="sc">$</span>Description[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `aes_()` was deprecated in ggplot2 3.0.0.
-ℹ Please use tidy evaluation idioms with `aes()`
-ℹ The deprecated feature was likely used in the enrichplot package.
-  Please report the issue at
-  &lt;https://github.com/GuangchuangYu/enrichplot/issues&gt;.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-ℹ Please use `linewidth` instead.
-ℹ The deprecated feature was likely used in the enrichplot package.
-  Please report the issue at
-  &lt;https://github.com/GuangchuangYu/enrichplot/issues&gt;.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in grid.Call.graphics(C_rect, x$x, x$y, x$width, x$height,
-resolveHJust(x$just, : semi-transparency is not supported on this device:
-reported only once per page</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los resultados</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gseaplot2</span>(gseGO_results, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> gseGO_results<span class="sc">$</span>Description[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

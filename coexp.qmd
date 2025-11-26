@@ -1,42 +1,46 @@
 ---
-  title: "Coexpression Analysis using WGCNA"
+  title: "Análisis de coexpresión utilizando WGCNA"
 ---
 
-# Introduction to WGCNA
+# Introducción a WGCNA
 
-Weighted Gene Co-expression Network Analysis (WGCNA) is a powerful bioinformatics method used to describe the correlation patterns among genes across multiple samples. The method identifies gene modules, summarizes them using module eigengenes, and correlates these with external traits or phenotypes.
+El Weighted Gene Co-expression Network Analysis (WGCNA) es un método de bioinformática muy potente que se utiliza para describir los patrones de correlación entre genes a lo largo de múltiples muestras. El método identifica módulos de genes, los resume mediante eigengenes de módulo y correlaciona estos con rasgos externos o fenotipos.
 
-## The Basics of WGCNA
+## Conceptos básicos de WGCNA
 
-Gene co-expression networks are built by calculating pairwise correlations between gene expression profiles. To capture biological significance and robustness, WGCNA uses a **soft-thresholding power** to transform the correlation matrix into an adjacency matrix. This adjacency matrix $a_{ij}$ represents the connection strength between genes $i$ and $j$, defined as:
+Las redes de coexpresión génica se construyen calculando las correlaciones por pares entre los perfiles de expresión génica. Para capturar la relevancia biológica y la robustez, WGCNA utiliza una potencia de umbral suave (soft-thresholding power) para transformar la matriz de correlación en una matriz de adyacencia. Esta matriz de adyacencia $a_{ij}$ representa la fuerza de conexión entre los genes $i$ y $j$, definida como:
 
 $$
 a_{ij} = |cor(x_i, x_j)|^\beta
 $$
 
-Where: - $cor(x_i, x_j)$ is the correlation between gene $i$ and gene $j$. - $\beta$ is the soft-thresholding power, chosen to approximate scale-free network topology.
+Donde:
 
-## Module Identification
+* $cor(x_i, x_j)$ es la correlación entre el gen $i$ y el gen $j$.
 
-Modules are groups of highly interconnected genes. They are identified using hierarchical clustering of the Topological Overlap Matrix (TOM), which measures the similarity of gene neighborhoods. The TOM is calculated as:
+* $\beta$ es la potencia de soft-thresholding, elegida para aproximar una topología de red scale-free.
+
+## Identificación de módulos
+
+Los módulos son grupos de genes altamente interconectados. Se identifican utilizando clustering jerárquico de la Matriz de Solapamiento Topológico (TOM, Topological Overlap Matrix), que mide la similitud entre los vecindarios de genes. La TOM se calcula como:
 
 $$
 TOM_{ij} = \frac{\sum_k (a_{ik} \cdot a_{jk}) + a_{ij}}{\min(k_i, k_j) + 1 - a_{ij}}
 $$
 
-Where:
+Donde:
 
-$k_i, k_j$ = The degree (sum of edge weights) of nodes $i$ and $j$, respectively.
+* $k_i, k_j$ = El grado (suma de los pesos de las aristas) de los nodos $i$ y $j$, respectivamente.
 
-Intuitively, the numerator combines the shared neighbors and the direct connections between $i$ and $j$. The denominator normalizes this value based on the smaller degree of the two nodes ($min(k_ik_j)$), ensuring comparability across the network.
+De forma intuitiva, el numerador combina los vecinos compartidos y las conexiones directas entre $i$ y $j$. El denominador normaliza este valor en función del grado menor de los dos nodos ($\min(k_i, k_j)$), garantizando la comparabilidad en toda la red.
 
-TOM thus accounts for Shared Neighbors - Nodes that are not directly connected but share many neighbors will have a high TOM value. This captures indirect relationships, making TOM more robust to noise than simple pairwise correlations. It is also a weighted measure: TOM is based on weighted adjacency values, allowing it to reflect the strength of relationships rather than just their presence or absence.
+La TOM, por tanto, tiene en cuenta los vecinos compartidos: los nodos que no están conectados directamente pero comparten muchos vecinos tendrán un valor TOM alto. Esto captura relaciones indirectas, haciendo que TOM sea más robusta al ruido que las correlaciones simples por pares. También es una medida ponderada, ya que se basa en valores de adyacencia con peso, lo que le permite reflejar la fuerza de las relaciones en lugar de solo su presencia o ausencia.
 
-## Applications in Systems Biology
+## Aplicaciones en biología de sistemas
 
-By identifying gene modules and their relationships with traits, WGCNA facilitates the discovery of key drivers and functional insights in systems biology. This tutorial applies WGCNA to liver expression data from female mice, focusing on identifying gene modules related to body weight.
+Al identificar módulos de genes y sus relaciones con rasgos fenotípicos, WGCNA facilita el descubrimiento de genes clave y la obtención de información funcional en biología de sistemas. Este tutorial aplica WGCNA a datos de expresión hepática de ratones hembra, centrándose en identificar módulos génicos relacionados con el peso corporal.
 
-# Installation of Required Packages
+# Instalación de los paquetes necesarios
 
 ```{r installation}
 # Install BiocManager
@@ -53,20 +57,22 @@ library(WGCNA)
 
 ------------------------------------------------------------------------
 
-# Background and Dataset Overview
+# Antecedentes y descripción del conjunto de datos
 
-Obesity is a major public health concern in many developed countries. While some people appear to stay lean no matter what or how much they eat, others appear to be genetically predisposed to obesity. The genetic similarity between mouse and human makes the mouse a promising mammalian model system to study obesity.
+La obesidad es un importante problema de salud pública en muchos países desarrollados. Mientras que algunas personas parecen mantenerse delgadas independientemente de qué o cuánto coman, otras parecen estar genéticamente predispuestas a la obesidad. La similitud genética entre el ratón y el ser humano convierte al ratón en un modelo mamífero prometedor para estudiar la obesidad.
 
-The mouse strain C57BL/6J is susceptible to a variety of ailments related to atherosclerosis, diabetes, obesity, and heart disease to which the mouse strain C3H/HeJ is resistant. The offspring mice of this F2 mouse intercross are expected to show a significant spectrum of atherosclerosis and metabolic syndrome responses to a high-fat diet. A variety of physiological traits were measured, including mouse body weight, fat mass, insulin, glucose, free fatty-acid levels in the blood, and cholesterol fractions (HDL and LDL + VLDL). Excerpt From: Steve Horvath. "Weighted Network Analysis."
+La cepa de ratón **C57BL/6J** es susceptible a una variedad de afecciones relacionadas con la aterosclerosis, la diabetes, la obesidad y las enfermedades cardíacas, mientras que la cepa **C3H/HeJ** es resistente a ellas. Se espera que los ratones descendientes de este cruce F2 muestren un espectro significativo de respuestas de aterosclerosis y síndrome metabólico ante una dieta alta en grasas. Se midieron diversos rasgos fisiológicos, incluyendo el peso corporal de los ratones, la masa grasa, los niveles de insulina, glucosa y ácidos grasos libres en sangre, así como las fracciones de colesterol (HDL y LDL + VLDL).
+*Extracto de:* Steve Horvath. *"Weighted Network Analysis."*
 
-We will use microarray data from the females in the F2 mouse intercross to examine the large-scale organization of the gene co-expression network in liver, and find gene modules associated with body weight.
+Utilizaremos datos de microarrays de las hembras del cruce F2 para examinar la organización a gran escala de la red de coexpresión génica en hígado y encontrar módulos génicos asociados al peso corporal.
 
-### Data Files
+### Archivos de datos
 
--   **Expression data**: [LiverFemale3600.csv](LiverFemale3600.csv){.external target="_blank"}
--   **Clinical traits**: [ClinicalTraits.csv](ClinicalTraits.csv){.external target="_blank"}
+* **Datos de expresión**: [LiverFemale3600.csv](LiverFemale3600.csv){.external target="_blank"}
+* **Rasgos clínicos**: [ClinicalTraits.csv](ClinicalTraits.csv){.external target="_blank"}
 
-Download and set your working directory to the location of these files.
+Descargue los archivos y establezca su directorio de trabajo en la ubicación donde se encuentran.
+
 
 ```{r setup-data, eval=FALSE}
 # Set the working directory
@@ -76,9 +82,9 @@ setwd("path/to/your/data")
 
 ------------------------------------------------------------------------
 
-# Data Input and Pre-Processing
+# Entrada y preprocesamiento de datos
 
-This is the first step of any network analysis. I show here how to load typical expression data, pre-process them into a format suitable for network analysis, and clean the data by removing obvious outlier samples. The expression data is contained in the file LiverFemale3600.csv, linked above. After starting an R session, we load the requisite packages and the data, after appropriately setting the working directory.
+Este es el primer paso de cualquier análisis de redes. Aquí muestro cómo cargar datos de expresión típicos, preprocesarlos en un formato adecuado para el análisis de redes y limpiar los datos eliminando muestras claramente atípicas (outliers). Los datos de expresión se encuentran en el archivo LiverFemale3600.csv, enlazado arriba. Después de iniciar una sesión de R, cargamos los paquetes necesarios y los datos, tras establecer adecuadamente el directorio de trabajo.
 
 ```{r data-input}
 # Load expression data
@@ -93,17 +99,18 @@ row.names(assay_data) <- feature_data$substanceBXH
 assay_data <- t(assay_data)
 ```
 
-Now let's check the expression matrix is in the required format (genes x samples):
+Ahora vamos a comprobar que la matriz de expresión está en el formato requerido (genes × muestras):
 
 ```{r view-data}
 assay_data[1:5,1:5]
 ```
 
-Note that the genes are referred to by the probe names (e.g. `MMT00000044`) (this data comes from expression microarray analysis). This is fine for now, but later will hamper the interpretation of results.
+Tenga en cuenta que los genes se identifican mediante los nombres de las sondas (*probe names*) (por ejemplo, `MMT00000044`) (estos datos provienen de un análisis de microarrays de expresión). Esto está bien por ahora, pero más adelante dificultará la interpretación de los resultados.
 
-# Identification of outlier microarray samples
+# Identificación de muestras de microarrays atípicas (*outliers*)
 
-Next we cluster the samples to see if there are any obvious outliers.
+A continuación, agrupamos las muestras para ver si existen *outliers* evidentes.
+
 
 ```{r outlier-detection}
 ##### Cluster Data and remove outliers
@@ -117,7 +124,7 @@ plot(sampleTree)
 abline(h = 15, col = "red") 
 ```
 
-It appears there is one outlier (sample F2_221). One can remove it by hand, or use an automatic approach---we choose a height cut that will remove the offending sample, say 15, and use a branch cut at that height.
+Parece que hay una muestra atípica (outlier) (muestra F2_221). Se puede eliminar manualmente o usar un enfoque automático; elegimos un corte de altura (height cut) que eliminará la muestra problemática, por ejemplo 15, y aplicamos un corte de rama (branch cut) a esa altura.
 
 ```{r remove-outliers}
 # Remove outliers - "cut the tree"
@@ -128,11 +135,11 @@ table(clust)
 datExpr <- assay_data[clust==1, ]
 ```
 
-The variable datExpr now contains the expression data ready for network analysis.
+La variable datExpr ahora contiene los datos de expresión listos para el análisis de redes.
 
-# Clinical Traits Integration
+# Integración de rasgos clínicos
 
-We now read in the trait data and match the samples for which they were measured to the expression samples. We also visualize the traits data.
+Ahora leemos los datos de los rasgos (traits) y los asociamos a las muestras para las que fueron medidos, coincidiendo con las muestras de expresión. También visualizamos los datos de los rasgos.
 
 ```{r trait-data}
 clin_data <- read.csv("ClinicalTraits.csv", row.names=2)
@@ -142,7 +149,7 @@ datTraits <- clin_data[, c(10:35) ] # Further selection of mice attributes
 datTraits[1:10,1:10]
 ```
 
-We now have the expression data in the variable datExpr, and the corresponding clinical traits in the variable datTraits. Before we continue with network construction and module detection, we visualize how the clinical traits relate to the sample dendrogram.
+Ahora tenemos los datos de expresión en la variable datExpr y los rasgos clínicos correspondientes en la variable datTraits. Antes de continuar con la construcción de la red y la detección de módulos, visualizamos cómo los rasgos clínicos se relacionan con el dendrograma de las muestras.
 
 ```{r sample-traits-dendro}
 sampleTree2 <- hclust(dist(datExpr), method = "average")
@@ -152,7 +159,7 @@ plotDendroAndColors(sampleTree2, traitColors,
                     main = "Sample dendrogram and trait heatmap")   
 ```
 
-In the plot, white means a low value, red a high value, and grey a missing entry.
+En el gráfico, blanco indica un valor bajo, rojo un valor alto y gris una entrada faltante.
 
 ```{r load-clinical-data, eval=FALSE}
 # Load clinical traits
@@ -173,9 +180,9 @@ plotDendroAndColors(sampleTree2, traitColors, groupLabels = names(datTraits),
 
 ------------------------------------------------------------------------
 
-Analysis of network topology to choose the soft thresholding power
+# Análisis de la topología de la red para elegir la potencia de soft-thresholding
 
-Constructing a weighted gene network entails the choice of the soft thresholding power $\beta$ to which co-expression similarity is raised to calculate adjacency \[1\]. The authors of \[1\] have proposed to choose the soft thresholding power based on the criterion of approximate scale-free topology. Here we will use the function pickSoftThreshold that performs the analysis of network topology and aids the user in choosing a proper soft-thresholding power. The user chooses a set of candidate powers, and the function returns a set of network indices that should be inspected, for example as follows:
+Construir una red génica ponderada implica elegir la potencia de soft-thresholding $\beta$ a la que se eleva la similitud de coexpresión para calcular la adyacencia  \[1\]. Los autores de \[1\] han propuesto elegir la potencia de soft-thresholding basada en el criterio de aproximación a una topología scale-free. Aquí utilizaremos la función pickSoftThreshold, que realiza el análisis de la topología de la red y ayuda al usuario a elegir un valor adecuado para la potencia de soft-thresholding. El usuario selecciona un conjunto de potencias candidatas, y la función devuelve un conjunto de índices de red que deben inspeccionarse, por ejemplo, de la siguiente manera:
 
 ```{r pick-theshold}
 powers <- c(c(1:10), seq(from = 12, to=20, by=2))
@@ -195,15 +202,15 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
      xlab="Threshold",ylab="Mean Connectivity")
 ```
 
-The user needs to choose the lowest power for which the scale-free topology fit index curve flattens out upon reaching a high value (in this case, roughly 0.90).
+El usuario debe elegir la potencia más baja para la cual la curva del índice de ajuste a topología scale-free se aplana al alcanzar un valor alto (en este caso, aproximadamente 0.90).
 
-Constructing the gene network and identifying modules is now a simple function call. Remember one must choose the correct value for $\beta$ based on the analysis of the previous plot.
+Construir la red génica e identificar los módulos ahora es una llamada de función sencilla. Recuerde que se debe elegir el valor correcto de $\beta$ basado en el análisis del gráfico anterior.
 
 ```{r choose-pow}
 pow <- 6
 ```
 
-# Network Construction and Module Detection
+# Construcción de la red y detección de módulos
 
 ```{r network-construction}
 # This function implements the core of WGCNA - cluster genes and assign to modules
@@ -216,38 +223,42 @@ net <- blockwiseModules(datExpr, power = pow,
                         verbose = 3)
 ```
 
-We have chosen a relatively large minimum module size of 30, and a medium sensitivity deepSplit=2 for cluster splitting. The parameter mergeCutHeight is the threshold for merging of modules. We have also instructed the function to return numeric, rather than color, labels for modules, and to save the Topological Overlap Matrix. The output of the function may seem somewhat cryptic, but it is easy to use. For example, `net$colors` contains the module assignment, and net\$MEs contains the module eigengenes of the modules.
+Hemos elegido un tamaño mínimo de módulo relativamente grande de 30 y una sensibilidad media deepSplit=2 para la división de clusters. El parámetro mergeCutHeight es el umbral para la fusión de módulos. También hemos indicado a la función que devuelva etiquetas numéricas, en lugar de colores, para los módulos, y que guarde la Topological Overlap Matrix.
 
-**Note: The module eigengene ME is defined as the first principal component of a given module. It can be considered as a representative profile for a given co-expression module, that summarizes the expression patterns of all genes in the module into a single vector.**
+**Nota: El eigengene de un módulo, ME, se define como el primer componente principal de un módulo dado. Puede considerarse como un perfil representativo de un módulo de coexpresión, que resume los patrones de expresión de todos los genes del módulo en un único vector.**
 
 ::: {.callout-tip collapse="true" title="But what exactly is an eigengene?"}
-Module eigengenes are summary statistics that capture the "gene expression profile" of a particular module in a gene co-expression network (like the ones used in WGCNA). They serve as a representative measure for the overall activity of the genes within a module, simplifying the analysis by reducing the dimensionality of the gene expression data.
 
-### How Module Eigengenes Are Calculated:
+Los *eigengenes* de módulo son estadísticas resumen que capturan el "perfil de expresión génica" de un módulo particular en una red de coexpresión génica (como las utilizadas en WGCNA). Sirven como medida representativa de la actividad general de los genes dentro de un módulo, simplificando el análisis al reducir la dimensionalidad de los datos de expresión génica.
 
-1.  **Create a Gene Co-expression Network:**
-    -   Genes are grouped into modules based on their co-expression (i.e., genes that show similar expression patterns across samples are clustered together).
-2.  **Principal Component Analysis (PCA):**
-    -   For each module, you perform **PCA** on the gene expression data of the genes within that module. The first principal component (PC1) from this analysis captures the direction of maximum variance (i.e., the most important variation in the expression profiles of the genes within the module).
-3.  **Module Eigengene:**
-    -   The first principal component (PC1) of the module is used as the **module eigengene**. This eigengene represents the overall expression pattern for that module, which can be interpreted as a single "summary" or "profile" of the genes in the module.
+### Cómo se calculan los *eigengenes* de módulo:
 
-### Why Module Eigengenes Are Useful:
+1. **Crear una red de coexpresión génica:**
 
--   **Dimensionality Reduction:** Instead of analyzing each gene individually, module eigengenes provide a summary for each gene module, reducing the complexity of the data.
--   **Biological Interpretation:** Module eigengenes represent the combined expression pattern of all genes in a module, making it easier to study the overall behavior of a biological process, pathway, or condition related to that module.
--   **Correlation with Traits:** Module eigengenes can be correlated with external traits (e.g., disease status, clinical measures), helping identify modules that are associated with specific biological conditions or phenotypes.
+   * Los genes se agrupan en módulos según su coexpresión (es decir, los genes que muestran patrones de expresión similares a través de las muestras se agrupan juntos).
+2. **Análisis de Componentes Principales (PCA):**
 
-### Example:
+   * Para cada módulo, se realiza un **PCA** sobre los datos de expresión génica de los genes dentro de ese módulo. El primer componente principal (PC1) de este análisis captura la dirección de máxima varianza (es decir, la variación más importante en los perfiles de expresión de los genes del módulo).
+3. **Eigengene del módulo:**
 
-If you have a module of genes related to immune response, the module eigengene will summarize the expression pattern of all those immune-related genes across samples. A high value of the module eigengene in a certain condition (e.g., cancer) might indicate that the immune-related genes in the module are highly active in that condition.
+   * El primer componente principal (PC1) del módulo se utiliza como **eigengene del módulo**. Este *eigengene* representa el patrón general de expresión de ese módulo, que puede interpretarse como un "resumen" o "perfil" único de los genes del módulo.
 
-Thus, module eigengenes are a powerful tool for simplifying the analysis of large-scale gene co-expression networks and understanding the underlying biological processes.
+### Por qué los *eigengenes* de módulo son útiles:
+
+* **Reducción de dimensionalidad:** En lugar de analizar cada gen individualmente, los *eigengenes* de módulo proporcionan un resumen para cada módulo génico, reduciendo la complejidad de los datos.
+* **Interpretación biológica:** Los *eigengenes* representan el patrón combinado de expresión de todos los genes en un módulo, facilitando el estudio del comportamiento general de un proceso biológico, vía o condición relacionada con ese módulo.
+* **Correlación con rasgos:** Los *eigengenes* pueden correlacionarse con rasgos externos (por ejemplo, estado de enfermedad, medidas clínicas), ayudando a identificar módulos asociados con condiciones biológicas o fenotipos específicos.
+
+### Ejemplo:
+
+Si tienes un módulo de genes relacionados con la respuesta inmune, el *eigengene* del módulo resumirá el patrón de expresión de todos esos genes relacionados con la inmunidad a través de las muestras. Un valor alto del *eigengene* del módulo en una condición determinada (por ejemplo, cáncer) podría indicar que los genes relacionados con la inmunidad en el módulo están muy activos en esa condición.
+
+En resumen, los *eigengenes* de módulo son una herramienta poderosa para simplificar el análisis de redes de coexpresión génica a gran escala y entender los procesos biológicos subyacentes.
 :::
 
-To see how many modules were identified and what the module sizes are, one can use: table(net\$colors)
+Ahora podemos ver cuántos módulos se identificaron y cuáles son sus tamaños usando: table(net\$colors)
 
-Its output indicates that there are 18 modules, labeled 1 through 18 in order of descending size, with sizes ranging from 609 to 34 genes. The label 0 is reserved for genes outside of all modules. The hierarchical clustering dendrogram (tree) used for the module identification is returned in `net$dendrograms[[1]]`. The dendrogram can be displayed together with the color assignment using the following code:
+Su salida indica que hay **18 módulos**, etiquetados del 1 al 18 en orden de tamaño descendente, con tamaños que van de 609 a 34 genes. La etiqueta **0** se reserva para los genes fuera de todos los módulos. El dendrograma jerárquico (*tree*) usado para la identificación de módulos se devuelve en `net$dendrograms[[1]]`. El dendrograma puede mostrarse junto con la asignación de colores usando el siguiente código:
 
 ```{r view-module-clustering}
 moduleColors <- labels2colors(net$colors)
@@ -259,13 +270,14 @@ plotDendroAndColors(net$dendrograms[[1]], moduleColors[net$blockGenes[[1]]],
 
 ```
 
-Here we see the genes clustered into different modules, corresponding to the different colours in the module colours band.
+Aquí vemos cómo los genes se agrupan en diferentes módulos, correspondientes a los distintos colores en la banda de colores de los módulos.
 
-# Correlating modules with external clinical traits
+# Correlación de módulos con rasgos clínicos externos
 
-## Quantifying module--trait associations
+## Cuantificación de la asociación módulo–rasgo
 
-We would like to identify modules that are significantly associated with the measured clinical traits. Since we already have a summary profile (eigengene) for each module, we simply correlate eigengenes with external traits and look for the most significant associations.
+Queremos identificar módulos que estén significativamente asociados con los rasgos clínicos medidos. Dado que ya tenemos un perfil resumen (*eigengene*) para cada módulo, simplemente correlacionamos los *eigengenes* con los rasgos externos y buscamos las asociaciones más significativas.
+
 
 ```{r cor-eigen}
 # Define numbers of genes and samples
@@ -279,9 +291,9 @@ moduleTraitCor <- cor(MEs, datTraits, use = "p")
 moduleTraitPvalue <- corPvalueStudent(moduleTraitCor, nSamples)
 ```
 
-## Plot module-trait correlations
+## Graficar las correlaciones módulo–rasgo
 
-Since we have a moderately large number of modules and traits, a suitable graphical representation will help in reading the table. We color code each association by the correlation value:
+Como tenemos un número moderadamente grande de módulos y rasgos, una representación gráfica adecuada ayudará a interpretar la tabla. Codificamos cada asociación por color según el valor de la correlación:
 
 ```{r plot-cor-eigen}
 # This is to set parameters for plotting
@@ -299,13 +311,20 @@ labeledHeatmap(Matrix = moduleTraitCor,
                main = paste("Module-trait relationships"))
 ```
 
-The analysis identifies the several interesting module--trait associations. We will now focus on weight as the trait of interest. Note that for example the brown module represents a group of genes that is correlated with weight, abdominal and other fat levels.
+El análisis identifica varias asociaciones interesantes módulo–rasgo. Ahora nos enfocaremos en **peso** como rasgo de interés. Por ejemplo, el módulo marrón (*brown module*) representa un grupo de genes que está correlacionado con el peso, la grasa abdominal y otros niveles de grasa.
 
-# Gene relationship to trait and important modules: Gene Significance and Module Membership
+# Relación de genes con el rasgo y módulos importantes: *Gene Significance* y *Module Membership*
 
-We quantify associations of individual genes with our trait of interest (weight) by defining Gene Significance GS as (the absolute value of) the correlation between the gene and the trait. For each module, we also define a quantitative measure of module membership MM as the correlation of the module eigengene and the gene expression profile. This allows us to quantify the similarity of all genes on the array to every module. Mathematically, for a gene ( g ) in a module ( M ): $$
+Cuantificamos las asociaciones de genes individuales con nuestro rasgo de interés (peso) definiendo la **Significancia del Gen (GS, *Gene Significance*)** como el valor absoluto de la correlación entre el gen y el rasgo. Para cada módulo, también definimos una medida cuantitativa de **pertenencia al módulo (MM, *Module Membership*)** como la correlación entre el *eigengene* del módulo y el perfil de expresión del gen. Esto nos permite cuantificar la similitud de todos los genes del microarray con cada módulo. Matemáticamente, para un gen $g$ en un módulo $M$:
+
+$$
 \text{MM}(g) = \text{cor}(\text{Expr}(g), \text{ME}(M)),
-$$ where: - $\text{Expr}(g)$: Gene $g$'s expression profile across all samples. - $\text{ME}(M)$: The module eigengene of module $M$.
+$$
+
+Donde: 
+
+* $\text{Expr}(g)$: Gene $g$'s expression profile across all samples. 
+* $\text{ME}(M)$: The module eigengene of module $M$.
 
 ```{r plot-mm}
 # Some genes in each module are more representative than others of the eigen-gene values.
@@ -319,29 +338,37 @@ names(geneModuleMembership) <- paste("MM.", modNames, sep="")
 names(MMPvalue) <- paste("p.MM.", modNames, sep="")
 ```
 
-MM ranges from -1 to 1: - **High MM values (close to 1)**: The gene is strongly correlated with the module eigengene, making it a core member. - **Low MM values (close to 0)**: The gene has little to no relationship with the module. - **Negative MM values**: The gene's expression pattern is inversely related to the module eigengene.
+MM varía entre -1 y 1:
 
-### Why Is Module Membership Useful?
+* **Valores altos de MM (cercanos a 1):** El gen está fuertemente correlacionado con el *eigengene* del módulo, siendo un miembro central.
+* **Valores bajos de MM (cercanos a 0):** El gen tiene poca o ninguna relación con el módulo.
+* **Valores negativos de MM:** El patrón de expresión del gen está inversamente relacionado con el *eigengene* del módulo.
 
-1.  **Prioritizing Key Genes in Modules:**
-    -   Genes with high MM values are considered the "hub" or **core genes** of the module. These genes are most representative of the module's behavior and are likely to play central roles in the biological processes associated with the module.
-2.  **Identifying Candidate Biomarkers:**
-    -   High-MM genes are strong candidates for biomarkers or therapeutic targets because they drive the module's co-expression patterns, which may relate to specific phenotypes or traits.
-3.  **Understanding Module Structure:**
-    -   MM helps distinguish between:
-        -   **Core genes:** Essential for the module's coherence.
-        -   **Peripheral genes:** Weakly connected or partially related to the module.
-    -   This understanding is valuable for functional annotation and interpretation of the module.
-4.  **Functional Enrichment Analysis:**
-    -   MM values can help refine functional enrichment studies. Analyzing only high-MM genes within a module often enhances the biological signal by focusing on genes that are most relevant.
-5.  **Identifying Outliers or Ambiguous Genes:**
-    -   Low-MM genes in a module may indicate potential outliers, genes that don't fit well in any module, or genes that are shared between multiple modules.
 
-# Summary output of network analysis results
+## Por qué es útil la pertenencia al módulo
 
-We have found modules with high association with our trait of interest, and have identified their central players by the Module Membership measure. We now merge this statistical information with gene annotation and write out a file that summarizes the most important results and can be inspected in standard spreadsheet software such as MS Excel or Open Office Calc. Our expression data are only annotated by probe ID names: the command will return probe IDs belonging to the brown module. To facilitate interpretation of the results, we use a probe annotation file provided by the manufacturer of the expression arrays to connect probe IDs (such as MMT00000044 like we saw earlier) to gene names and universally recognized identification numbers (Entrez codes).
+1. **Priorización de genes clave en los módulos:**
+   Los genes con valores altos de MM se consideran los "genes centrales" (*hub* o **core genes**) del módulo. Son los más representativos del comportamiento del módulo y probablemente desempeñen roles centrales en los procesos biológicos asociados.
+2. **Identificación de biomarcadores candidatos:**
+   Los genes con MM alto son fuertes candidatos a biomarcadores o dianas terapéuticas, ya que impulsan los patrones de coexpresión del módulo, que pueden estar relacionados con fenotipos o rasgos específicos.
+3. **Comprensión de la estructura del módulo:**
+   MM ayuda a distinguir entre:
 
-We create a data frame holding the following information for all probes: probe ID, gene symbol, Locus Link ID (Entrez code), module color, gene significance for weight, and module membership and p-values in all modules. The modules will be ordered by their significance for weight, with the most significant ones to the left.
+   * **Genes centrales:** Esenciales para la coherencia del módulo.
+   * **Genes periféricos:** Débilmente conectados o parcialmente relacionados con el módulo.
+     Esta comprensión es valiosa para la anotación funcional e interpretación del módulo.
+4. **Análisis de enriquecimiento funcional:**
+   Los valores de MM pueden ayudar a refinar los estudios de enriquecimiento funcional. Analizar solo genes con MM alto dentro de un módulo a menudo mejora la señal biológica al enfocarse en los genes más relevantes.
+5. **Identificación de genes atípicos o ambiguos:**
+   Los genes con MM bajo en un módulo pueden indicar posibles *outliers*, genes que no encajan bien en ningún módulo, o genes compartidos entre varios módulos.
+
+# Resumen de los resultados del análisis de red
+
+Hemos encontrado módulos con alta asociación con nuestro rasgo de interés y hemos identificado sus genes centrales mediante la medida de **Module Membership**. Ahora fusionamos esta información estadística con la anotación génica y generamos un archivo que resume los resultados más importantes y puede inspeccionarse en software de hoja de cálculo estándar como MS Excel o Open Office Calc. Nuestros datos de expresión solo están anotados por ID de sonda (*probe ID*); el comando devolverá los *probe IDs* pertenecientes al módulo marrón (*brown module*).
+
+Para facilitar la interpretación de los resultados, usamos un archivo de anotación de sondas proporcionado por el fabricante de los microarrays para conectar los *probe IDs* (como **MMT00000044**, visto anteriormente) con nombres de genes y códigos de identificación universales (códigos Entrez).
+
+Creamos un *data frame* que contiene la siguiente información para todas las sondas: ID de sonda, símbolo génico, Locus Link ID (código Entrez), color del módulo, significancia del gen para peso, y pertenencia al módulo y valores *p* en todos los módulos. Los módulos se ordenarán por su significancia para el peso, con los más significativos a la izquierda.
 
 ```{r get-annotation}
 annot <- read.csv(file = "GeneAnnotation.csv")
@@ -358,4 +385,6 @@ geneInfo0 <- data.frame(substanceBXH = probes,
 geneInfo <- cbind(geneInfo0, geneModuleMembership, MMPvalue)
 ```
 
-# Now your task - select all genes that belong to the brown module and perform ORA to see if you can find enrichment for any
+# Ahora tu tarea
+
+Selecciona todos los genes que pertenecen al módulo marrón y realiza un **ORA (Over-Representation Analysis)** para ver si puedes encontrar algún enriquecimiento.

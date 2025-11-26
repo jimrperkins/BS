@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.5.45">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -180,8 +180,8 @@ window.Quarto = {
 <span class="menu-text">Enriquecimiento Funcional</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./func_enric_2.html"> 
-<span class="menu-text">Enriquecimiento Funcional (II)</span></a>
+    <a class="nav-link" href="./coexp.html"> 
+<span class="menu-text">Coexpression Analysis</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -393,7 +393,7 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_high)?"</span>, <span class="fu">is_connected</span>(g_high), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>¿Es conexo (g_high)? TRUE </code></pre>
+<pre><code>&lt;U+00BF&gt;Es conexo (g_high)? TRUE </code></pre>
 </div>
 </div>
 <p>Grafo con alta conectividad.</p>
@@ -424,7 +424,7 @@ C = (v_1, v_2, \ldots, v_k, v_1) \text{ tal que } (v_i, v_{i+1}) \in E \text{ pa
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"¿Es conexo (g_low)?"</span>, <span class="fu">is_connected</span>(g_low), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>¿Es conexo (g_low)? TRUE </code></pre>
+<pre><code>&lt;U+00BF&gt;Es conexo (g_low)? TRUE </code></pre>
 </div>
 </div>
 <p>Grafo con baja conectividad.</p>
@@ -532,7 +532,7 @@ E . . 1 1 .</code></pre>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>dense_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(dense_matrix)</span>
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz densa:"</span>, <span class="fu">format</span>(dense_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tamaño de la matriz densa: 3 Gb"</code></pre>
+<pre><code>[1] "Tama&lt;U+00F1&gt;o de la matriz densa: 3 Gb"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la matriz densa a una matriz dispersa</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>sparse_matrix <span class="ot">&lt;-</span> <span class="fu">as</span>(dense_matrix, <span class="st">"sparseMatrix"</span>)</span>
@@ -541,7 +541,7 @@ E . . 1 1 .</code></pre>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>sparse_matrix_size <span class="ot">&lt;-</span> <span class="fu">object.size</span>(sparse_matrix)</span>
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Tamaño de la matriz dispersa:"</span>, <span class="fu">format</span>(sparse_matrix_size, <span class="at">units =</span> <span class="st">"auto"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tamaño de la matriz dispersa: 7.5 Mb"</code></pre>
+<pre><code>[1] "Tama&lt;U+00F1&gt;o de la matriz dispersa: 7.5 Mb"</code></pre>
 </div>
 </div>
 </section>
@@ -833,9 +833,6 @@ C(v) = \frac{\text{Número de triángulos en los vecinos de } v}{\text{Número t
 <span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la red con coeficiente de clustering - si los vecinos estan conectadas, se visualiza en rojo!</span></span>
 <span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
 <span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_clustering, <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">main =</span> <span class="st">"Coeficiente de Clustering Local"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: vertex attribute color contains NAs. Replacing with default value 1</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -868,28 +865,28 @@ C(v) = \frac{\text{Número de triángulos en los vecinos de } v}{\text{Número t
 <li><strong>Interpretación</strong>: Un coeficiente de clustering global cercano a 1 significa que la red está altamente agrupada (muchos nodos tienen coeficientes de clustering altos), mientras que un valor cercano a 0 sugiere que la red es más aleatoria, con menos agrupamientos locales.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">333</span>)</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co"># High Global Clustering Coefficient - Small-World Network</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>g_high_clustering <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">30</span>, <span class="at">nei =</span> <span class="dv">3</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>global_clustering_high <span class="ot">&lt;-</span> <span class="fu">transitivity</span>(g_high_clustering, <span class="at">type =</span> <span class="st">"global"</span>)</span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Global Clustering Coefficient (High):"</span>, global_clustering_high, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">333</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># High Global Clustering Coefficient - Small-World Network</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>g_high_clustering <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">30</span>, <span class="at">nei =</span> <span class="dv">3</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>global_clustering_high <span class="ot">&lt;-</span> <span class="fu">transitivity</span>(g_high_clustering, <span class="at">type =</span> <span class="st">"global"</span>)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Global Clustering Coefficient (High):"</span>, global_clustering_high, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Global Clustering Coefficient (High): 0.4379085 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Low Global Clustering Coefficient - Random Network</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>g_low_clustering <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.05</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>global_clustering_low <span class="ot">&lt;-</span> <span class="fu">transitivity</span>(g_low_clustering, <span class="at">type =</span> <span class="st">"global"</span>)</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Global Clustering Coefficient (Low):"</span>, global_clustering_low, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Low Global Clustering Coefficient - Random Network</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>g_low_clustering <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.05</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>global_clustering_low <span class="ot">&lt;-</span> <span class="fu">transitivity</span>(g_low_clustering, <span class="at">type =</span> <span class="st">"global"</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Global Clustering Coefficient (Low):"</span>, global_clustering_low, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Global Clustering Coefficient (Low): 0.1 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting both networks</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_high_clustering, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"High Clustering (Coeff:"</span>, <span class="fu">round</span>(global_clustering_high, <span class="dv">2</span>), <span class="st">")"</span>),</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">edge.color =</span> <span class="st">"dodgerblue"</span>)</span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_low_clustering, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Low Clustering (Coeff:"</span>, <span class="fu">round</span>(global_clustering_low, <span class="dv">2</span>), <span class="st">")"</span>),</span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">edge.color =</span> <span class="st">"tomato"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting both networks</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_high_clustering, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"High Clustering (Coeff:"</span>, <span class="fu">round</span>(global_clustering_high, <span class="dv">2</span>), <span class="st">")"</span>),</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">edge.color =</span> <span class="st">"dodgerblue"</span>)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_low_clustering, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Low Clustering (Coeff:"</span>, <span class="fu">round</span>(global_clustering_low, <span class="dv">2</span>), <span class="st">")"</span>),</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">edge.color =</span> <span class="st">"tomato"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -897,7 +894,7 @@ C(v) = \frac{\text{Número de triángulos en los vecinos de } v}{\text{Número t
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="ejemplo-en-biología" class="level3">
 <h3 class="anchored" data-anchor-id="ejemplo-en-biología">Ejemplo en biología</h3>
@@ -959,21 +956,21 @@ C_b(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}
 <section id="código-r-para-calcular-y-visualizar-la-centralidad-de-intermediación" class="level4">
 <h4 class="anchored" data-anchor-id="código-r-para-calcular-y-visualizar-la-centralidad-de-intermediación">Código R para Calcular y Visualizar la Centralidad de Intermediación:</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">10</span>, <span class="at">p =</span> <span class="fl">0.5</span>)</span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate betweenness centrality for all nodes</span></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>betweenness_centrality <span class="ot">&lt;-</span> <span class="fu">betweenness</span>(g)</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the betweenness values for better visualization (optional)</span></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>betweenness_normalized <span class="ot">&lt;-</span> (betweenness_centrality <span class="sc">-</span> <span class="fu">min</span>(betweenness_centrality)) <span class="sc">/</span> </span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">max</span>(betweenness_centrality) <span class="sc">-</span> <span class="fu">min</span>(betweenness_centrality))</span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the graph with nodes colored by betweenness centrality</span></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, </span>
-<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">20</span>, </span>
-<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">heat.colors</span>(<span class="dv">100</span>, <span class="at">rev=</span><span class="cn">TRUE</span>)[<span class="fu">round</span>(betweenness_normalized <span class="sc">*</span> <span class="dv">99</span>) <span class="sc">+</span> <span class="dv">1</span>], <span class="co"># Color nodes based on centrality # Optionally remove labels</span></span>
-<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Graph colored by Betweenness Centrality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">10</span>, <span class="at">p =</span> <span class="fl">0.5</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate betweenness centrality for all nodes</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>betweenness_centrality <span class="ot">&lt;-</span> <span class="fu">betweenness</span>(g)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the betweenness values for better visualization (optional)</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>betweenness_normalized <span class="ot">&lt;-</span> (betweenness_centrality <span class="sc">-</span> <span class="fu">min</span>(betweenness_centrality)) <span class="sc">/</span> </span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">max</span>(betweenness_centrality) <span class="sc">-</span> <span class="fu">min</span>(betweenness_centrality))</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the graph with nodes colored by betweenness centrality</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, </span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">20</span>, </span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">heat.colors</span>(<span class="dv">100</span>, <span class="at">rev=</span><span class="cn">TRUE</span>)[<span class="fu">round</span>(betweenness_normalized <span class="sc">*</span> <span class="dv">99</span>) <span class="sc">+</span> <span class="dv">1</span>], <span class="co"># Color nodes based on centrality # Optionally remove labels</span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Graph colored by Betweenness Centrality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1035,15 +1032,15 @@ P(k) \sim k^{-\gamma}
 <h4 class="anchored" data-anchor-id="ejemplo-de-análisis-de-redes-de-escala-libre">Ejemplo de Análisis de Redes de Escala Libre</h4>
 <p>En R, podemos generar y analizar una red de escala libre utilizando el modelo de <strong>Barabási-Albert</strong> (BA), que es un modelo clásico para generar redes de escala libre. A continuación se muestra un código en R que genera una red de escala libre y visualiza la distribución de grados:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una red de escala libre usando el modelo de Barabási-Albert</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>g_sf <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">1000</span>)</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener la distribución de grado</span></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>degree_distribution <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_sf)</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la distribución de grado</span></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(degree_distribution, <span class="at">breaks=</span><span class="dv">50</span>, <span class="at">main=</span><span class="st">"Distribución de Grado de una Red de Escala Libre"</span>, </span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Grado"</span>, <span class="at">ylab=</span><span class="st">"Frecuencia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una red de escala libre usando el modelo de Barabási-Albert</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>g_sf <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">1000</span>)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener la distribución de grado</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>degree_distribution <span class="ot">&lt;-</span> <span class="fu">degree</span>(g_sf)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la distribución de grado</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(degree_distribution, <span class="at">breaks=</span><span class="dv">50</span>, <span class="at">main=</span><span class="st">"Distribución de Grado de una Red de Escala Libre"</span>, </span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Grado"</span>, <span class="at">ylab=</span><span class="st">"Frecuencia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
