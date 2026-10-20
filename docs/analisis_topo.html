@@ -1113,18 +1113,13 @@ P(k) \sim k^{-\gamma}
 </section>
 <section id="ejercicio" class="level1">
 <h1>Ejercicio</h1>
-<p><strong>Exploración de la robustez: red aleatoria (ER) vs.&nbsp;red de escala libre (scale-free)</strong></p>
-<p><strong>¿Por qué es relevante?</strong> En una célula, las proteínas pueden dejar de funcionar continuamente: mutaciones, errores de plegamiento, degradación… Estos fallos ocurren, en gran medida, <strong>al azar</strong>. Sin embargo, la célula sigue funcionando, lo que sugiere que su red de interacciones es robusta. ¿Tiene algo que ver la <strong>topología</strong> de la red con esa robustez? Para comprobarlo, compararemos dos redes que tienen el <em>mismo</em> número de proteínas (nodos) y de interacciones (aristas), y que solo se diferencian en <em>cómo</em> están distribuidas esas interacciones:</p>
-<ul>
-<li>una red <strong>Erdős–Rényi</strong>, donde todos los nodos tienen un grado parecido;</li>
-<li>una red <strong>scale-free</strong> (Barabási–Albert), con unos pocos hubs muy conectados y muchos nodos con pocas conexiones.</li>
-</ul>
-<p><strong>Qué hacer:</strong></p>
+<p><strong>¿Qué pasa si atacamos los hubs?</strong></p>
+<p>Hemos visto que las redes scale-free tienen unos pocos <strong>hubs</strong> (nodos muy conectados) y muchos nodos con pocas conexiones, mientras que en una red aleatoria Erdős–Rényi (ER) todos los nodos tienen un grado parecido. En una red de interacción de proteínas, “atacar los hubs” equivaldría, por ejemplo, a un fármaco o a un patógeno que inactiva precisamente las proteínas más conectadas.</p>
 <ol type="1">
-<li>Crea las dos redes con el mismo número de nodos (p.&nbsp;ej. 200) y aproximadamente el mismo número de aristas. Pista: crea primero la red scale-free con <code>sample_pa(..., m = 2, directed = FALSE)</code> y luego la ER con <code>sample_gnm()</code>, usando <code>ecount()</code> para que tenga el mismo número de aristas. Plotéalas.</li>
-<li>Elimina al azar un 10% de los nodos de cada red (simulando proteínas que fallan por mutación). Pista: <code>sample()</code> y <code>delete_vertices()</code>.</li>
-<li>Plotea las redes resultantes y mide cómo ha cambiado la conectividad: ¿siguen siendo conexas (<code>is_connected()</code>)? ¿Cuántos nodos tiene la componente conexa más grande (<code>components()</code>)?</li>
-<li>Reflexiona: ¿cuál de las dos redes es más robusta frente a mutaciones o fallos aleatorios de proteínas? ¿Por qué? ¿Qué crees que pasaría si, en lugar de eliminar nodos al azar, elimináramos los hubs (por ejemplo, con un fármaco dirigido contra las proteínas más conectadas)? ¡Pruébalo!</li>
+<li>Crea dos redes con el mismo número de nodos (200) y el mismo número de aristas: una scale-free y una ER. Plotéalas. Pista: <code>sample_pa(..., m = 2, directed = FALSE)</code>, <code>sample_gnm()</code> y <code>ecount()</code>.</li>
+<li>En cada red, elimina el 20% de los nodos con mayor grado (los hubs). Pista: <code>degree()</code>, <code>order()</code> y <code>delete_vertices()</code>.</li>
+<li>Plotea las redes resultantes. ¿Siguen conectadas (<code>is_connected()</code>)? ¿Cuántos nodos tiene la componente conexa más grande (<code>components()</code>)?</li>
+<li>Reflexiona: ¿cuál de las dos redes sufre más al perder sus hubs? ¿Por qué? ¿Qué implicaciones tiene para una célula, o para el diseño de fármacos?</li>
 </ol>
 
 

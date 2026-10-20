@@ -1,5 +1,5 @@
 ---
-title: "Solución — Ejercicio: Robustez de redes ER vs. scale-free"
+title: "Solución — Ejercicio: ¿Qué pasa si atacamos los hubs?"
 subtitle: "Análisis de grafos y topología de redes (I)"
 search: false
 execute:
@@ -7,77 +7,35 @@ execute:
   message: false
 ---
 
-```{r setup}
+```{r solucion, fig.width=9, fig.height=9}
 library(igraph)
 set.seed(1)
 
-# Función auxiliar: fracción de los nodos ORIGINALES que siguen en la componente más grande
-componente_gigante <- function(g, N) max(components(g)$csize) / N
+# 1. Dos redes con 200 nodos y el mismo número de aristas
+g_sf <- sample_pa(200, m = 2, directed = FALSE)
+g_er <- sample_gnm(200, ecount(g_sf))
+
+# 2. Eliminar el 20% (40 nodos) con mayor grado
+hubs_sf <- order(degree(g_sf), decreasing = TRUE)[1:40]
+hubs_er <- order(degree(g_er), decreasing = TRUE)[1:40]
+sf_sin_hubs <- delete_vertices(g_sf, hubs_sf)
+er_sin_hubs <- delete_vertices(g_er, hubs_er)
+
+# 3. Plotear y medir la componente más grande
+par(mfrow = c(2, 2), mar = c(1, 1, 2, 1))
+plot(g_sf, vertex.label = NA, vertex.size = 3, main = "Scale-free")
+plot(g_er, vertex.label = NA, vertex.size = 3, main = "ER")
+plot(sf_sin_hubs, vertex.label = NA, vertex.size = 3, main = "Scale-free sin hubs")
+plot(er_sin_hubs, vertex.label = NA, vertex.size = 3, main = "ER sin hubs")
+
+max(components(sf_sin_hubs)$csize)
+max(components(er_sin_hubs)$csize)
 ```
 
-## 1. Crear las dos redes
+**Resultado:** de los 160 nodos que quedan, la red ER mantiene una componente grande (\~140 nodos), mientras que la scale-free se **fragmenta** en muchos trozos pequeños (componente más grande de \~30 nodos).
 
-```{r crear, fig.width=10, fig.height=5}
-N <- 200
-g_sf <- sample_pa(N, m = 2, directed = FALSE)       # scale-free (Barabási–Albert)
-g_er <- sample_gnm(N, m = ecount(g_sf))             # Erdős–Rényi con las mismas aristas
+**Reflexión:**
 
-c(aristas_ER = ecount(g_er), aristas_SF = ecount(g_sf))
-c(grado_max_ER = max(degree(g_er)), grado_max_SF = max(degree(g_sf)))
-
-par(mfrow = c(1, 2), mar = c(1, 1, 2, 1))
-plot(g_er, vertex.label = NA, vertex.size = 3, main = "Erdős–Rényi")
-plot(g_sf, vertex.label = NA, vertex.size = 2 + degree(g_sf) / 2, main = "Scale-free (tamaño ∝ grado)")
-```
-
-Mismo número de nodos y aristas (mismo grado medio, ≈ 4), pero en la red scale-free el grado máximo es mucho mayor (aquí casi el doble, y la diferencia crece con el tamaño de la red): tiene **hubs**.
-
-## 2–3. Eliminar un 10 % de nodos al azar
-
-```{r aleatorio, fig.width=10, fig.height=5}
-n_elim <- 0.10 * N
-
-er_rand <- delete_vertices(g_er, sample(N, n_elim))
-sf_rand <- delete_vertices(g_sf, sample(N, n_elim))
-
-data.frame(
-  red     = c("ER", "Scale-free"),
-  conexa_antes   = c(is_connected(g_er), is_connected(g_sf)),
-  conexa_despues = c(is_connected(er_rand), is_connected(sf_rand)),
-  comp_gigante   = round(c(componente_gigante(er_rand, N), componente_gigante(sf_rand, N)), 2)
-)
-
-par(mfrow = c(1, 2), mar = c(1, 1, 2, 1))
-plot(er_rand, vertex.label = NA, vertex.size = 3, main = "ER - 10% al azar")
-plot(sf_rand, vertex.label = NA, vertex.size = 3, main = "Scale-free - 10% al azar")
-```
-
-Tras eliminar un 10 % de nodos al azar, **ambas redes aguantan bien**: la componente gigante conserva alrededor del 90 % de los nodos, y la scale-free suele quedar ligeramente por encima. Ninguna se rompe, aunque sí aparecen algunos nodos sueltos. (Nota: con un grado medio de 4, la red ER a menudo ya no es conexa *antes* de eliminar nada, porque tiene algún nodo aislado. La scale-free, por construcción, siempre es conexa.)
-
-¿Por qué aguanta la scale-free? La gran mayoría de sus nodos tienen grado 2–3. Al elegir al azar, casi nunca tocamos un hub, y los hubs mantienen la red unida.
-
-## 4. ¿Y si eliminamos los hubs?
-
-```{r hubs, fig.width=10, fig.height=5}
-n_elim <- 0.20 * N
-
-hubs_er <- order(degree(g_er), decreasing = TRUE)[1:n_elim]
-hubs_sf <- order(degree(g_sf), decreasing = TRUE)[1:n_elim]
-
-er_hubs <- delete_vertices(g_er, hubs_er)
-sf_hubs <- delete_vertices(g_sf, hubs_sf)
-
-round(c(ER = componente_gigante(er_hubs, N), Scale_free = componente_gigante(sf_hubs, N)), 2)
-
-par(mfrow = c(1, 2), mar = c(1, 1, 2, 1))
-plot(er_hubs, vertex.label = NA, vertex.size = 3, main = "ER - sin el 20% más conectado")
-plot(sf_hubs, vertex.label = NA, vertex.size = 3, main = "Scale-free - sin el 20% más conectado")
-```
-
-Ahora el resultado se invierte. La red ER conserva una componente gigante con \~70 % de los nodos, mientras que la scale-free se **fragmenta** en muchos trozos pequeños (componente gigante \~10–15 %).
-
-## Conclusión (lo que deberían contestar los alumnos)
-
--   **Frente a fallos aleatorios** (mutaciones), la red scale-free es robusta: los fallos casi siempre afectan a proteínas poco conectadas. Con este tamaño de red y un 10 % de fallos, la diferencia con ER es pequeña. El mensaje es que *la scale-free no es más frágil* a pesar de depender de unos pocos hubs.
--   **Frente a ataques dirigidos** a los hubs, la red scale-free es mucho más frágil que la ER, porque unos pocos nodos concentran gran parte de las conexiones. En la ER ningún nodo es mucho más importante que otro, así que "atacar a los más conectados" no es muy distinto de atacar al azar.
--   **Relevancia biológica:** muchas redes PPI tienen distribuciones de grado de cola larga. Esto explica en parte por qué los organismos toleran muchas mutaciones, y también por qué las proteínas hub tienden a ser **esenciales** (regla centralidad-letalidad, Jeong *et al.*, 2001). También sugiere que los hubs son buenas **dianas terapéuticas**, por ejemplo para antibióticos, siempre que no tengan homólogos en humanos.
+-   La red scale-free sufre mucho más: sus pocos hubs concentran gran parte de las conexiones y son los que mantienen la red unida. En la ER ningún nodo es mucho más importante que los demás.
+-   **En la célula:** la mayoría de las proteínas tienen pocas conexiones, así que una mutación al azar casi nunca afecta a un hub y la red sigue funcionando (robustez). Pero perder un hub puede ser grave: las proteínas hub tienden a ser **esenciales** (Jeong *et al.*, *Nature* 2001). Es el "talón de Aquiles" de las redes scale-free.
+-   **En fármacos:** los hubs son buenas dianas para dañar al máximo una red (p. ej. la de una bacteria con un antibiótico). Por la misma razón, atacar un hub humano puede tener muchos efectos secundarios.

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Solución — Ejercicio: Robustez de redes ER vs.&nbsp;scale-free – Biología de Sistemas</title>
+<title>Solución — Ejercicio: ¿Qué pasa si atacamos los hubs? – Biología de Sistemas</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -149,24 +149,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#crear-las-dos-redes" id="toc-crear-las-dos-redes" class="nav-link active" data-scroll-target="#crear-las-dos-redes">1. Crear las dos redes</a></li>
-  <li><a href="#eliminar-un-10-de-nodos-al-azar" id="toc-eliminar-un-10-de-nodos-al-azar" class="nav-link" data-scroll-target="#eliminar-un-10-de-nodos-al-azar">2–3. Eliminar un 10 % de nodos al azar</a></li>
-  <li><a href="#y-si-eliminamos-los-hubs" id="toc-y-si-eliminamos-los-hubs" class="nav-link" data-scroll-target="#y-si-eliminamos-los-hubs">4. ¿Y si eliminamos los hubs?</a></li>
-  <li><a href="#conclusión-lo-que-deberían-contestar-los-alumnos" id="toc-conclusión-lo-que-deberían-contestar-los-alumnos" class="nav-link" data-scroll-target="#conclusión-lo-que-deberían-contestar-los-alumnos">Conclusión (lo que deberían contestar los alumnos)</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Solución — Ejercicio: Robustez de redes ER vs.&nbsp;scale-free</h1>
+<h1 class="title">Solución — Ejercicio: ¿Qué pasa si atacamos los hubs?</h1>
 <p class="subtitle lead">Análisis de grafos y topología de redes (I)</p>
 </div>
 
@@ -188,111 +179,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Función auxiliar: fracción de los nodos ORIGINALES que siguen en la componente más grande</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>componente_gigante <span class="ot">&lt;-</span> <span class="cf">function</span>(g, N) <span class="fu">max</span>(<span class="fu">components</span>(g)<span class="sc">$</span>csize) <span class="sc">/</span> N</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<section id="crear-las-dos-redes" class="level2">
-<h2 class="anchored" data-anchor-id="crear-las-dos-redes">1. Crear las dos redes</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>g_sf <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(N, <span class="at">m =</span> <span class="dv">2</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)       <span class="co"># scale-free (Barabási–Albert)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>g_er <span class="ot">&lt;-</span> <span class="fu">sample_gnm</span>(N, <span class="at">m =</span> <span class="fu">ecount</span>(g_sf))             <span class="co"># Erdős–Rényi con las mismas aristas</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">aristas_ER =</span> <span class="fu">ecount</span>(g_er), <span class="at">aristas_SF =</span> <span class="fu">ecount</span>(g_sf))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>aristas_ER aristas_SF 
-       397        397 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">grado_max_ER =</span> <span class="fu">max</span>(<span class="fu">degree</span>(g_er)), <span class="at">grado_max_SF =</span> <span class="fu">max</span>(<span class="fu">degree</span>(g_sf)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>grado_max_ER grado_max_SF 
-          12           21 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_er, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"Erdős–Rényi"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_sf, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fu">degree</span>(g_sf) <span class="sc">/</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="st">"Scale-free (tamaño ∝ grado)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Dos redes con 200 nodos y el mismo número de aristas</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>g_sf <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">200</span>, <span class="at">m =</span> <span class="dv">2</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>g_er <span class="ot">&lt;-</span> <span class="fu">sample_gnm</span>(<span class="dv">200</span>, <span class="fu">ecount</span>(g_sf))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Eliminar el 20% (40 nodos) con mayor grado</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>hubs_sf <span class="ot">&lt;-</span> <span class="fu">order</span>(<span class="fu">degree</span>(g_sf), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>hubs_er <span class="ot">&lt;-</span> <span class="fu">order</span>(<span class="fu">degree</span>(g_er), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>sf_sin_hubs <span class="ot">&lt;-</span> <span class="fu">delete_vertices</span>(g_sf, hubs_sf)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>er_sin_hubs <span class="ot">&lt;-</span> <span class="fu">delete_vertices</span>(g_er, hubs_er)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Plotear y medir la componente más grande</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_sf, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"Scale-free"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_er, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"ER"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf_sin_hubs, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"Scale-free sin hubs"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(er_sin_hubs, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"ER sin hubs"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analisis_topo_solution_files/figure-html/crear-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="analisis_topo_solution_files/figure-html/solucion-1.png" class="img-fluid figure-img" width="864"></p>
 </figure>
 </div>
 </div>
-</div>
-<p>Mismo número de nodos y aristas (mismo grado medio, ≈ 4), pero en la red scale-free el grado máximo es mucho mayor (aquí casi el doble, y la diferencia crece con el tamaño de la red): tiene <strong>hubs</strong>.</p>
-</section>
-<section id="eliminar-un-10-de-nodos-al-azar" class="level2">
-<h2 class="anchored" data-anchor-id="eliminar-un-10-de-nodos-al-azar">2–3. Eliminar un 10 % de nodos al azar</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>n_elim <span class="ot">&lt;-</span> <span class="fl">0.10</span> <span class="sc">*</span> N</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>er_rand <span class="ot">&lt;-</span> <span class="fu">delete_vertices</span>(g_er, <span class="fu">sample</span>(N, n_elim))</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>sf_rand <span class="ot">&lt;-</span> <span class="fu">delete_vertices</span>(g_sf, <span class="fu">sample</span>(N, n_elim))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">red     =</span> <span class="fu">c</span>(<span class="st">"ER"</span>, <span class="st">"Scale-free"</span>),</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">conexa_antes   =</span> <span class="fu">c</span>(<span class="fu">is_connected</span>(g_er), <span class="fu">is_connected</span>(g_sf)),</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">conexa_despues =</span> <span class="fu">c</span>(<span class="fu">is_connected</span>(er_rand), <span class="fu">is_connected</span>(sf_rand)),</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">comp_gigante   =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">componente_gigante</span>(er_rand, N), <span class="fu">componente_gigante</span>(sf_rand, N)), <span class="dv">2</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(<span class="fu">components</span>(sf_sin_hubs)<span class="sc">$</span>csize)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         red conexa_antes conexa_despues comp_gigante
-1         ER        FALSE          FALSE         0.88
-2 Scale-free         TRUE          FALSE         0.89</code></pre>
+<pre><code>[1] 31</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(er_rand, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"ER - 10% al azar"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf_rand, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"Scale-free - 10% al azar"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analisis_topo_solution_files/figure-html/aleatorio-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Tras eliminar un 10 % de nodos al azar, <strong>ambas redes aguantan bien</strong>: la componente gigante conserva alrededor del 90 % de los nodos, y la scale-free suele quedar ligeramente por encima. Ninguna se rompe, aunque sí aparecen algunos nodos sueltos. (Nota: con un grado medio de 4, la red ER a menudo ya no es conexa <em>antes</em> de eliminar nada, porque tiene algún nodo aislado. La scale-free, por construcción, siempre es conexa.)</p>
-<p>¿Por qué aguanta la scale-free? La gran mayoría de sus nodos tienen grado 2–3. Al elegir al azar, casi nunca tocamos un hub, y los hubs mantienen la red unida.</p>
-</section>
-<section id="y-si-eliminamos-los-hubs" class="level2">
-<h2 class="anchored" data-anchor-id="y-si-eliminamos-los-hubs">4. ¿Y si eliminamos los hubs?</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>n_elim <span class="ot">&lt;-</span> <span class="fl">0.20</span> <span class="sc">*</span> N</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>hubs_er <span class="ot">&lt;-</span> <span class="fu">order</span>(<span class="fu">degree</span>(g_er), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span>n_elim]</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>hubs_sf <span class="ot">&lt;-</span> <span class="fu">order</span>(<span class="fu">degree</span>(g_sf), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span>n_elim]</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>er_hubs <span class="ot">&lt;-</span> <span class="fu">delete_vertices</span>(g_er, hubs_er)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>sf_hubs <span class="ot">&lt;-</span> <span class="fu">delete_vertices</span>(g_sf, hubs_sf)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">ER =</span> <span class="fu">componente_gigante</span>(er_hubs, N), <span class="at">Scale_free =</span> <span class="fu">componente_gigante</span>(sf_hubs, N)), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(<span class="fu">components</span>(er_sin_hubs)<span class="sc">$</span>csize)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        ER Scale_free 
-      0.70       0.16 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(er_hubs, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"ER - sin el 20% más conectado"</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf_hubs, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">main =</span> <span class="st">"Scale-free - sin el 20% más conectado"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analisis_topo_solution_files/figure-html/hubs-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
+<pre><code>[1] 141</code></pre>
 </div>
 </div>
-</div>
-<p>Ahora el resultado se invierte. La red ER conserva una componente gigante con ~70 % de los nodos, mientras que la scale-free se <strong>fragmenta</strong> en muchos trozos pequeños (componente gigante ~10–15 %).</p>
-</section>
-<section id="conclusión-lo-que-deberían-contestar-los-alumnos" class="level2">
-<h2 class="anchored" data-anchor-id="conclusión-lo-que-deberían-contestar-los-alumnos">Conclusión (lo que deberían contestar los alumnos)</h2>
+<p><strong>Resultado:</strong> de los 160 nodos que quedan, la red ER mantiene una componente grande (~140 nodos), mientras que la scale-free se <strong>fragmenta</strong> en muchos trozos pequeños (componente más grande de ~30 nodos).</p>
+<p><strong>Reflexión:</strong></p>
 <ul>
-<li><strong>Frente a fallos aleatorios</strong> (mutaciones), la red scale-free es robusta: los fallos casi siempre afectan a proteínas poco conectadas. Con este tamaño de red y un 10 % de fallos, la diferencia con ER es pequeña. El mensaje es que <em>la scale-free no es más frágil</em> a pesar de depender de unos pocos hubs.</li>
-<li><strong>Frente a ataques dirigidos</strong> a los hubs, la red scale-free es mucho más frágil que la ER, porque unos pocos nodos concentran gran parte de las conexiones. En la ER ningún nodo es mucho más importante que otro, así que “atacar a los más conectados” no es muy distinto de atacar al azar.</li>
-<li><strong>Relevancia biológica:</strong> muchas redes PPI tienen distribuciones de grado de cola larga. Esto explica en parte por qué los organismos toleran muchas mutaciones, y también por qué las proteínas hub tienden a ser <strong>esenciales</strong> (regla centralidad-letalidad, Jeong <em>et al.</em>, 2001). También sugiere que los hubs son buenas <strong>dianas terapéuticas</strong>, por ejemplo para antibióticos, siempre que no tengan homólogos en humanos.</li>
+<li>La red scale-free sufre mucho más: sus pocos hubs concentran gran parte de las conexiones y son los que mantienen la red unida. En la ER ningún nodo es mucho más importante que los demás.</li>
+<li><strong>En la célula:</strong> la mayoría de las proteínas tienen pocas conexiones, así que una mutación al azar casi nunca afecta a un hub y la red sigue funcionando (robustez). Pero perder un hub puede ser grave: las proteínas hub tienden a ser <strong>esenciales</strong> (Jeong <em>et al.</em>, <em>Nature</em> 2001). Es el “talón de Aquiles” de las redes scale-free.</li>
+<li><strong>En fármacos:</strong> los hubs son buenas dianas para dañar al máximo una red (p.&nbsp;ej. la de una bacteria con un antibiótico). Por la misma razón, atacar un hub humano puede tener muchos efectos secundarios.</li>
 </ul>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
