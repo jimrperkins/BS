@@ -8,9 +8,9 @@ title: "Análisis de grafos y topología de redes (I): Topología; Coef clusteri
 
 La biología de sistemas se basa en el uso de redes para entender las interacciones complejas en sistemas biológicos. En este tutorial, exploraremos los conceptos fundamentales de grafos y redes utilizando el paquete `igraph` en R.
 
-Primero, aseguramos de tener instalado el paquete `igraph`:
+Primero, nos aseguramos de tener instalado el paquete `igraph`:
 
-```{r setup, include=FALSE}
+```{r setup, message=FALSE}
 # Instalación del paquete igraph
 if (!requireNamespace("igraph", quietly = TRUE)) {
   install.packages("igraph")
@@ -26,11 +26,11 @@ Un grafo es una estructura matemática que se compone de un conjunto de nodos (o
 
 -   **Nodos (Vértices)**: Los elementos individuales de un grafo. Un grafo se puede definir como $G = (V, E)$, donde $V$ es el conjunto de nodos y $E$ es el conjunto de aristas. En biología, un nodo puede representar una proteína, un gen o cualquier otra entidad de interés.
 
--   **Aristas (Enlaces)**: Las conexiones entre los nodos. En un grafo que representa interacciones proteína-proteína (como STRINGdb por ejemplo), una arista podría indicar que dos proteínas interactúan. Matemáticamente, cada arista se puede representar como un par ordenado de nodos: $e = (u, v)$, donde $u, v \in V$.
+-   **Aristas (Enlaces)**: Las conexiones entre los nodos. En un grafo que representa interacciones proteína-proteína (como STRINGdb por ejemplo), una arista podría indicar que dos proteínas interactúan. Matemáticamente, en un grafo no dirigido cada arista se puede representar como un par (no ordenado) de nodos: $e = \{u, v\}$, donde $u, v \in V$.
 
--   **Grado (Degree)**: El grado de un nodo $v$ es el número de aristas que inciden en él. Por ejemplo en el siguiente red, los nodos 1, 2 y 4 tienen un grado de dos. El nodo 3 tiene un grado de tres. Esto es una red no-dirigida, o un grafo en el que las aristas no tienen dirección, lo que implica una relación simétrica entre nodos.
+-   **Grado (Degree)**: El grado de un nodo $v$ es el número de aristas que inciden en él. Por ejemplo, en la siguiente red, los nodos 1 y 2 tienen un grado de dos, el nodo 3 tiene un grado de tres y el nodo 4 un grado de uno. Esto es una red no dirigida, o un grafo en el que las aristas no tienen dirección, lo que implica una relación simétrica entre nodos.
 
-Para el nodo $i$-ésimo en una red, denotaremos su grado como $k_i$. Por lo tanto, para el siguiente red, $k_4 = 1$, $k_1 = k_2 = 2$ y $k_3 = 3$.
+Para el nodo $i$-ésimo en una red, denotaremos su grado como $k_i$. Por lo tanto, para la siguiente red, $k_4 = 1$, $k_1 = k_2 = 2$ y $k_3 = 3$.
 
 ```{r}
 par(mar = c(1, 1, 1, 1))
@@ -38,7 +38,7 @@ g1 <- make_graph(edges = c(1, 2, 1, 3, 2, 3, 3, 4), n = 4, directed = FALSE)
 plot(g1)
 ```
 
-Como se mencionó anteriormente, el número total de enlaces se denota como $E$. En una red no dirigida, es fácil entender que $E$ debería ser la mitad de la suma de todos los grados de los nodos. Esto es porque cada enlace pertenece a dos nodos y, por lo tanto, cada enlace se cuenta dos veces. Así tenemos:
+Denotaremos el número total de nodos como $N = |V|$ y, abusando un poco de la notación, el número total de enlaces simplemente como $E$ (en sentido estricto, $|E|$). En una red no dirigida, es fácil entender que $E$ debería ser la mitad de la suma de todos los grados de los nodos. Esto es porque cada enlace pertenece a dos nodos y, por lo tanto, cada enlace se cuenta dos veces. Así tenemos:
 
 $$
 E = \frac{1}{2} \sum_{i=1}^{N} k_i
@@ -76,9 +76,9 @@ par(mar = c(1, 1, 1, 1))
 plot(g2)
 ```
 
-Cada enlace en la red anterior es dirigido. Si calculamos el grado medio de la red según la ecuación para redes no dirigdas, perderemos información.
+Cada enlace en la red anterior es dirigido. Si calculamos el grado medio de la red según la ecuación para redes no dirigidas, perderemos información.
 
-Por lo tanto, distinguimos entre el grado de entrada, denotado como $k_{\text{in}_i}$, y el grado de salida, denotado como $k_{\text{out}_i}$. $k_{\text{in}_i}$ representa el número de enlaces de otros nodos que apuntan al nodo $i$, y $k_{\text{out}_i}$ representa el número de enlaces que parten del nodo ( i ) y apuntan a otros nodos.
+Por lo tanto, distinguimos entre el grado de entrada, denotado como $k_{\text{in}_i}$, y el grado de salida, denotado como $k_{\text{out}_i}$. $k_{\text{in}_i}$ representa el número de enlaces de otros nodos que apuntan al nodo $i$, y $k_{\text{out}_i}$ representa el número de enlaces que parten del nodo $i$ y apuntan a otros nodos.
 
 Para un nodo $i$ en una red dirigida, su grado es la suma del grado de entrada y el grado de salida. Por lo tanto,
 
@@ -102,7 +102,7 @@ $$
 
 -   **Caminos y Ciclos**:
 
-    -   **Camino (Path)**: Una secuencia de nodos $v_1, v_2, \ldots, v_k$ donde cada par de nodos adyacentes está conectado por una arista. Matemáticamente, esto se expresa como: $$
+    -   **Camino (Path)**: Una secuencia de nodos distintos $v_1, v_2, \ldots, v_k$ donde cada par de nodos consecutivos está conectado por una arista. Matemáticamente, esto se expresa como: $$
         P = (v_1, v_2, \ldots, v_k) \text{ tal que } (v_i, v_{i+1}) \in E \text{ para } 1 \leq i < k
         $$
     -   **Ciclo (Cycle)**: Un camino que comienza y termina en el mismo nodo sin repetir ninguna arista. Se define como: $$
@@ -113,7 +113,7 @@ $$
 
 -   **Conectividad (Connectivity)**:
 
-En teoría de grafos, la **conectividad** es una medida de la robustez de una red y describe la densidad con la que los nodos están conectados entre sí. La conectividad puede analizarse tanto a nivel de **nodos** como de **aristas**:
+En teoría de grafos, la **conectividad** es una medida de la robustez de una red: describe cuán difícil es desconectarla. La conectividad puede analizarse tanto a nivel de **nodos** como de **aristas**:
 
 1.  **Conectividad de Nodos**: refiere al número mínimo de nodos que deben eliminarse para que el grafo se vuelva disconexo o para separar un componente del resto de la red. Un grafo con alta conectividad de nodos es más robusto, ya que no se desconecta fácilmente ante la eliminación de unos pocos nodos.
 
@@ -175,12 +175,13 @@ plot(g_vis_examples, vertex.label = V(g_vis_examples)$name, main = "Red Compleja
 
 ### Matriz de Adyacencia
 
-En una red cada arista se puede representar como un par ordenado de nodos: $e = (u, v)$. Una table de pares de nodos se puede llamar como un "from-to list".
+En una red cada arista se puede representar como un par ordenado de nodos: $e = (u, v)$. Una tabla de pares de nodos se llama lista de aristas ("edge list" o "from-to list").
 
 La matriz de adyacencia es otra representación que indica la conexión entre los nodos. Se define como una matriz cuadrada $A$ donde $A[i, j] = 1$ si hay una arista entre el nodo $i$ y el nodo $j$, y $A[i, j] = 0$ en caso contrario.
 
 ```{r}
 # Convertir el grafo en data.frame con formato "from-to"
+as_data_frame(g_vis_examples, what = "edges")
 
 # Convertir el grafo en una matriz de adyacencia
 adjacency_matrix <- as.matrix(as_adjacency_matrix(g_vis_examples))
@@ -190,13 +191,13 @@ adjacency_matrix
 
 ```
 
-Matrices de adjacencia estan en general mas facil trabajar con ellos: mas facil hacer operaciones matematicas (aplicación de álgebra matricial) Tambien ofrecen acceso rápido a conexiones - no hay que traversar una lista.
+En general, es más fácil trabajar con matrices de adyacencia: es más fácil hacer operaciones matemáticas (aplicación de álgebra matricial). También ofrecen acceso rápido a las conexiones - no hay que recorrer una lista.
 
-Pero, sobre todo en redes grandes, pueden ser ineficiente - tienen $N x N$ dimensiones, y en redes biologicas, la gran mayoria pueden ser ceros
+Pero, sobre todo en redes grandes, pueden ser ineficientes - tienen dimensiones $N \times N$, y en redes biológicas la gran mayoría de las entradas son ceros.
 
-Por ejemplo, Si una red tiene 1,000 nodos, una matriz de adyacencia requeriría 1,000\^2 =1,000,000 entradas, independientemente de cuántas conexiones realmente existan entre los nodos. Aunque solo una fracción de estas entradas podría representar enlaces reales, todas las celdas deben almacenarse en la memoria.
+Por ejemplo, si una red tiene 1.000 nodos, una matriz de adyacencia requeriría $1000^2 = 1.000.000$ entradas, independientemente de cuántas conexiones realmente existan entre los nodos. Aunque solo una fracción de estas entradas representa enlaces reales, todas las celdas deben almacenarse en la memoria.
 
-Tambien existe representaciones sparse, por ejemplo en R:
+También existen representaciones dispersas (sparse), por ejemplo en R:
 
 ```{r}
 # Instala el paquete si aún no está instalado
@@ -222,35 +223,37 @@ print(adj_matrix)
 print(as_adjacency_matrix(g_vis_examples))
 ```
 
-Porque usa menos memoria el sparse matrix?
+¿Por qué usa menos memoria una matriz dispersa?
 
 Una matriz dispersa (o sparse matrix) utiliza menos memoria porque solo almacena los elementos no cero y sus posiciones, mientras que una matriz densa almacena todos los elementos, incluidos los ceros.
 
-```{R}
-
-# Crear una matriz de adyacencia 20000x20000 en base R (approx no. genes en genoma humano)
-# Han estimado 650000 interacciones entre estos genes
+```{r}
+# Red de ~20.000 genes (aprox. nº de genes codificantes en el genoma humano)
+# Se han estimado ~650.000 interacciones entre ellos
 set.seed(42)
-dense_matrix <- matrix(0, nrow = 20000, ncol = 20000)
-positions <- sample(1:(1000*1000), size = 650000)  # Solo 1000 conexiones
-dense_matrix[positions] <- 1
+n_genes <- 20000
+n_ints  <- 650000
 
-# Mostrar el tamaño en memoria de la matriz densa
-dense_matrix_size <- object.size(dense_matrix)
-print(paste("Tamaño de la matriz densa:", format(dense_matrix_size, units = "auto")))
+# Matriz dispersa: solo guardamos las posiciones (i, j) de los 1s
+i <- sample(n_genes, n_ints, replace = TRUE)
+j <- sample(n_genes, n_ints, replace = TRUE)
+sparse_matrix <- sparseMatrix(i = i, j = j, x = 1, dims = c(n_genes, n_genes))
+print(paste("Tamaño de la matriz dispersa:", format(object.size(sparse_matrix), units = "auto")))
 
-# Convertir la matriz densa a una matriz dispersa
-sparse_matrix <- as(dense_matrix, "sparseMatrix")
+# Matriz densa: N x N números de 8 bytes. ¡No la creamos, ocuparía ~3 GB de RAM!
+dense_bytes <- n_genes^2 * 8
+print(paste("Tamaño de la matriz densa:", format(structure(dense_bytes, class = "object_size"), units = "auto")))
 
-# Mostrar el tamaño en memoria de la matriz dispersa
-sparse_matrix_size <- object.size(sparse_matrix)
-print(paste("Tamaño de la matriz dispersa:", format(sparse_matrix_size, units = "auto")))
-
+# Lo comprobamos con una red más pequeña (2.000 genes, 6.500 interacciones)
+small_dense <- matrix(0, nrow = 2000, ncol = 2000)
+small_dense[cbind(sample(2000, 6500, replace = TRUE), sample(2000, 6500, replace = TRUE))] <- 1
+print(paste("Densa 2000x2000:", format(object.size(small_dense), units = "auto")))
+print(paste("Dispersa 2000x2000:", format(object.size(as(small_dense, "sparseMatrix")), units = "auto")))
 ```
 
-### 10 Formas Diferentes de Visualizar la Red
+### 9 Formas Diferentes de Visualizar la Red
 
-A continuación, se presentan diez maneras diferentes de visualizar la misma red, modificando colores, tipos de aristas y otros parámetros:
+A continuación, se presentan nueve maneras diferentes de visualizar la misma red, modificando colores, tipos de aristas y otros parámetros:
 
 1.  **Colores de Nodos Diferentes**
 
@@ -282,7 +285,7 @@ plot(g_vis_examples, edge.color = "purple", vertex.label = V(g_vis_examples)$nam
 ```{r}
 plot(g_vis_examples, layout = layout_in_circle, vertex.label = V(g_vis_examples)$name, main = "Estructura Circular")
 
-# No se ver muy bien - vamos a ver mejro
+# No se ve muy bien con 5 nodos - veamos una red más grande
 # Crear un grafo aleatorio con 20 nodos y un número específico de aristas
 set.seed(1)
 g_20 <- sample_gnp(20, p = 0.2)  # Generar una red aleatoria
@@ -310,11 +313,11 @@ plot(g_20, layout = layout_on_grid, vertex.label = V(g_20)$name,
 
 # Calcular el grado para cada nodo
 degree_values <- degree(g_20)
-# Normalizar los valores del grado para que estén entre 0 y 1
-degree_normalized <- (degree_values - min(degree_values)) / (max(degree_values) - min(degree_values))
 # Asignar colores según el grado
-# Usaremos un gradiente de colores de azul (bajo grado) a rojo (alto grado)
-node_colors <- colorRampPalette(c("blue", "red"))(length(degree_normalized))[rank(degree_normalized)]
+# Usaremos un gradiente de colores de azul (bajo grado) a rojo (alto grado):
+# un color por cada valor de grado posible (0, 1, ..., grado máximo)
+palette_degree <- colorRampPalette(c("blue", "red"))(max(degree_values) + 1)
+node_colors <- palette_degree[degree_values + 1]
 # Graficar el grafo
 plot(g_20, vertex.color = node_colors, main = "Grafo con Nodos Coloreados por Grado")
 
@@ -356,7 +359,7 @@ Características:
 
 Nodos dentro de una isla están densamente conectados. Pocas o ninguna conexión entre islas. Se observa un alto coeficiente de clustering dentro de las islas (More on this later :).
 
--   \*\*Que son los argumentos de la funcion? Como afectan las propiedades del grafo producido?
+-   **¿Qué son los argumentos de la función? ¿Cómo afectan a las propiedades del grafo producido?** (Pista: `?sample_islands`)
 
 ### Ejemplos de modelos de grafos aleatorios
 
@@ -378,7 +381,9 @@ Cada par de nodos tiene una probabilidad p de estar conectado. Puede generar red
 
 ```{r barabasi_albert}
 # Grafo Barabási-Albert
-g_ba <- sample_pa(100)
+# Ojo: por defecto sample_pa() crea un grafo DIRIGIDO con m = 1 (cada nodo nuevo
+# añade una sola arista, así que el resultado es un árbol). Lo hacemos no dirigido.
+g_ba <- sample_pa(100, m = 1, directed = FALSE)
 plot(g_ba, vertex.size=5, main="Grafo Barabási-Albert")
 ```
 
@@ -400,7 +405,7 @@ g <- sample_gnp(20, p = 0.1)
 
 # Personalizar atributos de nodos
 V(g)$color <- ifelse(degree(g) > 2, "red", "blue")  # Color por grado
-V(g)$size <- degree(g) * 3  # Tamaño de nodo proporcional al grado
+V(g)$size <- degree(g) * 3 + 4  # Tamaño según grado (+4 para que los nodos aislados se vean)
 V(g)$label <- paste0("Node:", V(g))  # Etiquetas de nodos
 
 # Personalizar atributos de aristas
@@ -424,11 +429,13 @@ $$
 C(v) = \frac{2 \times \text{number of triangles through } v}{\text{degree}(v) \times (\text{degree}(v) - 1)}
 $$
 
-O quizas mas intuitivemente, puede definirse en términos de la proporción de triángulos presentes en el grafo en comparación con el número total de triángulos posibles que pueden formarse a partir de los vecinos de un nodo. Esta definición se centra en la noción de "triángulos" y se expresa como:
+O quizás más intuitivamente, como la proporción de pares de vecinos de $v$ que están conectados entre sí. Cada arista entre dos vecinos de $v$ cierra un triángulo que pasa por $v$, y con $k_v$ vecinos hay $k_v(k_v-1)/2$ pares posibles:
 
 $$
-C(v) = \frac{\text{Número de triángulos en los vecinos de } v}{\text{Número total de triángulos posibles entre los vecinos de } v}
+C(v) = \frac{\text{Número de aristas entre los vecinos de } v}{\text{Número de pares posibles de vecinos de } v} = \frac{\text{triángulos que pasan por } v}{k_v(k_v-1)/2}
 $$
+
+Nota: si $k_v < 2$, $C(v)$ no está definido (división por cero); `igraph` devuelve `NaN` en ese caso.
 
 ### Interpretación
 
@@ -446,14 +453,17 @@ set.seed(42)
 g_clustering <- sample_gnp(n = 15, p = 0.15, directed = FALSE)
 
 # Calcular el coeficiente de clustering por nodo
-vertex_clustering <- transitivity(g_clustering, type = "local")
+# (isolates = "zero": los nodos con grado < 2 reciben 0 en lugar de NaN)
+vertex_clustering <- transitivity(g_clustering, type = "local", isolates = "zero")
+round(vertex_clustering, 2)
 V(g_clustering)$color <- ifelse(vertex_clustering > 0, "red", "lightblue")
 
-# Visualizar la red con coeficiente de clustering - si los vecinos estan conectadas, se visualiza en rojo!
+# Visualizar la red con coeficiente de clustering - si los vecinos están conectados, se visualiza en rojo!
 set.seed(321)
 plot(g_clustering, vertex.size = 5, vertex.label = NA, main = "Coeficiente de Clustering Local")
 ```
-Este código calcula e imprime los coeficientes local de un pequeño grafo aleatorio y visualiza los nodos según el coeficiente de clustering > 1, donde los nodos rojos tienen un coeficiente > 1 (por lo menos un par de interactores interaccionan entre ellos - en otras palabras - FORMAN UN TRIANGULO) y los nodos azules tienen un coeficiente bajo.
+
+Este código calcula e imprime los coeficientes locales de un pequeño grafo aleatorio y colorea los nodos según si su coeficiente de clustering es > 0: los nodos rojos tienen un coeficiente > 0 (por lo menos un par de sus vecinos interaccionan entre ellos - en otras palabras - FORMAN UN TRIÁNGULO) y los nodos azules tienen un coeficiente de 0 (o grado < 2).
 
 ## Coeficiente de Clustering Global
 
@@ -461,17 +471,19 @@ Este código calcula e imprime los coeficientes local de un pequeño grafo aleat
 
 -   **Cálculo**:
 
-    -   Una forma común de calcular el coeficiente de clustering global es tomando el promedio de los coeficientes de clustering locales de todos los nodos en la red:
+    -   Una forma común es tomar el promedio de los coeficientes de clustering locales de todos los nodos en la red (coeficiente de clustering medio, de Watts-Strogatz; en igraph `transitivity(g, type = "average")`):
 
 $$
-  C_{\text{global}} = \frac{1}{N} \sum_{v \in G} C(v)
+  \langle C \rangle = \frac{1}{N} \sum_{v \in G} C(v)
 $$
 
-Donde (N) es el número de nodos en el grafo y (C(v)) es el coeficiente de clustering local del nodo (v).
+Donde $N$ es el número de nodos en el grafo y $C(v)$ es el coeficiente de clustering local del nodo $v$.
 
--   Alternativamente, se puede definir como la relación entre el número de triángulos (tripletas de nodos completamente conectados) y el número de tripletas conectadas (un triplete es cualquier conjunto de 3 nodos conectados por 2 aristas):
+-   Otra definición (la **transitividad**, en igraph `transitivity(g, type = "global")`) es la relación entre el número de triángulos y el número de tripletas conectadas (una tripleta conectada es un nodo central junto con dos de sus vecinos, es decir, 3 nodos unidos por al menos 2 aristas; cada triángulo contiene 3 tripletas, de ahí el factor 3):
 
-$$ C\_{\text{global}} = \frac{3 \times \text{Número de triángulos}}{\text{Número de tripletas conectadas}} $$
+$$ C_{\text{global}} = \frac{3 \times \text{Número de triángulos}}{\text{Número de tripletas conectadas}} $$
+
+Ojo: ¡las dos definiciones **no** dan, en general, el mismo valor! La media de los locales da el mismo peso a todos los nodos, mientras que la transitividad global da más peso a los nodos de alto grado (que participan en muchas más tripletas).
 
 -   **Interpretación**: Un coeficiente de clustering global cercano a 1 significa que la red está altamente agrupada (muchos nodos tienen coeficientes de clustering altos), mientras que un valor cercano a 0 sugiere que la red es más aleatoria, con menos agrupamientos locales.
 
@@ -484,7 +496,8 @@ global_clustering_high <- transitivity(g_high_clustering, type = "global")
 cat("Global Clustering Coefficient (High):", global_clustering_high, "\n")
 
 # Low Global Clustering Coefficient - Random Network
-g_low_clustering <- sample_gnp(30, p = 0.05, directed = FALSE)
+# Mismo número de nodos y aristas que la red small-world, para que la comparación sea justa
+g_low_clustering <- sample_gnm(30, m = ecount(g_high_clustering), directed = FALSE)
 global_clustering_low <- transitivity(g_low_clustering, type = "global")
 cat("Global Clustering Coefficient (Low):", global_clustering_low, "\n")
 
@@ -521,11 +534,11 @@ La **centralidad de intermediación** es una medida clave en la teoría de redes
 La centralidad de intermediación de un nodo $v$ en una red se define como:
 
 $$
-C_b(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}
+C_b(v) = \sum_{s \neq v \neq t,\; s \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}
 $$
 
 - **$\sigma_{st}$** es el número total de caminos más cortos entre los nodos $s$ y $t$.
-- **$\sigma_{st}(v$** es el número de esos caminos más cortos que pasan por el nodo $v$.
+- **$\sigma_{st}(v)$** es el número de esos caminos más cortos que pasan por el nodo $v$.
 
 La centralidad de intermediación calcula, para un nodo dado, la fracción de caminos más cortos entre todos los pares de nodos $s$ y $t$ en la red que pasan a través de él. Cuanto mayor sea este valor, más "importante" es ese nodo en la red en términos de conectar diferentes partes de la misma.
 
@@ -547,7 +560,7 @@ En el contexto biológico, la centralidad de intermediación tiene aplicaciones 
 2. **Redes Metabólicas**:
    - En una **red metabólica**, un metabolito o enzima con alta centralidad de intermediación puede ser clave para conectar diversas rutas metabólicas. Estos metabolitos actúan como puentes entre diferentes procesos metabólicos, lo que permite una integración eficiente de los recursos celulares.
    
-   - **Ejemplo**: El **ATP** (adenosín trifosfato), que es esencial para casi todas las reacciones bioquímicas celulares, puede actuar como un nodo con alta centralidad de intermediación en una red metabólica. La alteración de la producción o el uso de ATP afecta una multitud de rutas metabólicas y es crucial para la función celular.
+   - **Ejemplo**: El **ATP** (adenosín trifosfato), que es esencial para casi todas las reacciones bioquímicas celulares, puede actuar como un nodo con alta centralidad de intermediación en una red metabólica. La alteración de la producción o el uso de ATP afecta una multitud de rutas metabólicas y es crucial para la función celular. (Ojo: precisamente por eso, en muchos análisis de redes metabólicas se eliminan los "metabolitos moneda" como ATP, NADH o H₂O, ya que crean atajos artificiales entre rutas que bioquímicamente no están relacionadas.)
 
 3. **Redes de Regulación Génica**:
    - En las **redes de regulación génica**, los factores de transcripción que conectan diferentes conjuntos de genes pueden tener una alta centralidad de intermediación. Estos factores de transcripción no solo regulan la expresión de un conjunto de genes, sino que también actúan como intermediarios para la integración de diversas señales celulares.
@@ -583,7 +596,7 @@ Las **redes de escala libre** son un tipo particular de red que se caracteriza p
 
 ### 1. **Distribución de Grado:**
 
-La **distribución de grado** en las redes de escala libre sigue una **ley de potencia**, lo que significa que el número de nodos con un cierto grado \( k \) (número de conexiones) disminuye rápidamente a medida que \( k \) aumenta. Matemáticamente, esto se expresa como:
+La **distribución de grado** en las redes de escala libre sigue una **ley de potencia**, lo que significa que el número de nodos con un cierto grado $k$ (número de conexiones) disminuye a medida que $k$ aumenta, pero mucho más lentamente que en una red aleatoria (cola "pesada"): aparecen nodos con grados muy altos. Matemáticamente, esto se expresa como:
 
 $$
 P(k) \sim k^{-\gamma}
@@ -611,17 +624,17 @@ Una de las características interesantes de las redes de escala libre es que, de
 
 #### Ejemplo en Biología: Redes Neuronales
 
-En las **redes neuronales**, los **hubs** son neuronas clave que conectan diferentes regiones del cerebro. La **red de conectividad cerebral** sigue una estructura de escala libre, donde ciertas neuronas tienen muchas conexiones con otras, permitiendo una comunicación eficiente entre regiones cerebrales distantes. Estas neuronas de alto grado son críticas para el procesamiento de información en el cerebro.
+En las **redes de conectividad cerebral**, los **hubs** son regiones (o neuronas) clave que conectan diferentes partes del cerebro. Estas redes tienen una distribución de grado heterogénea (de cola pesada, aunque no siempre una ley de potencia estricta) y una estructura de "mundo pequeño", donde ciertas regiones tienen muchas conexiones con otras, permitiendo una comunicación eficiente entre regiones cerebrales distantes. Estas regiones de alto grado son críticas para el procesamiento de información en el cerebro.
 
-- **Ejemplo**: El **córtex prefrontal** tiene neuronas de alta centralidad en las redes neuronales, que facilitan la integración de información de diferentes áreas cerebrales. Si se dañan estas neuronas (por ejemplo, en enfermedades neurodegenerativas), pueden ocurrir disfunciones cognitivas importantes.
+- **Ejemplo**: Regiones asociativas como el **córtex prefrontal**, el **precúneo** o el **cíngulo posterior** actúan como hubs que facilitan la integración de información de diferentes áreas cerebrales. Si se dañan estos hubs (por ejemplo, en enfermedades neurodegenerativas como el Alzheimer), pueden ocurrir disfunciones cognitivas importantes.
 
 ### 3. **Vulnerabilidad a Ataques Dirigidos:**
 
-Debido a su estructura jerárquica, las redes de escala libre son **vulnerables a ataques dirigidos** a los hubs. Al eliminar estos nodos clave, la conectividad de la red puede colapsar rápidamente, lo que afecta su funcionamiento global.
+Debido a su distribución de grado tan heterogénea (unos pocos hubs concentran gran parte de las conexiones), las redes de escala libre son **vulnerables a ataques dirigidos** a los hubs. Al eliminar estos nodos clave, la conectividad de la red puede colapsar rápidamente, lo que afecta su funcionamiento global.
 
 - **Ejemplo en biología**: En las **redes de interacción proteína-proteína**, eliminar las proteínas clave (hubs) podría interrumpir varias vías biológicas simultáneamente, lo que llevaría a enfermedades o disfunciones celulares.
 
-Tambien puede ser aprovechado - por ejemplo en el diseño de antibioticos, puede que buscan dianas que son hubs: atacar una proteina hub para afectar al maximo posible el funcionamiento de la bacteria
+También puede aprovecharse - por ejemplo, en el diseño de antibióticos se pueden buscar dianas que sean hubs: atacar una proteína hub para afectar al máximo posible el funcionamiento de la bacteria.
 
 #### Ejemplo de Análisis de Redes de Escala Libre
 
@@ -629,19 +642,53 @@ En R, podemos generar y analizar una red de escala libre utilizando el modelo de
 
 ```{r scale_free_analysis}
 # Crear una red de escala libre usando el modelo de Barabási-Albert
-g_sf <- sample_pa(1000)
+set.seed(42)
+g_sf <- sample_pa(1000, m = 2, directed = FALSE)
 
-# Obtener la distribución de grado
-degree_distribution <- degree(g_sf)
+# Obtener el grado de cada nodo
+# (¡no llamar a la variable "degree_distribution", que es una función de igraph!)
+grados <- degree(g_sf)
 
 # Visualizar la distribución de grado
-hist(degree_distribution, breaks=50, main="Distribución de Grado de una Red de Escala Libre", 
+hist(grados, breaks=50, main="Distribución de Grado de una Red de Escala Libre",
      xlab="Grado", ylab="Frecuencia")
 ```
 
-# Exercicio
+En escala lineal el histograma sólo muestra "muchos nodos con grado bajo". Una ley de potencia $P(k) \sim k^{-\gamma}$ se convierte en una **recta** en escala log-log, ya que $\log P(k) = -\gamma \log k + c$:
 
-Exploración de la conectividad: ER vs. Scale-Free con mismo tamaño
+```{r scale_free_loglog}
+pk <- degree_distribution(g_sf)   # P(k) para k = 0, 1, 2, ...
+k  <- seq_along(pk) - 1
+keep <- pk > 0
 
-Crea dos redes con aproximadamente el mismo número de nodos y aristas: una red aleatoria Erdős–Rényi y otra scale-free. Plotearlas.
-Ahora, elimina nodos aleatoriamente de cada red y observa cómo cambia la conectividad, ploteando las redes. Reflexiona sobre cuál es más robusta frente a mutaciones o fallos de proteínas en un sistema biológico y por qué.
+plot(k[keep], pk[keep], log = "xy", pch = 19,
+     xlab = "Grado k (log)", ylab = "P(k) (log)",
+     main = "Distribución de grado en escala log-log")
+
+# Estimación de gamma por máxima verosimilitud
+# (fit_power_law elige automáticamente el grado mínimo, xmin, a partir del cual se ajusta la cola)
+fit <- fit_power_law(grados)
+cat("Gamma estimado:", round(fit$alpha, 2), "con xmin =", fit$xmin, "(valor teórico del modelo BA: 3)\n")
+```
+
+::: callout-note
+## ¿Son realmente "scale-free" las redes biológicas?
+
+Es un tema debatido. Muchas redes reales (incluidas algunas PPI) tienen distribuciones de grado de cola pesada, pero ajustan mal a una ley de potencia estricta (Broido & Clauset, *Nat. Commun.* 2019, "Scale-free networks are rare"). Además, las redes PPI están sesgadas: las proteínas más estudiadas (p. ej. TP53, BRCA1) tienen más interacciones conocidas en parte porque se han estudiado más. Lo importante, para la robustez, es la **heterogeneidad** del grado.
+:::
+
+# Ejercicio
+
+**Exploración de la robustez: red aleatoria (ER) vs. red de escala libre (scale-free)**
+
+**¿Por qué es relevante?** En una célula, las proteínas pueden dejar de funcionar continuamente: mutaciones, errores de plegamiento, degradación... Estos fallos ocurren, en gran medida, **al azar**. Sin embargo, la célula sigue funcionando, lo que sugiere que su red de interacciones es robusta. ¿Tiene algo que ver la **topología** de la red con esa robustez? Para comprobarlo, compararemos dos redes que tienen el *mismo* número de proteínas (nodos) y de interacciones (aristas), y que solo se diferencian en *cómo* están distribuidas esas interacciones:
+
+-   una red **Erdős–Rényi**, donde todos los nodos tienen un grado parecido;
+-   una red **scale-free** (Barabási–Albert), con unos pocos hubs muy conectados y muchos nodos con pocas conexiones.
+
+**Qué hacer:**
+
+1.  Crea las dos redes con el mismo número de nodos (p. ej. 200) y aproximadamente el mismo número de aristas. Pista: crea primero la red scale-free con `sample_pa(..., m = 2, directed = FALSE)` y luego la ER con `sample_gnm()`, usando `ecount()` para que tenga el mismo número de aristas. Plotéalas.
+2.  Elimina al azar un 10% de los nodos de cada red (simulando proteínas que fallan por mutación). Pista: `sample()` y `delete_vertices()`.
+3.  Plotea las redes resultantes y mide cómo ha cambiado la conectividad: ¿siguen siendo conexas (`is_connected()`)? ¿Cuántos nodos tiene la componente conexa más grande (`components()`)?
+4.  Reflexiona: ¿cuál de las dos redes es más robusta frente a mutaciones o fallos aleatorios de proteínas? ¿Por qué? ¿Qué crees que pasaría si, en lugar de eliminar nodos al azar, elimináramos los hubs (por ejemplo, con un fármaco dirigido contra las proteínas más conectadas)? ¡Pruébalo!
