@@ -475,6 +475,52 @@ D = \frac{m}{N(N-1)/2} = \frac{2m}{N(N-1)}
 <li><strong>Cascadas de señalización lineales (dispersas)</strong>: el módulo central de la vía MAPK (Raf → MEK → ERK) es el ejemplo clásico de cascada lineal: cada quinasa activa a la siguiente. Una cadena de <span class="math inline">\(N\)</span> proteínas tiene solo <span class="math inline">\(N-1\)</span> aristas, así que su densidad es <span class="math inline">\(D = 2/N\)</span>, muy baja si la cadena es larga. (En la célula real, estas vías tienen además bucles de retroalimentación, proteínas andamio y conexiones con otras vías, que aumentan la densidad.)</li>
 <li><strong>El interactoma humano completo (muy disperso)</strong>: con unas 20.000 proteínas y unas 650.000 interacciones estimadas (ver parte I), la densidad es <span class="math inline">\(D = \frac{2 \times 650000}{20000 \times 19999} \approx 0.003\)</span>. Es decir, ¡solo el 0.3% de las interacciones posibles existen! Prácticamente todas las redes biológicas grandes son muy dispersas.</li>
 </ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Código de la figura</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>complejo <span class="ot">&lt;-</span> <span class="fu">make_full_graph</span>(<span class="dv">7</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(complejo)<span class="sc">$</span>name <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"α"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>cascada <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="sc">~</span> EGFR <span class="sc">-+</span> GRB2 <span class="sc">-+</span> SOS <span class="sc">-+</span> Ras <span class="sc">-+</span> Raf <span class="sc">-+</span> MEK <span class="sc">-+</span> ERK)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>mapk_real <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="sc">~</span> EGFR <span class="sc">-+</span> GRB2 <span class="sc">-+</span> SOS <span class="sc">-+</span> Ras <span class="sc">-+</span> Raf <span class="sc">-+</span> MEK <span class="sc">-+</span> ERK,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                        ERK <span class="sc">-+</span> SOS, ERK <span class="sc">-+</span> Raf, ERK <span class="sc">-+</span> EGFR,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                        KSR <span class="sc">-+</span> Raf, KSR <span class="sc">-+</span> MEK, KSR <span class="sc">-+</span> ERK)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(mapk_real)<span class="sc">$</span>color  <span class="ot">&lt;-</span> <span class="st">"grey40"</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(mapk_real)<span class="sc">$</span>curved <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(mapk_real)<span class="sc">$</span>lty    <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(mapk_real)[<span class="fu">.from</span>(<span class="st">"ERK"</span>)]<span class="sc">$</span>color  <span class="ot">&lt;-</span> <span class="st">"firebrick"</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(mapk_real)[<span class="fu">.from</span>(<span class="st">"ERK"</span>)]<span class="sc">$</span>curved <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.6</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(mapk_real)[<span class="fu">.from</span>(<span class="st">"ERK"</span>)]<span class="sc">$</span>lty    <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(mapk_real)[<span class="fu">.from</span>(<span class="st">"KSR"</span>)]<span class="sc">$</span>color  <span class="ot">&lt;-</span> <span class="st">"darkorange"</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co"># La densidad la calculamos sobre la versión no dirigida</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>dens <span class="ot">&lt;-</span> <span class="cf">function</span>(g) <span class="fu">round</span>(<span class="fu">edge_density</span>(<span class="fu">as_undirected</span>(g)), <span class="dv">2</span>)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(complejo, <span class="at">vertex.color =</span> <span class="st">"skyblue"</span>, <span class="at">vertex.size =</span> <span class="dv">30</span>, <span class="at">vertex.label.color =</span> <span class="st">"black"</span>,</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"Complejo proteico</span><span class="sc">\n</span><span class="st">D = "</span>, <span class="fu">dens</span>(complejo)))</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cascada, <span class="at">layout =</span> <span class="fu">cbind</span>(<span class="dv">0</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>), <span class="at">vertex.shape =</span> <span class="st">"rectangle"</span>, <span class="at">vertex.size =</span> <span class="dv">45</span>,</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size2 =</span> <span class="dv">14</span>, <span class="at">vertex.color =</span> <span class="st">"khaki"</span>, <span class="at">vertex.label.color =</span> <span class="st">"black"</span>,</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.arrow.size =</span> <span class="fl">0.5</span>, <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"Cascada lineal (MAPK)</span><span class="sc">\n</span><span class="st">D = "</span>, <span class="fu">dens</span>(cascada)))</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mapk_real, <span class="at">layout =</span> <span class="fu">cbind</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">7</span>), <span class="fl">1.2</span>), <span class="fu">c</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>, <span class="dv">2</span>)), <span class="at">vertex.shape =</span> <span class="st">"rectangle"</span>,</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">40</span>, <span class="at">vertex.size2 =</span> <span class="dv">14</span>, <span class="at">vertex.color =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"khaki"</span>, <span class="dv">7</span>), <span class="st">"orange"</span>),</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">"black"</span>, <span class="at">edge.arrow.size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"MAPK con retroalimentación y andamio</span><span class="sc">\n</span><span class="st">D = "</span>, <span class="fu">dens</span>(mapk_real)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="1248"></p>
+<figcaption>Tres ejemplos de densidad. Izquierda: un complejo proteico en el que todas las subunidades interaccionan entre sí (grafo completo). Centro: la vía EGFR–MAPK dibujada como una cascada lineal. Derecha: la misma vía con algunas de sus retroalimentaciones negativas (ERK fosforila e inhibe a SOS, Raf y EGFR; flechas rojas discontinuas) y con la proteína andamio KSR, que une a Raf, MEK y ERK (naranja).</figcaption>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Código de la figura</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </section>
 <section id="cuidado-la-densidad-depende-del-tamaño-de-la-red" class="level3">
 <h3 class="anchored" data-anchor-id="cuidado-la-densidad-depende-del-tamaño-de-la-red">Cuidado: la densidad depende del tamaño de la red</h3>
@@ -496,49 +542,49 @@ D = \frac{\langle k \rangle}{N-1}
 <section id="cálculo-de-densidad-y-dispersión-en-r" class="level2">
 <h2 class="anchored" data-anchor-id="cálculo-de-densidad-y-dispersión-en-r"><strong>Cálculo de Densidad y Dispersión en R</strong></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Una red dispersa (cada nodo conectado con ~10% de los demás) y una densa (~50%)</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>sparse_network <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.1</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>dense_network  <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.5</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Densidad y dispersión</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>sparse_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(sparse_network)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>dense_density  <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(dense_network)</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Red dispersa: densidad ="</span>, <span class="fu">round</span>(sparse_density, <span class="dv">3</span>), <span class="st">" dispersión ="</span>, <span class="fu">round</span>(<span class="dv">1</span> <span class="sc">-</span> sparse_density, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Una red dispersa (cada nodo conectado con ~10% de los demás) y una densa (~50%)</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>sparse_network <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.1</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>dense_network  <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.5</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Densidad y dispersión</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>sparse_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(sparse_network)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>dense_density  <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(dense_network)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Red dispersa: densidad ="</span>, <span class="fu">round</span>(sparse_density, <span class="dv">3</span>), <span class="st">" dispersión ="</span>, <span class="fu">round</span>(<span class="dv">1</span> <span class="sc">-</span> sparse_density, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Red dispersa: densidad = 0.094  dispersión = 0.906 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Red densa:    densidad ="</span>, <span class="fu">round</span>(dense_density, <span class="dv">3</span>), <span class="st">" dispersión ="</span>, <span class="fu">round</span>(<span class="dv">1</span> <span class="sc">-</span> dense_density, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Red densa:    densidad ="</span>, <span class="fu">round</span>(dense_density, <span class="dv">3</span>), <span class="st">" dispersión ="</span>, <span class="fu">round</span>(<span class="dv">1</span> <span class="sc">-</span> dense_density, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Red densa:    densidad = 0.494  dispersión = 0.506 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprobamos la fórmula a mano para la red dispersa</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> <span class="fu">ecount</span>(sparse_network) <span class="sc">/</span> (<span class="fu">vcount</span>(sparse_network) <span class="sc">*</span> (<span class="fu">vcount</span>(sparse_network) <span class="sc">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprobamos la fórmula a mano para la red dispersa</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> <span class="fu">ecount</span>(sparse_network) <span class="sc">/</span> (<span class="fu">vcount</span>(sparse_network) <span class="sc">*</span> (<span class="fu">vcount</span>(sparse_network) <span class="sc">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.09425287</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sparse_network, <span class="at">main =</span> <span class="st">"Red Dispersa (especificidad)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dense_network,  <span class="at">main =</span> <span class="st">"Red Densa (redundancia)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sparse_network, <span class="at">main =</span> <span class="st">"Red Dispersa (especificidad)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dense_network,  <span class="at">main =</span> <span class="st">"Red Densa (redundancia)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Ahora comprobamos que, con el mismo grado medio, la densidad cae al aumentar el tamaño de la red:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>tamanos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>, <span class="dv">5000</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Redes aleatorias con grado medio 4 (m = 2N aristas) y distinto número de nodos</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>densidades <span class="ot">&lt;-</span> <span class="fu">sapply</span>(tamanos, <span class="cf">function</span>(N) <span class="fu">edge_density</span>(<span class="fu">sample_gnm</span>(N, <span class="dv">2</span> <span class="sc">*</span> N)))</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">nodos =</span> tamanos, <span class="at">grado_medio =</span> <span class="dv">4</span>, <span class="at">densidad =</span> <span class="fu">round</span>(densidades, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>tamanos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>, <span class="dv">5000</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Redes aleatorias con grado medio 4 (m = 2N aristas) y distinto número de nodos</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>densidades <span class="ot">&lt;-</span> <span class="fu">sapply</span>(tamanos, <span class="cf">function</span>(N) <span class="fu">edge_density</span>(<span class="fu">sample_gnm</span>(N, <span class="dv">2</span> <span class="sc">*</span> N)))</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">nodos =</span> tamanos, <span class="at">grado_medio =</span> <span class="dv">4</span>, <span class="at">densidad =</span> <span class="fu">round</span>(densidades, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  nodos grado_medio densidad
 1    50           4   0.0816
@@ -568,18 +614,18 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 \]</span></p>
 <p>En redes que no son conexas, <span class="math inline">\(d(i,j)\)</span> es infinita para nodos en componentes distintas. <code>mean_distance()</code> de igraph simplemente ignora esos pares (por defecto, <code>unconnected = TRUE</code>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ejemplo pequeño: una cadena de 5 nodos (como una cascada de señalización lineal)</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>cadena <span class="ot">&lt;-</span> <span class="fu">make_ring</span>(<span class="dv">5</span>, <span class="at">circular =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ejemplo pequeño: una cadena de 5 nodos (como una cascada de señalización lineal)</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>cadena <span class="ot">&lt;-</span> <span class="fu">make_ring</span>(<span class="dv">5</span>, <span class="at">circular =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de distancias: el elemento [i, j] es d(i, j)</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">distances</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de distancias: el elemento [i, j] es d(i, j)</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">distances</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2] [,3] [,4] [,5]
 [1,]    0    1    2    3    4
@@ -588,8 +634,8 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 [4,]    3    2    1    0    1
 [5,]    4    3    2    1    0</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># La media de las distancias fuera de la diagonal es L_avg</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean_distance</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># La media de las distancias fuera de la diagonal es L_avg</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean_distance</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
 </div>
@@ -603,20 +649,48 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 <li><strong>Longitud promedio de camino corta</strong>, como en una red aleatoria: cualquier par de nodos está a pocos pasos.</li>
 <li><strong>Coeficiente de clustering alto</strong>, como en una red regular (retícula): los vecinos de un nodo suelen estar conectados entre sí.</li>
 </ol>
+<p>Una <strong>retícula</strong> (<em>lattice</em> en inglés) es una red <strong>regular</strong>: los nodos están colocados en una estructura geométrica fija (una línea, un anillo, una cuadrícula…) y cada nodo se conecta solo con sus <strong>vecinos más cercanos</strong>, siguiendo siempre el mismo patrón. Todos los nodos tienen el mismo grado y no hay atajos. Por eso, en un anillo en el que cada nodo se conecta con sus 2 vecinos de cada lado, los vecinos de un nodo están conectados entre sí (clustering alto), pero para llegar al lado opuesto del anillo hay que dar muchos pasos (caminos largos).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código de la figura</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>anillo <span class="ot">&lt;-</span> <span class="fu">make_lattice</span>(<span class="at">length =</span> <span class="dv">12</span>, <span class="at">dim =</span> <span class="dv">1</span>, <span class="at">nei =</span> <span class="dv">2</span>, <span class="at">periodic =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>malla  <span class="ot">&lt;-</span> <span class="fu">make_lattice</span>(<span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(anillo, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.size =</span> <span class="dv">12</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="st">"skyblue"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Retícula en anillo (1D)</span><span class="sc">\n</span><span class="st">cada nodo con sus 2 vecinos a cada lado"</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(malla, <span class="at">layout =</span> <span class="fu">layout_on_grid</span>(malla), <span class="at">vertex.size =</span> <span class="dv">12</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="st">"skyblue"</span>,</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Retícula cuadrada (2D)</span><span class="sc">\n</span><span class="st">cada nodo con sus 4 vecinos más cercanos"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Dos retículas. Izquierda: un anillo de 12 nodos en el que cada nodo está unido a sus 2 vecinos más cercanos a cada lado (el punto de partida del modelo de Watts-Strogatz). Derecha: una cuadrícula 2D, donde cada nodo está unido a sus vecinos de arriba, abajo, izquierda y derecha.</figcaption>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Código de la figura</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 <p>Las redes que cumplen ambas se llaman de <strong>pequeño mundo</strong>. Su modelo parte de un anillo regular (cada nodo conectado a sus vecinos más cercanos: clustering alto, caminos largos) y “reconecta” cada arista al azar con probabilidad <span class="math inline">\(p\)</span>. Con solo unos pocos atajos, la longitud de camino cae en picado, mientras que el clustering disminuye mucho más despacio:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>p_values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.2</span>, <span class="dv">1</span>)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>redes_ws <span class="ot">&lt;-</span> <span class="fu">lapply</span>(p_values, <span class="cf">function</span>(p) <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> N, <span class="at">nei =</span> <span class="dv">2</span>, <span class="at">p =</span> p))</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">p_reconexion  =</span> p_values,</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">aristas       =</span> <span class="fu">sapply</span>(redes_ws, ecount),</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_avg         =</span> <span class="fu">round</span>(<span class="fu">sapply</span>(redes_ws, mean_distance), <span class="dv">2</span>),</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">clustering    =</span> <span class="fu">round</span>(<span class="fu">sapply</span>(redes_ws, transitivity, <span class="at">type =</span> <span class="st">"average"</span>), <span class="dv">2</span>)</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>p_values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.2</span>, <span class="dv">1</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>redes_ws <span class="ot">&lt;-</span> <span class="fu">lapply</span>(p_values, <span class="cf">function</span>(p) <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> N, <span class="at">nei =</span> <span class="dv">2</span>, <span class="at">p =</span> p))</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">p_reconexion  =</span> p_values,</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">aristas       =</span> <span class="fu">sapply</span>(redes_ws, ecount),</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_avg         =</span> <span class="fu">round</span>(<span class="fu">sapply</span>(redes_ws, mean_distance), <span class="dv">2</span>),</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">clustering    =</span> <span class="fu">round</span>(<span class="fu">sapply</span>(redes_ws, transitivity, <span class="at">type =</span> <span class="st">"average"</span>), <span class="dv">2</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  p_reconexion aristas L_avg clustering
 1         0.00     200 12.88       0.50
@@ -625,20 +699,20 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 4         0.20     200  3.79       0.17
 5         1.00     200  3.34       0.06</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>)) {</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(redes_ws[[i]], <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"p = "</span>, p_values[i], <span class="st">"</span><span class="sc">\n</span><span class="st">L = "</span>, <span class="fu">round</span>(<span class="fu">mean_distance</span>(redes_ws[[i]]), <span class="dv">1</span>),</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>                     <span class="st">", C = "</span>, <span class="fu">round</span>(<span class="fu">transitivity</span>(redes_ws[[i]], <span class="at">type =</span> <span class="st">"average"</span>), <span class="dv">2</span>)))</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>)) {</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(redes_ws[[i]], <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"p = "</span>, p_values[i], <span class="st">"</span><span class="sc">\n</span><span class="st">L = "</span>, <span class="fu">round</span>(<span class="fu">mean_distance</span>(redes_ws[[i]]), <span class="dv">1</span>),</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>                     <span class="st">", C = "</span>, <span class="fu">round</span>(<span class="fu">transitivity</span>(redes_ws[[i]], <span class="at">type =</span> <span class="st">"average"</span>), <span class="dv">2</span>)))</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>Con <span class="math inline">\(p = 0\)</span> (retícula regular): clustering alto pero caminos largos.</li>
@@ -712,6 +786,45 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 <li><strong>Cadenas y cascadas lineales</strong>: en una ruta metabólica lineal o una cascada de señalización sin ramificaciones, la distancia entre los extremos crece con el número de pasos.</li>
 <li><strong>Redes muy modulares con pocas conexiones entre módulos</strong>: dentro de cada módulo las distancias son cortas, pero para ir de un módulo a otro hay que pasar por las pocas aristas que los unen. Ojo: modularidad y pequeño mundo <strong>no son excluyentes</strong> (el cerebro es ambas cosas); los caminos solo se alargan si los módulos están conectados por muy pocas aristas.</li>
 </ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Código de la figura</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>malla   <span class="ot">&lt;-</span> <span class="fu">make_lattice</span>(<span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>cadena  <span class="ot">&lt;-</span> <span class="fu">make_ring</span>(<span class="dv">12</span>, <span class="at">circular =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 5 módulos de 5 nodos totalmente conectados, unidos en fila por una sola arista</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>modulos <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="st">`</span><span class="at">%du%</span><span class="st">`</span>, <span class="fu">replicate</span>(<span class="dv">5</span>, <span class="fu">make_full_graph</span>(<span class="dv">5</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>modulos <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(modulos, <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">20</span>, <span class="dv">21</span>))</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>dibuja_diametro <span class="ot">&lt;-</span> <span class="cf">function</span>(g, titulo, layout) {</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  camino <span class="ot">&lt;-</span> <span class="fu">get_diameter</span>(g)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  en_camino <span class="ot">&lt;-</span> <span class="fu">seq_len</span>(<span class="fu">ecount</span>(g)) <span class="sc">%in%</span> <span class="fu">E</span>(g, <span class="at">path =</span> camino)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(g, <span class="at">layout =</span> layout, <span class="at">vertex.size =</span> <span class="dv">9</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">vertex.color =</span> <span class="fu">ifelse</span>(<span class="fu">V</span>(g) <span class="sc">%in%</span> camino, <span class="st">"red"</span>, <span class="st">"grey85"</span>),</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">edge.color =</span> <span class="fu">ifelse</span>(en_camino, <span class="st">"red"</span>, <span class="st">"grey70"</span>),</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">edge.width =</span> <span class="fu">ifelse</span>(en_camino, <span class="dv">3</span>, <span class="dv">1</span>),</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste0</span>(titulo, <span class="st">"</span><span class="sc">\n</span><span class="st">L = "</span>, <span class="fu">round</span>(<span class="fu">mean_distance</span>(g), <span class="dv">1</span>),</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>                     <span class="st">", diámetro = "</span>, <span class="fu">diameter</span>(g)))</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a><span class="fu">dibuja_diametro</span>(malla,   <span class="st">"Retícula / red espacial"</span>,     <span class="fu">layout_on_grid</span>(malla))</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a><span class="fu">dibuja_diametro</span>(cadena,  <span class="st">"Cadena lineal"</span>,               <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="dv">0</span>))</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a><span class="fu">dibuja_diametro</span>(modulos, <span class="st">"Módulos unidos por 1 arista"</span>, <span class="fu">layout_with_fr</span>(modulos))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="1248"></p>
+<figcaption>Tres tipos de redes con caminos largos. En rojo, el camino que define el diámetro (el camino más corto más largo de la red).</figcaption>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Código de la figura</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 <p>En general, una longitud de camino corta sugiere un sistema en el que la información (o una perturbación) se propaga rápidamente, y una longitud larga, un sistema más “lento” o segregado.</p>
 </section>
 <section id="diámetro-diameter" class="level2">
@@ -737,44 +850,44 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 <section id="cálculo-del-diámetro-en-r" class="level3">
 <h3 class="anchored" data-anchor-id="cálculo-del-diámetro-en-r">Cálculo del Diámetro en R</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Red de escala libre (Barabási-Albert, no dirigida): pocos pasos gracias a los hubs</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>red_ba <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">100</span>, <span class="at">m =</span> <span class="dv">2</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Red casi regular (Watts-Strogatz con p muy baja): prácticamente un anillo, sin atajos</span></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>red_reticula <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">100</span>, <span class="at">nei =</span> <span class="dv">2</span>, <span class="at">p =</span> <span class="fl">0.01</span>)</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">red      =</span> <span class="fu">c</span>(<span class="st">"Barabási-Albert"</span>, <span class="st">"Casi retícula"</span>),</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">aristas  =</span> <span class="fu">c</span>(<span class="fu">ecount</span>(red_ba), <span class="fu">ecount</span>(red_reticula)),</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_avg    =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">mean_distance</span>(red_ba), <span class="fu">mean_distance</span>(red_reticula)), <span class="dv">2</span>),</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">diametro =</span> <span class="fu">c</span>(<span class="fu">diameter</span>(red_ba), <span class="fu">diameter</span>(red_reticula))</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Red de escala libre (Barabási-Albert, no dirigida): pocos pasos gracias a los hubs</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>red_ba <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">100</span>, <span class="at">m =</span> <span class="dv">2</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Red casi regular (Watts-Strogatz con p muy baja): prácticamente un anillo, sin atajos</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>red_reticula <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">100</span>, <span class="at">nei =</span> <span class="dv">2</span>, <span class="at">p =</span> <span class="fl">0.01</span>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">red      =</span> <span class="fu">c</span>(<span class="st">"Barabási-Albert"</span>, <span class="st">"Casi retícula"</span>),</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">aristas  =</span> <span class="fu">c</span>(<span class="fu">ecount</span>(red_ba), <span class="fu">ecount</span>(red_reticula)),</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_avg    =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">mean_distance</span>(red_ba), <span class="fu">mean_distance</span>(red_reticula)), <span class="dv">2</span>),</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">diametro =</span> <span class="fu">c</span>(<span class="fu">diameter</span>(red_ba), <span class="fu">diameter</span>(red_reticula))</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              red aristas L_avg diametro
 1 Barabási-Albert     197  3.01        6
 2   Casi retícula     200  7.85       17</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># El camino más largo de todos (el que define el diámetro)</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>camino_ba  <span class="ot">&lt;-</span> <span class="fu">get_diameter</span>(red_ba)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>camino_ret <span class="ot">&lt;-</span> <span class="fu">get_diameter</span>(red_reticula)</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(red_ba, <span class="at">vertex.size =</span> <span class="dv">4</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">ifelse</span>(<span class="fu">V</span>(red_ba) <span class="sc">%in%</span> camino_ba, <span class="st">"red"</span>, <span class="st">"grey80"</span>),</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Barabási-Albert</span><span class="sc">\n</span><span class="st">Diámetro:"</span>, <span class="fu">diameter</span>(red_ba)))</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(red_reticula, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.size =</span> <span class="dv">4</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">ifelse</span>(<span class="fu">V</span>(red_reticula) <span class="sc">%in%</span> camino_ret, <span class="st">"red"</span>, <span class="st">"grey80"</span>),</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Casi retícula</span><span class="sc">\n</span><span class="st">Diámetro:"</span>, <span class="fu">diameter</span>(red_reticula)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># El camino más largo de todos (el que define el diámetro)</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>camino_ba  <span class="ot">&lt;-</span> <span class="fu">get_diameter</span>(red_ba)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>camino_ret <span class="ot">&lt;-</span> <span class="fu">get_diameter</span>(red_reticula)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(red_ba, <span class="at">vertex.size =</span> <span class="dv">4</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">ifelse</span>(<span class="fu">V</span>(red_ba) <span class="sc">%in%</span> camino_ba, <span class="st">"red"</span>, <span class="st">"grey80"</span>),</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Barabási-Albert</span><span class="sc">\n</span><span class="st">Diámetro:"</span>, <span class="fu">diameter</span>(red_ba)))</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(red_reticula, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.size =</span> <span class="dv">4</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">ifelse</span>(<span class="fu">V</span>(red_reticula) <span class="sc">%in%</span> camino_ret, <span class="st">"red"</span>, <span class="st">"grey80"</span>),</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Casi retícula</span><span class="sc">\n</span><span class="st">Diámetro:"</span>, <span class="fu">diameter</span>(red_reticula)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Con prácticamente el mismo número de aristas, la red de escala libre tiene un diámetro mucho menor: los hubs actúan como atajos. En rojo se muestra el camino más corto más largo de cada red.</p>
 </section>
@@ -804,50 +917,50 @@ r = \frac{\sum_{ij} \left(A_{ij} - \frac{k_i k_j}{2m}\right) k_i k_j}{\sum_{ij} 
 <h3 class="anchored" data-anchor-id="ejemplos-en-r"><strong>Ejemplos en R</strong></h3>
 <p>Construimos tres redes pequeñas con asortatividad positiva, nula y negativa:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Asortativa: un grupo de 10 nodos todos conectados entre sí (grado alto)</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    unido por UNA arista a un anillo de 20 nodos (grado 2).</span></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co">#    Los nodos de grado alto se conectan con nodos de grado alto, y los de grado bajo entre sí.</span></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>g_asort <span class="ot">&lt;-</span> <span class="fu">disjoint_union</span>(<span class="fu">make_full_graph</span>(<span class="dv">10</span>), <span class="fu">make_ring</span>(<span class="dv">20</span>))</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>g_asort <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(g_asort, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>))</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Neutra: red aleatoria Erdős–Rényi (algo más grande, para que r fluctúe menos)</span></span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>g_neutra <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Disasortativa: 3 "estrellas" (un hub conectado a 9 nodos de grado 1),</span></span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    con los hubs unidos entre sí. Los hubs se conectan sobre todo con nodos de grado bajo.</span></span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>g_disasort <span class="ot">&lt;-</span> <span class="fu">disjoint_union</span>(<span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>),</span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>),</span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>))</span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>g_disasort <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(g_disasort, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">21</span>, <span class="dv">21</span>, <span class="dv">1</span>))</span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>redes <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Asortativa =</span> g_asort, <span class="at">Neutra =</span> g_neutra, <span class="at">Disasortativa =</span> g_disasort)</span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(redes, <span class="cf">function</span>(g) <span class="fu">round</span>(<span class="fu">assortativity_degree</span>(g), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Asortativa: un grupo de 10 nodos todos conectados entre sí (grado alto)</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    unido por UNA arista a un anillo de 20 nodos (grado 2).</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co">#    Los nodos de grado alto se conectan con nodos de grado alto, y los de grado bajo entre sí.</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>g_asort <span class="ot">&lt;-</span> <span class="fu">disjoint_union</span>(<span class="fu">make_full_graph</span>(<span class="dv">10</span>), <span class="fu">make_ring</span>(<span class="dv">20</span>))</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>g_asort <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(g_asort, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>))</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Neutra: red aleatoria Erdős–Rényi (algo más grande, para que r fluctúe menos)</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>g_neutra <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Disasortativa: 3 "estrellas" (un hub conectado a 9 nodos de grado 1),</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    con los hubs unidos entre sí. Los hubs se conectan sobre todo con nodos de grado bajo.</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>g_disasort <span class="ot">&lt;-</span> <span class="fu">disjoint_union</span>(<span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>),</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>),</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>))</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>g_disasort <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(g_disasort, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">21</span>, <span class="dv">21</span>, <span class="dv">1</span>))</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>redes <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Asortativa =</span> g_asort, <span class="at">Neutra =</span> g_neutra, <span class="at">Disasortativa =</span> g_disasort)</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(redes, <span class="cf">function</span>(g) <span class="fu">round</span>(<span class="fu">assortativity_degree</span>(g), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Asortativa        Neutra Disasortativa 
          0.96         -0.10         -0.82 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (nombre <span class="cf">in</span> <span class="fu">names</span>(redes)) {</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> redes[[nombre]]</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(g, <span class="at">vertex.size =</span> <span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.6</span> <span class="sc">*</span> <span class="fu">degree</span>(g), <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste0</span>(nombre, <span class="st">"</span><span class="sc">\n</span><span class="st">r = "</span>, <span class="fu">round</span>(<span class="fu">assortativity_degree</span>(g), <span class="dv">2</span>)))</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (nombre <span class="cf">in</span> <span class="fu">names</span>(redes)) {</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> redes[[nombre]]</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(g, <span class="at">vertex.size =</span> <span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.6</span> <span class="sc">*</span> <span class="fu">degree</span>(g), <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste0</span>(nombre, <span class="st">"</span><span class="sc">\n</span><span class="st">r = "</span>, <span class="fu">round</span>(<span class="fu">assortativity_degree</span>(g), <span class="dv">2</span>)))</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>El tamaño de cada nodo es proporcional a su grado. En la red asortativa los nodos grandes están juntos y los pequeños juntos; en la disasortativa cada nodo grande está rodeado de nodos pequeños.</p>
 <p>En una red aleatoria concreta, <span class="math inline">\(r\)</span> no es exactamente 0: fluctúa por azar alrededor de 0, y más cuanto más pequeña es la red. Si generamos muchas redes aleatorias, la media sí es prácticamente 0:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>r_aleatorias <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">200</span>, <span class="fu">assortativity_degree</span>(<span class="fu">sample_gnp</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)))</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(r_aleatorias), <span class="dv">3</span>), <span class="at">desviacion =</span> <span class="fu">round</span>(<span class="fu">sd</span>(r_aleatorias), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>r_aleatorias <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">200</span>, <span class="fu">assortativity_degree</span>(<span class="fu">sample_gnp</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)))</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(r_aleatorias), <span class="dv">3</span>), <span class="at">desviacion =</span> <span class="fu">round</span>(<span class="fu">sd</span>(r_aleatorias), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     media desviacion 
     -0.022      0.063 </code></pre>
@@ -855,19 +968,19 @@ r = \frac{\sum_{ij} \left(A_{ij} - \frac{k_i k_j}{2m}\right) k_i k_j}{\sum_{ij} 
 </div>
 <p>Podemos comprobar que <span class="math inline">\(r\)</span> es la correlación entre los grados de los extremos de las aristas:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> g_disasort</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>extremos <span class="ot">&lt;-</span> <span class="fu">ends</span>(g, <span class="fu">E</span>(g), <span class="at">names =</span> <span class="cn">FALSE</span>)   <span class="co"># matriz con los dos nodos de cada arista</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">degree</span>(g)</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cada arista no dirigida se cuenta en los dos sentidos (i-j y j-i)</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>grado_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(k[extremos[, <span class="dv">1</span>]], k[extremos[, <span class="dv">2</span>]])</span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>grado_2 <span class="ot">&lt;-</span> <span class="fu">c</span>(k[extremos[, <span class="dv">2</span>]], k[extremos[, <span class="dv">1</span>]])</span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(grado_1, grado_2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> g_disasort</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>extremos <span class="ot">&lt;-</span> <span class="fu">ends</span>(g, <span class="fu">E</span>(g), <span class="at">names =</span> <span class="cn">FALSE</span>)   <span class="co"># matriz con los dos nodos de cada arista</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">degree</span>(g)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cada arista no dirigida se cuenta en los dos sentidos (i-j y j-i)</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>grado_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(k[extremos[, <span class="dv">1</span>]], k[extremos[, <span class="dv">2</span>]])</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>grado_2 <span class="ot">&lt;-</span> <span class="fu">c</span>(k[extremos[, <span class="dv">2</span>]], k[extremos[, <span class="dv">1</span>]])</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(grado_1, grado_2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -0.8181818</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">assortativity_degree</span>(g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">assortativity_degree</span>(g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -0.8181818</code></pre>
 </div>

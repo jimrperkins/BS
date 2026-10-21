@@ -187,6 +187,44 @@ Una densidad de 1 corresponde a un grafo completo (todos los nodos conectados co
 -   **Cascadas de señalización lineales (dispersas)**: el módulo central de la vía MAPK (Raf → MEK → ERK) es el ejemplo clásico de cascada lineal: cada quinasa activa a la siguiente. Una cadena de $N$ proteínas tiene solo $N-1$ aristas, así que su densidad es $D = 2/N$, muy baja si la cadena es larga. (En la célula real, estas vías tienen además bucles de retroalimentación, proteínas andamio y conexiones con otras vías, que aumentan la densidad.)
 -   **El interactoma humano completo (muy disperso)**: con unas 20.000 proteínas y unas 650.000 interacciones estimadas (ver parte I), la densidad es $D = \frac{2 \times 650000}{20000 \times 19999} \approx 0.003$. Es decir, ¡solo el 0.3% de las interacciones posibles existen! Prácticamente todas las redes biológicas grandes son muy dispersas.
 
+```{r}
+#| code-fold: true
+#| code-summary: "Código de la figura"
+#| fig-width: 13
+#| fig-height: 5
+#| fig-cap: "Tres ejemplos de densidad. Izquierda: un complejo proteico en el que todas las subunidades interaccionan entre sí (grafo completo). Centro: la vía EGFR–MAPK dibujada como una cascada lineal. Derecha: la misma vía con algunas de sus retroalimentaciones negativas (ERK fosforila e inhibe a SOS, Raf y EGFR; flechas rojas discontinuas) y con la proteína andamio KSR, que une a Raf, MEK y ERK (naranja)."
+complejo <- make_full_graph(7)
+V(complejo)$name <- paste0("α", 1:7)
+
+cascada <- make_graph(~ EGFR -+ GRB2 -+ SOS -+ Ras -+ Raf -+ MEK -+ ERK)
+
+mapk_real <- make_graph(~ EGFR -+ GRB2 -+ SOS -+ Ras -+ Raf -+ MEK -+ ERK,
+                        ERK -+ SOS, ERK -+ Raf, ERK -+ EGFR,
+                        KSR -+ Raf, KSR -+ MEK, KSR -+ ERK)
+E(mapk_real)$color  <- "grey40"
+E(mapk_real)$curved <- 0
+E(mapk_real)$lty    <- 1
+E(mapk_real)[.from("ERK")]$color  <- "firebrick"
+E(mapk_real)[.from("ERK")]$curved <- -0.6
+E(mapk_real)[.from("ERK")]$lty    <- 2
+E(mapk_real)[.from("KSR")]$color  <- "darkorange"
+
+# La densidad la calculamos sobre la versión no dirigida
+dens <- function(g) round(edge_density(as_undirected(g)), 2)
+
+par(mfrow = c(1, 3), mar = c(1, 1, 3, 1))
+plot(complejo, vertex.color = "skyblue", vertex.size = 30, vertex.label.color = "black",
+     main = paste0("Complejo proteico\nD = ", dens(complejo)))
+plot(cascada, layout = cbind(0, 7:1), vertex.shape = "rectangle", vertex.size = 45,
+     vertex.size2 = 14, vertex.color = "khaki", vertex.label.color = "black",
+     edge.arrow.size = 0.5, main = paste0("Cascada lineal (MAPK)\nD = ", dens(cascada)))
+plot(mapk_real, layout = cbind(c(rep(0, 7), 1.2), c(7:1, 2)), vertex.shape = "rectangle",
+     vertex.size = 40, vertex.size2 = 14, vertex.color = c(rep("khaki", 7), "orange"),
+     vertex.label.color = "black", edge.arrow.size = 0.5,
+     main = paste0("MAPK con retroalimentación y andamio\nD = ", dens(mapk_real)))
+par(mfrow = c(1, 1))
+```
+
 ### Cuidado: la densidad depende del tamaño de la red
 
 Usando que el grado medio es $\langle k \rangle = 2m/N$ (parte I), la densidad se puede escribir como:
@@ -284,6 +322,27 @@ Watts y Strogatz (*Nature*, 1998) describieron que muchas redes reales combinan 
 1.  **Longitud promedio de camino corta**, como en una red aleatoria: cualquier par de nodos está a pocos pasos.
 2.  **Coeficiente de clustering alto**, como en una red regular (retícula): los vecinos de un nodo suelen estar conectados entre sí.
 
+Una **retícula** (*lattice* en inglés) es una red **regular**: los nodos están colocados en una estructura geométrica fija (una línea, un anillo, una cuadrícula...) y cada nodo se conecta solo con sus **vecinos más cercanos**, siguiendo siempre el mismo patrón. Todos los nodos tienen el mismo grado y no hay atajos. Por eso, en un anillo en el que cada nodo se conecta con sus 2 vecinos de cada lado, los vecinos de un nodo están conectados entre sí (clustering alto), pero para llegar al lado opuesto del anillo hay que dar muchos pasos (caminos largos).
+
+```{r}
+#| code-fold: true
+#| code-summary: "Código de la figura"
+#| fig-width: 10
+#| fig-height: 5
+#| fig-cap: "Dos retículas. Izquierda: un anillo de 12 nodos en el que cada nodo está unido a sus 2 vecinos más cercanos a cada lado (el punto de partida del modelo de Watts-Strogatz). Derecha: una cuadrícula 2D, donde cada nodo está unido a sus vecinos de arriba, abajo, izquierda y derecha."
+anillo <- make_lattice(length = 12, dim = 1, nei = 2, periodic = TRUE)
+malla  <- make_lattice(c(6, 6))
+
+par(mfrow = c(1, 2), mar = c(1, 1, 3, 1))
+plot(anillo, layout = layout_in_circle, vertex.size = 12, vertex.label = NA,
+     vertex.color = "skyblue",
+     main = "Retícula en anillo (1D)\ncada nodo con sus 2 vecinos a cada lado")
+plot(malla, layout = layout_on_grid(malla), vertex.size = 12, vertex.label = NA,
+     vertex.color = "skyblue",
+     main = "Retícula cuadrada (2D)\ncada nodo con sus 4 vecinos más cercanos")
+par(mfrow = c(1, 1))
+```
+
 Las redes que cumplen ambas se llaman de **pequeño mundo**. Su modelo parte de un anillo regular (cada nodo conectado a sus vecinos más cercanos: clustering alto, caminos largos) y "reconecta" cada arista al azar con probabilidad $p$. Con solo unos pocos atajos, la longitud de camino cae en picado, mientras que el clustering disminuye mucho más despacio:
 
 ```{r}
@@ -341,6 +400,37 @@ Las longitudes de camino largas aparecen cuando la red **no tiene atajos**:
 -   **Redes espaciales o de tipo retícula**: la red eléctrica o la red de carreteras, donde los nodos solo se conectan con otros cercanos en el espacio. Para cruzar la red hay que pasar por muchos nodos intermedios.
 -   **Cadenas y cascadas lineales**: en una ruta metabólica lineal o una cascada de señalización sin ramificaciones, la distancia entre los extremos crece con el número de pasos.
 -   **Redes muy modulares con pocas conexiones entre módulos**: dentro de cada módulo las distancias son cortas, pero para ir de un módulo a otro hay que pasar por las pocas aristas que los unen. Ojo: modularidad y pequeño mundo **no son excluyentes** (el cerebro es ambas cosas); los caminos solo se alargan si los módulos están conectados por muy pocas aristas.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Código de la figura"
+#| fig-width: 13
+#| fig-height: 5
+#| fig-cap: "Tres tipos de redes con caminos largos. En rojo, el camino que define el diámetro (el camino más corto más largo de la red)."
+malla   <- make_lattice(c(8, 8))
+cadena  <- make_ring(12, circular = FALSE)
+# 5 módulos de 5 nodos totalmente conectados, unidos en fila por una sola arista
+modulos <- Reduce(`%du%`, replicate(5, make_full_graph(5), simplify = FALSE))
+modulos <- add_edges(modulos, c(5, 6, 10, 11, 15, 16, 20, 21))
+
+dibuja_diametro <- function(g, titulo, layout) {
+  camino <- get_diameter(g)
+  en_camino <- seq_len(ecount(g)) %in% E(g, path = camino)
+  plot(g, layout = layout, vertex.size = 9, vertex.label = NA,
+       vertex.color = ifelse(V(g) %in% camino, "red", "grey85"),
+       edge.color = ifelse(en_camino, "red", "grey70"),
+       edge.width = ifelse(en_camino, 3, 1),
+       main = paste0(titulo, "\nL = ", round(mean_distance(g), 1),
+                     ", diámetro = ", diameter(g)))
+}
+
+set.seed(3)
+par(mfrow = c(1, 3), mar = c(1, 1, 3, 1))
+dibuja_diametro(malla,   "Retícula / red espacial",     layout_on_grid(malla))
+dibuja_diametro(cadena,  "Cadena lineal",               cbind(1:12, 0))
+dibuja_diametro(modulos, "Módulos unidos por 1 arista", layout_with_fr(modulos))
+par(mfrow = c(1, 1))
+```
 
 En general, una longitud de camino corta sugiere un sistema en el que la información (o una perturbación) se propaga rápidamente, y una longitud larga, un sistema más "lento" o segregado.
 
