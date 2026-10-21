@@ -6,7 +6,8 @@ project:
    #  - minimal_analysis.qmd
     - analisis_topo.qmd
     - analisis_topo_solution.qmd   # no enlazado en el navbar
-   #  - analisis_topo_2.qmd
+    - analisis_topo_2.qmd
+    - analisis_topo_2_solution.qmd   # no enlazado en el navbar
    #  - clustering.qmd
    #  - clustering_2.qmd
    #  - func_enric.qmd
@@ -24,8 +25,8 @@ website:
     #    text: Minimal Análisis
       - href: analisis_topo.qmd
         text: Análisis y Topología (I)
-    #  - href: analisis_topo_2.qmd
-    #    text: Análisis y Topología (II)
+      - href: analisis_topo_2.qmd
+        text: Análisis y Topología (II)
     #  - href: clustering.qmd
     #    text: Clustering
     #  - href: clustering_2.qmd

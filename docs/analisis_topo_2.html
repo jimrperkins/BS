@@ -2,17 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.45">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortividad – Biología de Sistemas</title>
+<title>Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Asortatividad – Biología de Sistemas</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -21,8 +27,9 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +40,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -64,15 +71,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-61bc7d33b66c970a0744400528b198fd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -102,7 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -115,7 +123,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -134,7 +142,7 @@ window.Quarto = {
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -156,32 +164,12 @@ window.Quarto = {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./minimal_analysis.html"> 
-<span class="menu-text">Minimal Análisis</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./analisis_topo.html"> 
 <span class="menu-text">Análisis y Topología (I)</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./analisis_topo_2.html" aria-current="page"> 
 <span class="menu-text">Análisis y Topología (II)</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./clustering.html"> 
-<span class="menu-text">Clustering</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./clustering_2.html"> 
-<span class="menu-text">Clustering Enlaces</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./func_enric.html"> 
-<span class="menu-text">Enriquecimiento Funcional</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./coexp.html"> 
-<span class="menu-text">Coexpression Analysis</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -205,50 +193,47 @@ window.Quarto = {
   <li><a href="#cómo-se-calcula-la-modularidad" id="toc-cómo-se-calcula-la-modularidad" class="nav-link" data-scroll-target="#cómo-se-calcula-la-modularidad">¿Cómo se calcula la modularidad?</a>
   <ul class="collapse">
   <li><a href="#pasos-detallados-para-calcular-la-modularidad" id="toc-pasos-detallados-para-calcular-la-modularidad" class="nav-link" data-scroll-target="#pasos-detallados-para-calcular-la-modularidad">Pasos detallados para calcular la modularidad</a></li>
+  <li><a href="#una-forma-equivalente-y-más-fácil-de-calcular-a-mano" id="toc-una-forma-equivalente-y-más-fácil-de-calcular-a-mano" class="nav-link" data-scroll-target="#una-forma-equivalente-y-más-fácil-de-calcular-a-mano">Una forma equivalente (y más fácil de calcular a mano)</a></li>
   </ul></li>
   <li><a href="#ejemplo-biológico-de-modularidad" id="toc-ejemplo-biológico-de-modularidad" class="nav-link" data-scroll-target="#ejemplo-biológico-de-modularidad">Ejemplo Biológico de Modularidad</a></li>
   <li><a href="#código-en-r-para-calcular-modularidad" id="toc-código-en-r-para-calcular-modularidad" class="nav-link" data-scroll-target="#código-en-r-para-calcular-modularidad">Código en R para Calcular Modularidad</a>
   <ul class="collapse">
-  <li><a href="#explicación-del-código" id="toc-explicación-del-código" class="nav-link" data-scroll-target="#explicación-del-código">Explicación del código</a></li>
   <li><a href="#interpretación-de-los-resultados" id="toc-interpretación-de-los-resultados" class="nav-link" data-scroll-target="#interpretación-de-los-resultados">Interpretación de los Resultados</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#densidad-de-aristas-edge-density-y-dispersión-sparsity" id="toc-densidad-de-aristas-edge-density-y-dispersión-sparsity" class="nav-link" data-scroll-target="#densidad-de-aristas-edge-density-y-dispersión-sparsity">Densidad de Aristas (Edge Density) y Dispersión (Sparsity)</a>
   <ul class="collapse">
-  <li><a href="#densidad-de-aristas-edge-density" id="toc-densidad-de-aristas-edge-density" class="nav-link" data-scroll-target="#densidad-de-aristas-edge-density"><strong>Densidad de Aristas (Edge Density)</strong></a></li>
-  <li><a href="#dispersión-sparsity" id="toc-dispersión-sparsity" class="nav-link" data-scroll-target="#dispersión-sparsity"><strong>Dispersión (Sparsity)</strong></a></li>
-  <li><a href="#cálculo-de-densidad-y-dispersión-en-r" id="toc-cálculo-de-densidad-y-dispersión-en-r" class="nav-link" data-scroll-target="#cálculo-de-densidad-y-dispersión-en-r"><strong>Cálculo de Densidad y Dispersión en R</strong></a>
+  <li><a href="#densidad-de-aristas-edge-density" id="toc-densidad-de-aristas-edge-density" class="nav-link" data-scroll-target="#densidad-de-aristas-edge-density"><strong>Densidad de Aristas (Edge Density)</strong></a>
   <ul class="collapse">
-  <li><a href="#interpretación-del-código" id="toc-interpretación-del-código" class="nav-link" data-scroll-target="#interpretación-del-código"><strong>Interpretación del Código</strong></a></li>
+  <li><a href="#ejemplos-biológicos" id="toc-ejemplos-biológicos" class="nav-link" data-scroll-target="#ejemplos-biológicos">Ejemplos biológicos</a></li>
+  <li><a href="#cuidado-la-densidad-depende-del-tamaño-de-la-red" id="toc-cuidado-la-densidad-depende-del-tamaño-de-la-red" class="nav-link" data-scroll-target="#cuidado-la-densidad-depende-del-tamaño-de-la-red">Cuidado: la densidad depende del tamaño de la red</a></li>
   </ul></li>
+  <li><a href="#dispersión-sparsity" id="toc-dispersión-sparsity" class="nav-link" data-scroll-target="#dispersión-sparsity"><strong>Dispersión (Sparsity)</strong></a></li>
+  <li><a href="#cálculo-de-densidad-y-dispersión-en-r" id="toc-cálculo-de-densidad-y-dispersión-en-r" class="nav-link" data-scroll-target="#cálculo-de-densidad-y-dispersión-en-r"><strong>Cálculo de Densidad y Dispersión en R</strong></a></li>
   <li><a href="#aplicaciones-de-densidad-y-dispersión" id="toc-aplicaciones-de-densidad-y-dispersión" class="nav-link" data-scroll-target="#aplicaciones-de-densidad-y-dispersión"><strong>Aplicaciones de Densidad y Dispersión</strong></a></li>
   </ul></li>
   <li><a href="#longitudes-promedio-de-camino-en-redes" id="toc-longitudes-promedio-de-camino-en-redes" class="nav-link" data-scroll-target="#longitudes-promedio-de-camino-en-redes">Longitudes Promedio de Camino en Redes</a>
   <ul class="collapse">
   <li><a href="#entendiendo-la-longitud-promedio-de-camino" id="toc-entendiendo-la-longitud-promedio-de-camino" class="nav-link" data-scroll-target="#entendiendo-la-longitud-promedio-de-camino"><strong>Entendiendo la Longitud Promedio de Camino</strong></a></li>
-  <li><a href="#redes-con-longitudes-promedio-de-camino-cortas-redes-de-pequeño-mundo" id="toc-redes-con-longitudes-promedio-de-camino-cortas-redes-de-pequeño-mundo" class="nav-link" data-scroll-target="#redes-con-longitudes-promedio-de-camino-cortas-redes-de-pequeño-mundo">Redes con Longitudes Promedio de Camino Cortas (Redes de Pequeño Mundo)</a>
+  <li><a href="#redes-de-pequeño-mundo-small-world" id="toc-redes-de-pequeño-mundo-small-world" class="nav-link" data-scroll-target="#redes-de-pequeño-mundo-small-world">Redes de Pequeño Mundo (Small-World)</a>
   <ul class="collapse">
-  <li><a href="#ejemplo-redes-de-interacción-proteína-proteína-ppi" id="toc-ejemplo-redes-de-interacción-proteína-proteína-ppi" class="nav-link" data-scroll-target="#ejemplo-redes-de-interacción-proteína-proteína-ppi"><strong>Ejemplo: Redes de Interacción Proteína-Proteína (PPI)</strong></a></li>
-  <li><a href="#ejemplo-redes-de-regulación-génica" id="toc-ejemplo-redes-de-regulación-génica" class="nav-link" data-scroll-target="#ejemplo-redes-de-regulación-génica"><strong>Ejemplo: Redes de Regulación Génica</strong></a></li>
+  <li><a href="#valores-reales-watts-strogatz-1998" id="toc-valores-reales-watts-strogatz-1998" class="nav-link" data-scroll-target="#valores-reales-watts-strogatz-1998">Valores reales (Watts &amp; Strogatz, 1998)</a></li>
+  <li><a href="#ejemplos-en-biología" id="toc-ejemplos-en-biología" class="nav-link" data-scroll-target="#ejemplos-en-biología">Ejemplos en Biología</a></li>
   <li><a href="#ejemplo-fuera-de-la-biología-redes-sociales" id="toc-ejemplo-fuera-de-la-biología-redes-sociales" class="nav-link" data-scroll-target="#ejemplo-fuera-de-la-biología-redes-sociales"><strong>Ejemplo Fuera de la Biología: Redes Sociales</strong></a></li>
   </ul></li>
-  <li><a href="#redes-con-longitudes-promedio-de-camino-largas-redes-modulares" id="toc-redes-con-longitudes-promedio-de-camino-largas-redes-modulares" class="nav-link" data-scroll-target="#redes-con-longitudes-promedio-de-camino-largas-redes-modulares">Redes con Longitudes Promedio de Camino Largas (Redes Modulares)</a>
-  <ul class="collapse">
-  <li><a href="#ejemplo-biológico-1-redes-cerebrales" id="toc-ejemplo-biológico-1-redes-cerebrales" class="nav-link" data-scroll-target="#ejemplo-biológico-1-redes-cerebrales"><strong>Ejemplo Biológico 1: Redes Cerebrales</strong></a></li>
-  <li><a href="#ejemplo-biológico-2-redes-ecológicas" id="toc-ejemplo-biológico-2-redes-ecológicas" class="nav-link" data-scroll-target="#ejemplo-biológico-2-redes-ecológicas"><strong>Ejemplo Biológico 2: Redes Ecológicas</strong></a></li>
-  <li><a href="#ejemplo-fuera-de-la-biología-red-de-internet" id="toc-ejemplo-fuera-de-la-biología-red-de-internet" class="nav-link" data-scroll-target="#ejemplo-fuera-de-la-biología-red-de-internet"><strong>Ejemplo Fuera de la Biología: Red de Internet</strong></a></li>
-  </ul></li>
+  <li><a href="#redes-con-longitudes-promedio-de-camino-largas" id="toc-redes-con-longitudes-promedio-de-camino-largas" class="nav-link" data-scroll-target="#redes-con-longitudes-promedio-de-camino-largas">Redes con Longitudes Promedio de Camino Largas</a></li>
   <li><a href="#diámetro-diameter" id="toc-diámetro-diameter" class="nav-link" data-scroll-target="#diámetro-diameter">Diámetro (Diameter)</a>
   <ul class="collapse">
   <li><a href="#relación-entre-longitud-promedio-de-camino-y-diámetro" id="toc-relación-entre-longitud-promedio-de-camino-y-diámetro" class="nav-link" data-scroll-target="#relación-entre-longitud-promedio-de-camino-y-diámetro"><strong>Relación entre Longitud Promedio de Camino y Diámetro</strong></a></li>
-  <li><a href="#cálculo-del-diámetro-en-redes-de-r" id="toc-cálculo-del-diámetro-en-redes-de-r" class="nav-link" data-scroll-target="#cálculo-del-diámetro-en-redes-de-r">Cálculo del Diámetro en Redes de R</a></li>
-  <li><a href="#relación-entre-diámetro-y-propiedades-de-red" id="toc-relación-entre-diámetro-y-propiedades-de-red" class="nav-link" data-scroll-target="#relación-entre-diámetro-y-propiedades-de-red"><strong>Relación entre Diámetro y Propiedades de Red</strong></a></li>
+  <li><a href="#cálculo-del-diámetro-en-r" id="toc-cálculo-del-diámetro-en-r" class="nav-link" data-scroll-target="#cálculo-del-diámetro-en-r">Cálculo del Diámetro en R</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#asortatividad-de-grado-degree-assortativity" id="toc-asortatividad-de-grado-degree-assortativity" class="nav-link" data-scroll-target="#asortatividad-de-grado-degree-assortativity">Asortatividad de Grado (Degree Assortativity)</a>
   <ul class="collapse">
-  <li><a href="#definiciones" id="toc-definiciones" class="nav-link" data-scroll-target="#definiciones"><strong>Definiciones</strong></a></li>
-  <li><a href="#ejemplos-de-redes-con-asortatividad-positiva-y-negativa" id="toc-ejemplos-de-redes-con-asortatividad-positiva-y-negativa" class="nav-link" data-scroll-target="#ejemplos-de-redes-con-asortatividad-positiva-y-negativa"><strong>Ejemplos de Redes con Asortatividad Positiva y Negativa</strong></a>
+  <li><a href="#definición" id="toc-definición" class="nav-link" data-scroll-target="#definición"><strong>Definición</strong></a></li>
+  <li><a href="#ecuación-para-la-asortatividad" id="toc-ecuación-para-la-asortatividad" class="nav-link" data-scroll-target="#ecuación-para-la-asortatividad"><strong>Ecuación para la Asortatividad</strong></a></li>
+  <li><a href="#ejemplos-en-r" id="toc-ejemplos-en-r" class="nav-link" data-scroll-target="#ejemplos-en-r"><strong>Ejemplos en R</strong></a></li>
+  <li><a href="#asortatividad-en-redes-reales" id="toc-asortatividad-en-redes-reales" class="nav-link" data-scroll-target="#asortatividad-en-redes-reales"><strong>Asortatividad en Redes Reales</strong></a>
   <ul class="collapse">
   <li><a href="#asortatividad-positiva" id="toc-asortatividad-positiva" class="nav-link" data-scroll-target="#asortatividad-positiva"><strong>Asortatividad Positiva</strong></a></li>
   <li><a href="#asortatividad-negativa" id="toc-asortatividad-negativa" class="nav-link" data-scroll-target="#asortatividad-negativa"><strong>Asortatividad Negativa</strong></a></li>
@@ -259,8 +244,9 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones">Instrucciones</a>
   <ul class="collapse">
-  <li><a href="#parte-1-creacion-y-visulalizacion" id="toc-parte-1-creacion-y-visulalizacion" class="nav-link" data-scroll-target="#parte-1-creacion-y-visulalizacion">Parte 1: Creacion y visulalizacion</a></li>
+  <li><a href="#parte-1-creación-y-visualización" id="toc-parte-1-creación-y-visualización" class="nav-link" data-scroll-target="#parte-1-creación-y-visualización">Parte 1: Creación y visualización</a></li>
   <li><a href="#parte-2-cálculo-de-métricas-topológicas" id="toc-parte-2-cálculo-de-métricas-topológicas" class="nav-link" data-scroll-target="#parte-2-cálculo-de-métricas-topológicas">Parte 2: Cálculo de Métricas Topológicas</a></li>
+  <li><a href="#parte-3-interpretación" id="toc-parte-3-interpretación" class="nav-link" data-scroll-target="#parte-3-interpretación">Parte 3: Interpretación</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -271,7 +257,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortividad</h1>
+<h1 class="title">Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Asortatividad</h1>
 </div>
 
 
@@ -305,8 +291,8 @@ Q = \frac{1}{2m} \sum_{i,j} \left( A_{ij} - \frac{k_i k_j}{2m} \right) \delta(c_
 <p>Donde:</p>
 <ul>
 <li><span class="math inline">\(Q\)</span> es el valor de modularidad.</li>
-<li><span class="math inline">\(m\)</span> es el número total de aristas en la red.</li>
-<li><span class="math inline">\(A\_{ij}\)</span> representa la entrada en la posición <span class="math inline">\((i, j)\)</span> de la matriz de adyacencia de la red, donde <span class="math inline">\(A_{ij} = 1\)</span> si hay una arista entre los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, y <span class="math inline">\(A_{ij} = 0\)</span> si no la hay.</li>
+<li><span class="math inline">\(m\)</span> es el número total de aristas en la red (lo que en la parte I llamamos <span class="math inline">\(E\)</span>).</li>
+<li><span class="math inline">\(A_{ij}\)</span> representa la entrada en la posición <span class="math inline">\((i, j)\)</span> de la matriz de adyacencia de la red, donde <span class="math inline">\(A_{ij} = 1\)</span> si hay una arista entre los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, y <span class="math inline">\(A_{ij} = 0\)</span> si no la hay.</li>
 <li><span class="math inline">\(k_i\)</span> es el grado del nodo <span class="math inline">\(i\)</span> (es decir, el número de conexiones que tiene el nodo <span class="math inline">\(i\)</span>).</li>
 <li><span class="math inline">\(\delta(c_i, c_j)\)</span> es una función indicadora que es igual a 1 si los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span> pertenecen a la misma comunidad y 0 en caso contrario.</li>
 </ul>
@@ -314,13 +300,49 @@ Q = \frac{1}{2m} \sum_{i,j} \left( A_{ij} - \frac{k_i k_j}{2m} \right) \delta(c_
 <section id="pasos-detallados-para-calcular-la-modularidad" class="level3">
 <h3 class="anchored" data-anchor-id="pasos-detallados-para-calcular-la-modularidad">Pasos detallados para calcular la modularidad</h3>
 <ol type="1">
-<li><p><strong>Identificar la estructura de la comunidad</strong>: La red se divide en comunidades o módulos (grupos de nodos densamente conectados entre sí). Esto puede hacerse con algoritmos específicos como el algoritmo de Louvain o el algoritmo de agrupamiento <em>fast-greedy</em>, que buscan maximizar la modularidad <span class="math inline">\(Q\)</span> dividiendo la red en comunidades. Veremos mas algoritmos de clusterizacion en la siguiente parte teorica.</p></li>
+<li><p><strong>Identificar la estructura de la comunidad</strong>: La red se divide en comunidades o módulos (grupos de nodos densamente conectados entre sí). Esto puede hacerse con algoritmos específicos como el algoritmo de Louvain o el algoritmo de agrupamiento <em>fast-greedy</em>, que buscan maximizar la modularidad <span class="math inline">\(Q\)</span> dividiendo la red en comunidades. Veremos más algoritmos de clusterización en la siguiente parte teórica.</p></li>
 <li><p><strong>Calcular la matriz de adyacencia y el grado</strong>: A partir de la estructura de la red, construimos la matriz de adyacencia <span class="math inline">\(A\)</span> y calculamos el grado de cada nodo <span class="math inline">\(k_i\)</span>.</p></li>
-<li><p><strong>Sumar las diferencias entre enlaces observados y esperados</strong>: Para cada par de nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, se calcula <span class="math inline">\(A_{ij} - \frac{k_i k_j}{2m}\)</span>. Este término controla por el grado de los nods <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>.</p></li>
+<li><p><strong>Sumar las diferencias entre enlaces observados y esperados</strong>: Para cada par de nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, se calcula <span class="math inline">\(A_{ij} - \frac{k_i k_j}{2m}\)</span>. El término <span class="math inline">\(\frac{k_i k_j}{2m}\)</span> es el número de aristas que <em>esperaríamos</em> entre <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span> si la red fuera aleatoria con los mismos grados: dos nodos con grado alto tienen más probabilidad de estar conectados simplemente por azar. Así, el término controla por el grado de los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>.</p></li>
 <li><p><strong>Sumar los valores para los pares dentro de la misma comunidad</strong>: Los valores obtenidos en el paso anterior se suman únicamente para los pares de nodos <span class="math inline">\((i, j)\)</span> que están dentro de la misma comunidad (esto lo controla la función <span class="math inline">\(\delta(c_i, c_j)\)</span>).</p></li>
 <li><p><strong>Normalizar por el número total de enlaces</strong>: Finalmente, el resultado se multiplica por <span class="math inline">\(\frac{1}{2m}\)</span> para obtener el valor final de modularidad <span class="math inline">\(Q\)</span>.</p></li>
 </ol>
 <p>Un valor de <span class="math inline">\(Q\)</span> alto indica una fuerte estructura modular, lo que significa que los nodos están agrupados en comunidades bien definidas. En cambio, un valor bajo o cercano a cero sugiere que los enlaces dentro y entre comunidades no difieren mucho de lo que se esperaría en una red aleatoria.</p>
+<p>En la práctica, <span class="math inline">\(Q\)</span> nunca llega a 1 (con <span class="math inline">\(c\)</span> comunidades del mismo tamaño, el máximo es <span class="math inline">\(1 - 1/c\)</span>), y en redes reales con comunidades claras suele estar entre 0.3 y 0.7.</p>
+</section>
+<section id="una-forma-equivalente-y-más-fácil-de-calcular-a-mano" class="level3">
+<h3 class="anchored" data-anchor-id="una-forma-equivalente-y-más-fácil-de-calcular-a-mano">Una forma equivalente (y más fácil de calcular a mano)</h3>
+<p>Agrupando los términos por comunidad, la ecuación anterior se puede reescribir como:</p>
+<p><span class="math display">\[
+Q = \sum_{c} \left[ \frac{L_c}{m} - \left( \frac{d_c}{2m} \right)^2 \right]
+\]</span></p>
+<p>donde <span class="math inline">\(L_c\)</span> es el número de aristas <em>dentro</em> de la comunidad <span class="math inline">\(c\)</span> y <span class="math inline">\(d_c\)</span> es la suma de los grados de los nodos de la comunidad <span class="math inline">\(c\)</span>. El primer término es la fracción de aristas que caen dentro de la comunidad; el segundo, la fracción que esperaríamos por azar.</p>
+<p><strong>Ejemplo a mano</strong>: dos triángulos unidos por una sola arista (<span class="math inline">\(m = 7\)</span>). Si cada triángulo es una comunidad, cada una tiene <span class="math inline">\(L_c = 3\)</span> aristas internas y <span class="math inline">\(d_c = 2 + 2 + 3 = 7\)</span>, así que:</p>
+<p><span class="math display">\[
+Q = 2 \times \left[ \frac{3}{7} - \left( \frac{7}{14} \right)^2 \right] = 2 \times (0.429 - 0.25) = 0.357
+\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>g_triangulos <span class="ot">&lt;-</span> <span class="fu">make_graph</span>(<span class="sc">~</span> <span class="dv">1-2</span>, <span class="dv">2-3</span>, <span class="dv">3-1</span>, <span class="dv">4-5</span>, <span class="dv">5-6</span>, <span class="dv">6-4</span>, <span class="dv">3-4</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_triangulos, <span class="at">vertex.color =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modularidad para la partición {1,2,3} y {4,5,6}</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">modularity</span>(g_triangulos, <span class="at">membership =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3571429</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ¿Y si dividimos la red "mal"? La modularidad baja (incluso puede ser negativa)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">modularity</span>(g_triangulos, <span class="at">membership =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.2142857</code></pre>
+</div>
+</div>
+<p>La modularidad no es solo una propiedad de la red, sino de la red <strong>y</strong> de una partición en comunidades. Los algoritmos de detección de comunidades (Louvain, fast-greedy…) buscan la partición que da la <span class="math inline">\(Q\)</span> más alta.</p>
 </section>
 </section>
 <section id="ejemplo-biológico-de-modularidad" class="level2">
@@ -329,161 +351,39 @@ Q = \frac{1}{2m} \sum_{i,j} \left( A_{ij} - \frac{k_i k_j}{2m} \right) \delta(c_
 </section>
 <section id="código-en-r-para-calcular-modularidad" class="level2">
 <h2 class="anchored" data-anchor-id="código-en-r-para-calcular-modularidad">Código en R para Calcular Modularidad</h2>
-<p>El siguiente código en R utiliza <code>igraph</code> para calcular la modularidad en dos redes con diferentes estructuras:</p>
-<p>Aquí tienes un ejemplo en R que crea dos redes: una con alta modularidad y otra con baja modularidad. Este código ilustra la diferencia de modularidad usando comunidades claramente definidas para la red modular, mientras que la red no modular tendrá conexiones distribuidas de manera más uniforme sin comunidades definidas.</p>
+<p>El siguiente código crea dos redes con <strong>el mismo número de nodos y de aristas</strong>: una con comunidades claramente definidas y otra aleatoria. Así, cualquier diferencia en la modularidad se debe a <em>cómo</em> están distribuidas las aristas, y no a cuántas hay.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargamos el paquete igraph</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Adjuntando el paquete: 'igraph'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    decompose, spectrum</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:base':
-
-    union</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos una red con alta modularidad utilizando la función sample_islands</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esta red tendrá 4 comunidades internas con enlaces densos entre nodos dentro de cada comunidad</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>high_modularity_network <span class="ot">&lt;-</span> <span class="fu">sample_islands</span>(<span class="dv">4</span>, <span class="dv">10</span>, <span class="fl">0.8</span>, <span class="dv">3</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizamos la red de alta modularidad</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(high_modularity_network, <span class="at">main =</span> <span class="st">"Red con Alta Modularidad"</span>, <span class="at">vertex.color =</span> <span class="fu">membership</span>(<span class="fu">cluster_louvain</span>(high_modularity_network)), <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">edge.arrow.size =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculamos y mostramos la modularidad de la red de alta modularidad</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>high_modularity_value <span class="ot">&lt;-</span> <span class="fu">modularity</span>(<span class="fu">cluster_louvain</span>(high_modularity_network))</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Modularidad de la red con alta modularidad:"</span>, high_modularity_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Red con alta modularidad: 4 "islas" de 10 nodos, con probabilidad 0.8 de</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># conexión dentro de cada isla y solo 3 aristas entre cada par de islas</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>high_modularity_network <span class="ot">&lt;-</span> <span class="fu">sample_islands</span>(<span class="dv">4</span>, <span class="dv">10</span>, <span class="fl">0.8</span>, <span class="dv">3</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Red aleatoria con los mismos nodos y aristas</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>low_modularity_network <span class="ot">&lt;-</span> <span class="fu">sample_gnm</span>(<span class="dv">40</span>, <span class="fu">ecount</span>(high_modularity_network))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Detectamos comunidades UNA sola vez por red (Louvain tiene un componente</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># aleatorio: si lo llamamos dos veces, puede dar particiones distintas)</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>com_high <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(high_modularity_network)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>com_low  <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(low_modularity_network)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Aristas:"</span>, <span class="fu">ecount</span>(high_modularity_network), <span class="st">"vs"</span>, <span class="fu">ecount</span>(low_modularity_network), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Modularidad de la red con alta modularidad: 0.6358356 </code></pre>
+<pre><code>Aristas: 158 vs 158 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos una red con baja modularidad usando una red aleatoria sin comunidades definidas</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Usamos la función erdos.renyi.game para crear una red aleatoria</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>low_modularity_network <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">40</span>, <span class="at">p =</span> <span class="fl">0.1</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizamos la red de baja modularidad</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(low_modularity_network, <span class="at">main =</span> <span class="st">"Red con Baja Modularidad"</span>, <span class="at">vertex.color =</span> <span class="fu">membership</span>(<span class="fu">cluster_louvain</span>(low_modularity_network)), <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">edge.arrow.size =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculamos y mostramos la modularidad de la red de baja modularidad</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>low_modularity_value <span class="ot">&lt;-</span> <span class="fu">modularity</span>(<span class="fu">cluster_louvain</span>(low_modularity_network))</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Modularidad de la red con baja modularidad:"</span>, low_modularity_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Modularidad de la red modular:  "</span>, <span class="fu">round</span>(<span class="fu">modularity</span>(com_high), <span class="dv">3</span>), <span class="st">"con"</span>, <span class="fu">length</span>(com_high), <span class="st">"comunidades</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Modularidad de la red con baja modularidad: 0.3727328 </code></pre>
+<pre><code>Modularidad de la red modular:   0.636 con 4 comunidades</code></pre>
 </div>
-</div>
-<section id="explicación-del-código" class="level3">
-<h3 class="anchored" data-anchor-id="explicación-del-código">Explicación del código</h3>
-<ol type="1">
-<li><strong>Red con alta modularidad</strong>:
-<ul>
-<li>Creamos una red usando <code>sample_islands</code> que genera “islas” o grupos de nodos con conexiones internas densas y pocas conexiones entre grupos.</li>
-<li>Esto produce comunidades internas bien definidas, lo que incrementa el valor de la modularidad.</li>
-<li>La función <code>modularity</code> mide este valor, y deberías obtener un valor de modularidad relativamente alto (cerca de 1, dependiendo de los parámetros de entrada).</li>
-</ul></li>
-<li><strong>Red con baja modularidad</strong>:
-<ul>
-<li>Creamos una red aleatoria con la función <code>sample_gnp</code>, en la cual los enlaces se distribuyen de manera uniforme y no hay comunidades claras.</li>
-<li>La modularidad para esta red debería ser baja porque no hay agrupamiento natural en comunidades.</li>
-<li>Visualizamos y calculamos la modularidad, la cual debería ser un valor bajo (cercano a cero), indicando una red con baja modularidad.</li>
-</ul></li>
-</ol>
-</section>
-<section id="interpretación-de-los-resultados" class="level3">
-<h3 class="anchored" data-anchor-id="interpretación-de-los-resultados">Interpretación de los Resultados</h3>
-<ul>
-<li><p>La <strong>red con alta modularidad</strong> tendrá nodos dentro de cada comunidad (en este caso, cuatro) con conexiones internas fuertes y escasas conexiones con nodos de otras comunidades. Esto resulta en una modularidad alta, ya que <span class="math inline">\(A_{ij}\)</span> dentro de las comunidades es significativamente mayor al esperado.</p></li>
-<li><p>La <strong>red con baja modularidad</strong> no tendrá comunidades bien definidas. Las conexiones están distribuidas aleatoriamente, por lo que la diferencia entre el número de enlaces reales y el número esperado será baja, dando como resultado una modularidad baja.</p></li>
-</ul>
-<p>Este ejemplo permite ver gráficamente y numéricamente cómo las diferentes configuraciones de enlaces afectan el valor de la modularidad.</p>
-</section>
-</section>
-</section>
-<section id="densidad-de-aristas-edge-density-y-dispersión-sparsity" class="level1">
-<h1>Densidad de Aristas (Edge Density) y Dispersión (Sparsity)</h1>
-<p>La <strong>densidad de aristas</strong> y la <strong>dispersión</strong> son métricas que reflejan el grado de conectividad de una red. Estas métricas son clave para entender la eficiencia y organización de sistemas de señalización celular, en donde la comunicación precisa y especializada entre moléculas es esencial para coordinar respuestas celulares.</p>
-<section id="densidad-de-aristas-edge-density" class="level2">
-<h2 class="anchored" data-anchor-id="densidad-de-aristas-edge-density"><strong>Densidad de Aristas (Edge Density)</strong></h2>
-<p>La densidad en una red de señalización indica cuántas interacciones existen en relación con el total de interacciones posibles. En redes biológicas, particularmente en sistemas de señalización celular, la densidad puede influir en cómo se propagan las señales, en la redundancia de la información y en la posibilidad de regulaciones complejas.</p>
-<ul>
-<li><strong>Ejemplo en Redes de Señalización</strong>: Vía MAPK (Red Densa): La vía de señalización Mitogen-Activated Protein Kinase (MAPK) es un buen ejemplo de una red densa en el contexto de señalización celular. Esta vía está implicada en la respuesta celular a estímulos como factores de crecimiento, citoquinas y estrés, y se caracteriza por varias capas de interacciones en cascada de proteínas quinasa que activan múltiples proteínas aguas abajo. MAPK tiene una alta redundancia y una conectividad extensa, lo cual significa que si una conexión falla, hay rutas alternativas que permiten la continuidad de la señal. Esto permite una señalización robusta y adaptativa, con la capacidad de responder a múltiples estímulos simultáneamente.</li>
-</ul>
-<p>Alta Densidad: La red MAPK tiende a ser densa porque las proteínas dentro de esta vía pueden interactuar con múltiples blancos, y existen circuitos de retroalimentación que amplifican o modulan la señal. Esta interconectividad genera una red con muchas aristas en relación al número de nodos, lo que se refleja en un alto valor de densidad. Esta densidad permite a la vía responder de manera efectiva y rápida, esencial en procesos como la división celular, la diferenciación y la respuesta al estrés.</p>
-<p>La densidad (<span class="math inline">\(D\)</span>) se calcula de la siguiente manera:</p>
-<p><span class="math display">\[
-D = \frac{2m}{n(n-1)}
-\]</span></p>
-<p>Donde: - <span class="math inline">\(D\)</span> es la densidad, - <span class="math inline">\(m\)</span> es el número de aristas presentes en la red, - <span class="math inline">\(n\)</span> es el número de nodos.</p>
-</section>
-<section id="dispersión-sparsity" class="level2">
-<h2 class="anchored" data-anchor-id="dispersión-sparsity"><strong>Dispersión (Sparsity)</strong></h2>
-<p>La dispersión complementa a la densidad y ayuda a entender la organización de redes dispersas, comunes en sistemas de señalización que requieren alta especificidad. La dispersión se calcula como:</p>
-<p><span class="math display">\[
-\text{Dispersión} = 1 - D
-\]</span></p>
-<p>donde <span class="math inline">\(D\)</span> es la densidad de aristas. Una red con alta dispersión indica una arquitectura que favorece interacciones específicas y minimiza la redundancia, lo cual es común en redes de señalización de <strong>cascadas enzimáticas</strong> donde la señal sigue una ruta secuencial, evitando activaciones erróneas.</p>
-<ul>
-<li><strong>Ejemplo en Rutas de Señalización</strong>:</li>
-</ul>
-<p>Vía TGF-beta (Red Dispersa): En contraste al MAPK, la vía de Transforming Growth Factor-beta (TGF-beta) representa una red de señalización más lineal y específica. TGF-beta inicia la señalización mediante la activación de complejos de receptores y la fosforilación de proteínas SMAD, las cuales se translocan al núcleo para regular la transcripción génica. Debido a que esta señalización se desarrolla en un camino relativamente directo, la vía TGF-beta suele tener menos conexiones redundantes entre sus componentes en comparación con MAPK, lo cual resulta en una red con menor densidad.</p>
-<p>Baja Densidad (Alta Dispersión): La menor cantidad de interacciones entre nodos en la vía TGF-beta se traduce en una baja densidad de aristas y mayor dispersión. Esto es adecuado para su función de iniciar cambios genéticos específicos sin desencadenar múltiples respuestas o activar rutas cruzadas extensas, permitiendo un control más preciso y limitado. Aunque TGF-beta también puede interactuar con otras vías de señalización, su arquitectura básica suele mostrar menos interconexión y redundancia que MAPK.</p>
-</section>
-<section id="cálculo-de-densidad-y-dispersión-en-r" class="level2">
-<h2 class="anchored" data-anchor-id="cálculo-de-densidad-y-dispersión-en-r"><strong>Cálculo de Densidad y Dispersión en R</strong></h2>
-<p>Usaremos código en R para ilustrar cómo estas métricas se aplican a redes con diferentes densidades.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargamos la librería igraph</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos una red dispersa para representar una señalización específica y especializada</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>sparse_network <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.1</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos una red densa para representar un sistema de señalización redundante</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>dense_network <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.5</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculamos la densidad de cada red</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>sparse_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(sparse_network)</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>dense_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(dense_network)</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculamos la dispersión</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>sparse_sparsity <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> sparse_density</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>dense_sparsity <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> dense_density</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimimos los resultados</span></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Densidad de la red dispersa (especialización):"</span>, sparse_density, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Modularidad de la red aleatoria:"</span>, <span class="fu">round</span>(<span class="fu">modularity</span>(com_low), <span class="dv">3</span>), <span class="st">"con"</span>, <span class="fu">length</span>(com_low), <span class="st">"comunidades</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Densidad de la red dispersa (especializaci&lt;U+00F3&gt;n): 0.09885057 </code></pre>
+<pre><code>Modularidad de la red aleatoria: 0.236 con 4 comunidades</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Densidad de la red densa (redundancia):"</span>, dense_density, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Densidad de la red densa (redundancia): 0.4735632 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dispersión de la red dispersa:"</span>, sparse_sparsity, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Dispersi&lt;U+00F3&gt;n de la red dispersa: 0.9011494 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dispersión de la red densa:"</span>, dense_sparsity, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Dispersi&lt;U+00F3&gt;n de la red densa: 0.5264368 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizamos las redes</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sparse_network, <span class="at">main =</span> <span class="st">"Red Dispersa (Señalización Especializada)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(high_modularity_network, <span class="at">vertex.color =</span> <span class="fu">membership</span>(com_high), <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Red modular, Q ="</span>, <span class="fu">round</span>(<span class="fu">modularity</span>(com_high), <span class="dv">2</span>)))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(low_modularity_network, <span class="at">vertex.color =</span> <span class="fu">membership</span>(com_low), <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Red aleatoria, Q ="</span>, <span class="fu">round</span>(<span class="fu">modularity</span>(com_low), <span class="dv">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -491,56 +391,34 @@ D = \frac{2m}{n(n-1)}
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dense_network, <span class="at">main =</span> <span class="st">"Red Densa (Señalización Redundante)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-</div>
-<section id="interpretación-del-código" class="level3">
-<h3 class="anchored" data-anchor-id="interpretación-del-código"><strong>Interpretación del Código</strong></h3>
+<section id="interpretación-de-los-resultados" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-de-los-resultados">Interpretación de los Resultados</h3>
 <ul>
-<li><p><strong>Red Dispersa</strong>: Representa un sistema de señalización específico, como la señalización de TGF-beta, donde cada proteína interactúa con un número limitado de proteínas. Esto es ideal para asegurar que la señalización siga una ruta secuencial y específica.</p></li>
-<li><p><strong>Red Densa</strong>: Modela un sistema de señalización con redundancia, como la vía MAPK. En este sistema, existen múltiples rutas alternativas para la propagación de la señal, aumentando la robustez del sistema y asegurando que la célula pueda responder adecuadamente a estímulos críticos.</p></li>
+<li><p>La <strong>red modular</strong> tiene cuatro comunidades con muchas conexiones internas y muy pocas entre ellas. Louvain recupera exactamente las cuatro islas, y <span class="math inline">\(Q\)</span> es alta (cerca del máximo teórico de <span class="math inline">\(1 - 1/4 = 0.75\)</span>).</p></li>
+<li><p>La <strong>red aleatoria</strong> no tiene comunidades “reales” y, sin embargo, ¡Louvain encuentra comunidades y <span class="math inline">\(Q\)</span> no es cero! Esto ocurre porque el algoritmo <em>busca</em> la partición que maximiza <span class="math inline">\(Q\)</span>, y por puro azar siempre hay grupos de nodos algo más conectados entre sí. Es un efecto especialmente fuerte en redes pequeñas y poco densas (con <code>sample_gnp(40, p = 0.1)</code> se obtiene <span class="math inline">\(Q \approx 0.4\)</span>).</p></li>
 </ul>
-</section>
-</section>
-<section id="aplicaciones-de-densidad-y-dispersión" class="level2">
-<h2 class="anchored" data-anchor-id="aplicaciones-de-densidad-y-dispersión"><strong>Aplicaciones de Densidad y Dispersión</strong></h2>
-<ol type="1">
-<li><p><strong>Redes de Señalización Celular Complejas</strong>: En sistemas como la señalización en células inmunitarias, la densidad puede variar significativamente. Una <strong>densidad alta</strong> puede ser ventajosa para asegurar respuestas rápidas y fuertes, como en la activación de linfocitos T en respuesta a una infección. Sin embargo, la <strong>dispersión alta</strong> también puede ser útil para redes que necesitan especificidad y precisión, como en la regulación de citocinas, donde una señalización muy dispersa evita que células no implicadas respondan erróneamente.</p></li>
-<li><p><strong>Optimización de Fármacos Basada en la Estructura de la Red</strong>: Las redes densas pueden ofrecer múltiples puntos de intervención farmacológica debido a su redundancia, pero también presentan el desafío de efectos secundarios no deseados. En contraste, redes dispersas ofrecen objetivos específicos, aunque los efectos de los fármacos pueden depender de la precisión con la que se interrumpe una señal en particular.</p></li>
-</ol>
-</section>
-</section>
-<section id="longitudes-promedio-de-camino-en-redes" class="level1">
-<h1>Longitudes Promedio de Camino en Redes</h1>
-<section id="entendiendo-la-longitud-promedio-de-camino" class="level2">
-<h2 class="anchored" data-anchor-id="entendiendo-la-longitud-promedio-de-camino"><strong>Entendiendo la Longitud Promedio de Camino</strong></h2>
-<p>La longitud promedio de camino en una red se define como el número promedio de pasos a lo largo de los caminos más cortos para todos los pares de nodos en la red. Es una medida importante de la propiedad de “pequeño mundo” de una red. En redes biológicas, las longitudes promedio de camino cortas suelen indicar una red altamente conectada y eficiente, mientras que las longitudes largas pueden sugerir redes más modulares o segregadas.</p>
-<p>Matemáticamente, la longitud promedio de camino <span class="math inline">\(L_{avg}\)</span> para un grafo no dirigido se calcula como:</p>
-<p><span class="math display">\[
-L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
-\]</span></p>
-<p>donde <span class="math inline">\(d(i,j)\)</span> es el camino más corto entre los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>, y <span class="math inline">\(N\)</span> es el número total de nodos en la red.</p>
-</section>
-<section id="redes-con-longitudes-promedio-de-camino-cortas-redes-de-pequeño-mundo" class="level2">
-<h2 class="anchored" data-anchor-id="redes-con-longitudes-promedio-de-camino-cortas-redes-de-pequeño-mundo">Redes con Longitudes Promedio de Camino Cortas (Redes de Pequeño Mundo)</h2>
-<p>Las redes de pequeño mundo tienen la característica de una longitud promedio de camino corta, lo que significa que, a pesar del tamaño de la red, cualquier par de nodos puede ser alcanzado en solo unos pocos pasos. Estas redes son comunes en sistemas biológicos y redes sociales, donde los nodos están altamente interconectados.</p>
-<section id="ejemplo-redes-de-interacción-proteína-proteína-ppi" class="level3">
-<h3 class="anchored" data-anchor-id="ejemplo-redes-de-interacción-proteína-proteína-ppi"><strong>Ejemplo: Redes de Interacción Proteína-Proteína (PPI)</strong></h3>
-<p>En las redes de interacción proteína-proteína (PPI), las proteínas son los nodos y las interacciones entre ellas son los bordes. La longitud promedio de camino en una red PPI bien conectada puede ser bastante corta, lo que refleja el alto grado de interconexión entre proteínas en procesos biológicos clave.</p>
-<p><strong>Ejemplo de Código en R:</strong> Aquí tienes un fragmento de código en R que genera una red de pequeño mundo y calcula la longitud promedio de camino.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>¿Cuándo es “alta” una modularidad?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un valor de <span class="math inline">\(Q\)</span> por sí solo no dice mucho: hay que compararlo con el que se obtiene en redes aleatorias <strong>del mismo tamaño y densidad</strong>. Si la <span class="math inline">\(Q\)</span> de nuestra red biológica es mucho mayor que la de las redes aleatorias equivalentes, entonces sí podemos decir que tiene estructura modular.</p>
+</div>
+</div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar las bibliotecas necesarias</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una red de pequeño mundo</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>small_world_net <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">100</span>, <span class="at">m=</span><span class="dv">2</span>)  <span class="co"># Adquisición preferencial, genera propiedades de pequeño mundo</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(small_world_net)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Distribución de Q en 100 redes aleatorias equivalentes</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>q_random <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">100</span>, <span class="fu">modularity</span>(<span class="fu">cluster_louvain</span>(<span class="fu">sample_gnm</span>(<span class="dv">40</span>, <span class="fu">ecount</span>(high_modularity_network)))))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(q_random, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.8</span>), <span class="at">col =</span> <span class="st">"grey80"</span>, <span class="at">main =</span> <span class="st">"Q en redes aleatorias equivalentes"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Modularidad Q"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">modularity</span>(com_high), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -548,34 +426,81 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la longitud promedio de camino</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>average_path_length <span class="ot">&lt;-</span> <span class="fu">mean_distance</span>(small_world_net)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>average_path_length</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.842884</code></pre>
 </div>
-</div>
-</section>
-<section id="ejemplo-redes-de-regulación-génica" class="level3">
-<h3 class="anchored" data-anchor-id="ejemplo-redes-de-regulación-génica"><strong>Ejemplo: Redes de Regulación Génica</strong></h3>
-<p>En las redes de regulación génica, donde los genes son los nodos y las interacciones regulatorias entre ellos son los bordes, una longitud promedio de camino corta puede indicar que los genes se están regulando de manera eficiente entre sí, a menudo debido a factores de transcripción compartidos o mecanismos co-regulatorios.</p>
-</section>
-<section id="ejemplo-fuera-de-la-biología-redes-sociales" class="level3">
-<h3 class="anchored" data-anchor-id="ejemplo-fuera-de-la-biología-redes-sociales"><strong>Ejemplo Fuera de la Biología: Redes Sociales</strong></h3>
-<p>En las redes sociales, donde las personas son los nodos y las interacciones sociales son los bordes, las longitudes promedio de camino son a menudo cortas. Por ejemplo, en el famoso experimento de “seis grados de separación”, se descubrió que las personas están generalmente conectadas por un promedio de solo 6 grados de separación.</p>
+<p>La línea roja (la red modular) queda muy lejos de la distribución de las redes aleatorias: su estructura modular no se puede explicar por azar.</p>
 </section>
 </section>
-<section id="redes-con-longitudes-promedio-de-camino-largas-redes-modulares" class="level2">
-<h2 class="anchored" data-anchor-id="redes-con-longitudes-promedio-de-camino-largas-redes-modulares">Redes con Longitudes Promedio de Camino Largas (Redes Modulares)</h2>
-<p>Por otro lado, las redes con longitudes promedio de camino largas suelen exhibir una estructura modular o jerárquica, donde los clústeres de nodos altamente conectados (módulos) solo están débilmente conectados entre sí. Estas redes suelen ser menos eficientes en cuanto a la transferencia de información.</p>
-<section id="ejemplo-biológico-1-redes-cerebrales" class="level3">
-<h3 class="anchored" data-anchor-id="ejemplo-biológico-1-redes-cerebrales"><strong>Ejemplo Biológico 1: Redes Cerebrales</strong></h3>
-<p>En las redes cerebrales, donde las regiones del cerebro son los nodos y las conexiones funcionales o anatómicas entre ellas son los bordes, la red podria hipotéticamente tener una longitud promedio de camino más larga. La estructura modular del cerebro, con regiones distintas para funciones cognitivas diferentes, contribuye a una mayor longitud de camino entre regiones distantes.</p>
-<p><strong>Ejemplo de Código en R:</strong> Aquí tienes un ejemplo de cómo generar una red modular y calcular su longitud promedio de camino.</p>
+</section>
+<section id="densidad-de-aristas-edge-density-y-dispersión-sparsity" class="level1">
+<h1>Densidad de Aristas (Edge Density) y Dispersión (Sparsity)</h1>
+<p>La <strong>densidad de aristas</strong> y la <strong>dispersión</strong> son métricas que reflejan cuán conectada está una red en relación con lo que <em>podría</em> estar.</p>
+<section id="densidad-de-aristas-edge-density" class="level2">
+<h2 class="anchored" data-anchor-id="densidad-de-aristas-edge-density"><strong>Densidad de Aristas (Edge Density)</strong></h2>
+<p>La densidad indica cuántas interacciones existen en relación con el total de interacciones posibles. En una red no dirigida con <span class="math inline">\(N\)</span> nodos hay <span class="math inline">\(\frac{N(N-1)}{2}\)</span> pares de nodos posibles, así que la densidad (<span class="math inline">\(D\)</span>) se calcula como:</p>
+<p><span class="math display">\[
+D = \frac{m}{N(N-1)/2} = \frac{2m}{N(N-1)}
+\]</span></p>
+<p>Donde:</p>
+<ul>
+<li><span class="math inline">\(D\)</span> es la densidad (entre 0 y 1),</li>
+<li><span class="math inline">\(m\)</span> es el número de aristas presentes en la red,</li>
+<li><span class="math inline">\(N\)</span> es el número de nodos.</li>
+</ul>
+<p>Una densidad de 1 corresponde a un grafo completo (todos los nodos conectados con todos); una densidad cercana a 0, a una red con muy pocas conexiones.</p>
+<section id="ejemplos-biológicos" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplos-biológicos">Ejemplos biológicos</h3>
+<ul>
+<li><strong>Complejos proteicos (densos)</strong>: en un complejo como el proteasoma o el complejo del poro nuclear, muchas subunidades interaccionan físicamente entre sí. Si representamos solo las proteínas del complejo, la subred es muy densa (<span class="math inline">\(D\)</span> cercana a 1).</li>
+<li><strong>Cascadas de señalización lineales (dispersas)</strong>: el módulo central de la vía MAPK (Raf → MEK → ERK) es el ejemplo clásico de cascada lineal: cada quinasa activa a la siguiente. Una cadena de <span class="math inline">\(N\)</span> proteínas tiene solo <span class="math inline">\(N-1\)</span> aristas, así que su densidad es <span class="math inline">\(D = 2/N\)</span>, muy baja si la cadena es larga. (En la célula real, estas vías tienen además bucles de retroalimentación, proteínas andamio y conexiones con otras vías, que aumentan la densidad.)</li>
+<li><strong>El interactoma humano completo (muy disperso)</strong>: con unas 20.000 proteínas y unas 650.000 interacciones estimadas (ver parte I), la densidad es <span class="math inline">\(D = \frac{2 \times 650000}{20000 \times 19999} \approx 0.003\)</span>. Es decir, ¡solo el 0.3% de las interacciones posibles existen! Prácticamente todas las redes biológicas grandes son muy dispersas.</li>
+</ul>
+</section>
+<section id="cuidado-la-densidad-depende-del-tamaño-de-la-red" class="level3">
+<h3 class="anchored" data-anchor-id="cuidado-la-densidad-depende-del-tamaño-de-la-red">Cuidado: la densidad depende del tamaño de la red</h3>
+<p>Usando que el grado medio es <span class="math inline">\(\langle k \rangle = 2m/N\)</span> (parte I), la densidad se puede escribir como:</p>
+<p><span class="math display">\[
+D = \frac{\langle k \rangle}{N-1}
+\]</span></p>
+<p>Si cada proteína tiene, de media, el mismo número de interacciones, la densidad <strong>disminuye</strong> a medida que la red crece. Por eso no tiene mucho sentido comparar la densidad de redes de tamaños muy distintos: una red pequeña casi siempre parecerá “más densa”. Para comparar redes de distinto tamaño suele ser más útil el grado medio.</p>
+</section>
+</section>
+<section id="dispersión-sparsity" class="level2">
+<h2 class="anchored" data-anchor-id="dispersión-sparsity"><strong>Dispersión (Sparsity)</strong></h2>
+<p>La dispersión es simplemente el complemento de la densidad:</p>
+<p><span class="math display">\[
+\text{Dispersión} = 1 - D
+\]</span></p>
+<p>Una red con alta dispersión tiene muy pocas de las conexiones posibles. En redes de señalización, una arquitectura dispersa favorece interacciones <strong>específicas</strong>: la señal sigue rutas concretas y se evitan activaciones erróneas de otras vías. Una arquitectura más densa aporta <strong>redundancia</strong>: si una conexión falla, hay rutas alternativas para la señal.</p>
+</section>
+<section id="cálculo-de-densidad-y-dispersión-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="cálculo-de-densidad-y-dispersión-en-r"><strong>Cálculo de Densidad y Dispersión en R</strong></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar una red modular (utilizando el modelo de Watts-Strogatz para redes de pequeño mundo)</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>modular_net <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="dv">1</span>, <span class="dv">100</span>, <span class="dv">4</span>, <span class="fl">0.07</span>)  <span class="co"># Probabilidad de reconfiguración baja</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modular_net)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Una red dispersa (cada nodo conectado con ~10% de los demás) y una densa (~50%)</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>sparse_network <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.1</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>dense_network  <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">30</span>, <span class="at">p =</span> <span class="fl">0.5</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Densidad y dispersión</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>sparse_density <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(sparse_network)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>dense_density  <span class="ot">&lt;-</span> <span class="fu">edge_density</span>(dense_network)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Red dispersa: densidad ="</span>, <span class="fu">round</span>(sparse_density, <span class="dv">3</span>), <span class="st">" dispersión ="</span>, <span class="fu">round</span>(<span class="dv">1</span> <span class="sc">-</span> sparse_density, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Red dispersa: densidad = 0.094  dispersión = 0.906 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Red densa:    densidad ="</span>, <span class="fu">round</span>(dense_density, <span class="dv">3</span>), <span class="st">" dispersión ="</span>, <span class="fu">round</span>(<span class="dv">1</span> <span class="sc">-</span> dense_density, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Red densa:    densidad = 0.494  dispersión = 0.506 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprobamos la fórmula a mano para la red dispersa</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> <span class="fu">ecount</span>(sparse_network) <span class="sc">/</span> (<span class="fu">vcount</span>(sparse_network) <span class="sc">*</span> (<span class="fu">vcount</span>(sparse_network) <span class="sc">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.09425287</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sparse_network, <span class="at">main =</span> <span class="st">"Red Dispersa (especificidad)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dense_network,  <span class="at">main =</span> <span class="st">"Red Densa (redundancia)"</span>, <span class="at">vertex.size =</span> <span class="dv">8</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -583,142 +508,48 @@ L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la longitud promedio de camino</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>average_path_length_modular <span class="ot">&lt;-</span> <span class="fu">mean_distance</span>(modular_net)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>average_path_length_modular</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.863232</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-</section>
-<section id="ejemplo-biológico-2-redes-ecológicas" class="level3">
-<h3 class="anchored" data-anchor-id="ejemplo-biológico-2-redes-ecológicas"><strong>Ejemplo Biológico 2: Redes Ecológicas</strong></h3>
-<p>En las redes ecológicas (como las redes tróficas), donde las especies son los nodos y las relaciones de alimentación son los bordes, la red suele tener una longitud promedio de camino más larga. Las especies a menudo se agrupan en grupos funcionales, y las interacciones dentro de estos grupos son mucho más frecuentes que las interacciones entre grupos.</p>
-</section>
-<section id="ejemplo-fuera-de-la-biología-red-de-internet" class="level3">
-<h3 class="anchored" data-anchor-id="ejemplo-fuera-de-la-biología-red-de-internet"><strong>Ejemplo Fuera de la Biología: Red de Internet</strong></h3>
-<p>En la topología física de Internet, donde los routers y servidores son los nodos, la red puede exhibir una longitud promedio de camino más larga. A pesar de la vasta cantidad de conexiones, la red suele estar organizada de manera modular, donde diferentes regiones o subredes están más conectadas entre sí, lo que lleva a caminos más largos entre nodos distantes.</p>
-<p>La longitud promedio de camino es una característica fundamental de las redes que puede revelar propiedades estructurales importantes. Las longitudes promedio de camino cortas sugieren un sistema eficiente y conectado, mientras que las largas indican una estructura más modular o jerárquica. Comprender cómo funciona la longitud promedio de camino en redes biológicas y no biológicas puede proporcionar valiosos conocimientos sobre su dinámica, conectividad y robustez.</p>
-</section>
-</section>
-<section id="diámetro-diameter" class="level2">
-<h2 class="anchored" data-anchor-id="diámetro-diameter">Diámetro (Diameter)</h2>
-<p>El <strong>diámetro de una red</strong> es la longitud del camino más corto entre nodos mas largo entre cualquier par de nodos en la red. Es decir, el diámetro es el valor máximo de las distancias más cortas <span class="math inline">\(d(i,j)\)</span> entre nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>. Esta medida es importante porque da una idea de cuán “extendida” o “compacta” es la red en términos de conectividad.</p>
-<p>El diámetro <span class="math inline">\(D\)</span> de una red se calcula como:</p>
-<p><span class="math display">\[
-D = \max_{i \neq j} d(i,j)
-\]</span></p>
-<p>donde <span class="math inline">\(d(i,j)\)</span> es la distancia más corta entre los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>.</p>
-<section id="relación-entre-longitud-promedio-de-camino-y-diámetro" class="level3">
-<h3 class="anchored" data-anchor-id="relación-entre-longitud-promedio-de-camino-y-diámetro"><strong>Relación entre Longitud Promedio de Camino y Diámetro</strong></h3>
-<ul>
-<li><strong>Redes con Longitud Promedio de Camino Corta (Pequeño Mundo)</strong>: En redes de pequeño mundo, el diámetro suele ser relativamente pequeño debido a la alta conectividad, lo que permite que cualquier par de nodos esté cerca el uno del otro.</li>
-<li><strong>Redes con Longitud Promedio de Camino Larga (Modulares)</strong>: En redes modulares, el diámetro suele ser más largo, ya que los nodos dentro de un módulo están bien conectados, pero los módulos en sí mismos tienen una menor conectividad, lo que aumenta la distancia entre nodos de diferentes módulos.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="kevin_bacon.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption>six degrees of Kevin Bacon</figcaption>
-</figure>
-</div>
-</section>
-<section id="cálculo-del-diámetro-en-redes-de-r" class="level3">
-<h3 class="anchored" data-anchor-id="cálculo-del-diámetro-en-redes-de-r">Cálculo del Diámetro en Redes de R</h3>
-<p>Aquí te muestro cómo calcular el diámetro de la red utilizando R, tanto para redes de pequeño mundo como para redes modulares.</p>
+<p>Ahora comprobamos que, con el mismo grado medio, la densidad cae al aumentar el tamaño de la red:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar una red de pequeño mundo (preferential attachment) con 100 nodos y 2 conexiones por nodo</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>small_world_net <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">100</span>, <span class="at">m =</span> <span class="dv">2</span>)</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el diámetro de la red de pequeño mundo</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>diameter_small_world <span class="ot">&lt;-</span> <span class="fu">diameter</span>(small_world_net)</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Diámetro de la red de pequeño mundo: "</span>, diameter_small_world, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>tamanos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>, <span class="dv">5000</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Redes aleatorias con grado medio 4 (m = 2N aristas) y distinto número de nodos</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>densidades <span class="ot">&lt;-</span> <span class="fu">sapply</span>(tamanos, <span class="cf">function</span>(N) <span class="fu">edge_density</span>(<span class="fu">sample_gnm</span>(N, <span class="dv">2</span> <span class="sc">*</span> N)))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">nodos =</span> tamanos, <span class="at">grado_medio =</span> <span class="dv">4</span>, <span class="at">densidad =</span> <span class="fu">round</span>(densidades, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Di&lt;U+00E1&gt;metro de la red de peque&lt;U+00F1&gt;o mundo:  5 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar una red modular (modelo de Watts-Strogatz) con 100 nodos, 4 vecinos por nodo, y probabilidad de reconexión baja (0.01)</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>modular_net <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="dv">1</span>, <span class="dv">100</span>, <span class="dv">4</span>, <span class="fl">0.01</span>)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el diámetro de la red modular</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>diameter_modular <span class="ot">&lt;-</span> <span class="fu">diameter</span>(modular_net)</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Diámetro de la red modular: "</span>, diameter_modular, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Di&lt;U+00E1&gt;metro de la red modular:  8 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar ambas redes</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(small_world_net, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Red de Pequeño Mundo</span><span class="sc">\n</span><span class="st">Diámetro: "</span>, diameter_small_world), <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modular_net, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Red Modular</span><span class="sc">\n</span><span class="st">Diámetro: "</span>, diameter_modular), <span class="at">vertex.size =</span> <span class="dv">5</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
+<pre><code>  nodos grado_medio densidad
+1    50           4   0.0816
+2   100           4   0.0404
+3   500           4   0.0080
+4  1000           4   0.0040
+5  5000           4   0.0008</code></pre>
 </div>
 </div>
 </section>
-<section id="relación-entre-diámetro-y-propiedades-de-red" class="level3">
-<h3 class="anchored" data-anchor-id="relación-entre-diámetro-y-propiedades-de-red"><strong>Relación entre Diámetro y Propiedades de Red</strong></h3>
-<ul>
-<li><strong>Redes de Pequeño Mundo</strong>: Las redes de pequeño mundo tienen un diámetro bajo, lo que significa que las distancias más largas entre los nodos son pequeñas, lo que las hace más eficientes en términos de conectividad.</li>
-<li><strong>Redes Modulares</strong>: Las redes modulares tienen un diámetro mayor porque los módulos son menos interdependientes, lo que genera distancias más largas entre nodos de diferentes módulos.</li>
-</ul>
+<section id="aplicaciones-de-densidad-y-dispersión" class="level2">
+<h2 class="anchored" data-anchor-id="aplicaciones-de-densidad-y-dispersión"><strong>Aplicaciones de Densidad y Dispersión</strong></h2>
+<ol type="1">
+<li><p><strong>Redes de Señalización Celular Complejas</strong>: en sistemas como la señalización en células inmunitarias, una mayor densidad (más rutas alternativas y retroalimentación) puede ser ventajosa para asegurar respuestas rápidas y robustas, como en la activación de linfocitos T ante una infección. Una mayor dispersión es útil cuando se necesita especificidad, como en la señalización por citocinas, donde cada citocina debe activar solo a las células con el receptor adecuado.</p></li>
+<li><p><strong>Diseño de Fármacos Basado en la Estructura de la Red</strong>: en una zona densa de la red, inhibir una sola proteína puede tener poco efecto, porque la señal encuentra rutas alternativas (redundancia); a menudo se necesitan combinaciones de fármacos. En una zona dispersa, como una cascada lineal, inhibir un solo punto puede bloquear toda la señal aguas abajo (por ejemplo, los inhibidores de MEK o de BRAF en melanoma), aunque la célula puede acabar “reconectando” la señal por otras vías y generar resistencia.</p></li>
+</ol>
 </section>
 </section>
-</section>
-<section id="asortatividad-de-grado-degree-assortativity" class="level1">
-<h1>Asortatividad de Grado (Degree Assortativity)</h1>
-<section id="definiciones" class="level3">
-<h3 class="anchored" data-anchor-id="definiciones"><strong>Definiciones</strong></h3>
-<ul>
-<li><strong>Asortatividad de Grado (Degree Assortativity):</strong> Mide la tendencia de los nodos a conectarse con otros nodos de grado similar.</li>
-</ul>
-<section id="ecuación-para-la-asortatividad" class="level5">
-<h5 class="anchored" data-anchor-id="ecuación-para-la-asortatividad"><strong>Ecuación para la Asortatividad:</strong></h5>
+<section id="longitudes-promedio-de-camino-en-redes" class="level1">
+<h1>Longitudes Promedio de Camino en Redes</h1>
+<section id="entendiendo-la-longitud-promedio-de-camino" class="level2">
+<h2 class="anchored" data-anchor-id="entendiendo-la-longitud-promedio-de-camino"><strong>Entendiendo la Longitud Promedio de Camino</strong></h2>
+<p>La <strong>distancia</strong> <span class="math inline">\(d(i,j)\)</span> entre dos nodos es el número de aristas del camino más corto que los une. La <strong>longitud promedio de camino</strong> es la media de esas distancias sobre todos los pares de nodos de la red: nos dice cuántos “pasos” hay que dar, típicamente, para ir de un nodo a otro.</p>
+<p>Matemáticamente, para un grafo no dirigido con <span class="math inline">\(N\)</span> nodos:</p>
 <p><span class="math display">\[
-r = \frac{\sum_{ij} (A_{ij} - \frac{k_i k_j}{2m}) k_i k_j}{\sum_{ij} (k_i^2 - \frac{k_i^2}{2m})}
+L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 \]</span></p>
+<p>En redes que no son conexas, <span class="math inline">\(d(i,j)\)</span> es infinita para nodos en componentes distintas. <code>mean_distance()</code> de igraph simplemente ignora esos pares (por defecto, <code>unconnected = TRUE</code>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of nodes (high assortativity)</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>n_nodes <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a random degree sequence where high-degree nodes have higher probability of being connected</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>degree_sequence <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, n_nodes, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an empty list for storing edges</span></span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>edges <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an assortative network by manually connecting nodes with similar degrees</span></span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(n_nodes <span class="sc">-</span> <span class="dv">1</span>)) {</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> (i <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>n_nodes) {</span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Only create an edge if degrees are similar (within a certain range)</span></span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">abs</span>(degree_sequence[i] <span class="sc">-</span> degree_sequence[j]) <span class="sc">&lt;=</span> <span class="dv">2</span>) {</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>      edges <span class="ot">&lt;-</span> <span class="fu">append</span>(edges, <span class="fu">list</span>(<span class="fu">c</span>(i, j)))</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the final graph with the new edges</span></span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>g_assortative <span class="ot">&lt;-</span> <span class="fu">graph_from_edgelist</span>(<span class="fu">do.call</span>(rbind, edges), <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate assortativity based on degree</span></span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>assortativity_coeff <span class="ot">&lt;-</span> <span class="fu">assortativity_degree</span>(g_assortative)</span>
-<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Assortativity coefficient:"</span>, assortativity_coeff, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Assortativity coefficient: 0.5272915 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the network</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_assortative, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Random Network with High Assortativity</span><span class="sc">\n</span><span class="st">Assortativity: "</span>, <span class="fu">round</span>(assortativity_coeff, <span class="dv">3</span>)), <span class="at">vertex.size =</span> <span class="dv">10</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">edge.arrow.size =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ejemplo pequeño: una cadena de 5 nodos (como una cascada de señalización lineal)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>cadena <span class="ot">&lt;-</span> <span class="fu">make_ring</span>(<span class="dv">5</span>, <span class="at">circular =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -726,58 +557,374 @@ r = \frac{\sum_{ij} (A_{ij} - \frac{k_i k_j}{2m}) k_i k_j}{\sum_{ij} (k_i^2 - \f
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a random graph with low assortativity using Erdős–Rényi model</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>low_assortativity_net <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="at">n =</span> n_nodes, <span class="at">p =</span> <span class="fl">0.2</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the assortativity based on degree</span></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>assortativity_coeff <span class="ot">&lt;-</span> <span class="fu">assortativity_degree</span>(low_assortativity_net)</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Assortativity coefficient (should be low):"</span>, assortativity_coeff, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de distancias: el elemento [i, j] es d(i, j)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">distances</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Assortativity coefficient (should be low): -0.1471013 </code></pre>
+<pre><code>     [,1] [,2] [,3] [,4] [,5]
+[1,]    0    1    2    3    4
+[2,]    1    0    1    2    3
+[3,]    2    1    0    1    2
+[4,]    3    2    1    0    1
+[5,]    4    3    2    1    0</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the network</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(low_assortativity_net, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Random Network with Low Assortativity</span><span class="sc">\n</span><span class="st">Assortativity: "</span>, <span class="fu">round</span>(assortativity_coeff, <span class="dv">3</span>)), </span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">15</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>, <span class="at">edge.arrow.size =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># La media de las distancias fuera de la diagonal es L_avg</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean_distance</span>(cadena)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
+</div>
+</div>
+<p>En la cadena, ir del nodo 1 al 5 requiere 4 pasos. Si añadimos una sola arista “atajo” entre 1 y 5, la red se convierte en un anillo y la distancia media baja. Este efecto de los atajos es la clave de las redes de pequeño mundo.</p>
+</section>
+<section id="redes-de-pequeño-mundo-small-world" class="level2">
+<h2 class="anchored" data-anchor-id="redes-de-pequeño-mundo-small-world">Redes de Pequeño Mundo (Small-World)</h2>
+<p>Watts y Strogatz (<em>Nature</em>, 1998) describieron que muchas redes reales combinan dos propiedades que parecían incompatibles:</p>
+<ol type="1">
+<li><strong>Longitud promedio de camino corta</strong>, como en una red aleatoria: cualquier par de nodos está a pocos pasos.</li>
+<li><strong>Coeficiente de clustering alto</strong>, como en una red regular (retícula): los vecinos de un nodo suelen estar conectados entre sí.</li>
+</ol>
+<p>Las redes que cumplen ambas se llaman de <strong>pequeño mundo</strong>. Su modelo parte de un anillo regular (cada nodo conectado a sus vecinos más cercanos: clustering alto, caminos largos) y “reconecta” cada arista al azar con probabilidad <span class="math inline">\(p\)</span>. Con solo unos pocos atajos, la longitud de camino cae en picado, mientras que el clustering disminuye mucho más despacio:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>p_values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.2</span>, <span class="dv">1</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>redes_ws <span class="ot">&lt;-</span> <span class="fu">lapply</span>(p_values, <span class="cf">function</span>(p) <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> N, <span class="at">nei =</span> <span class="dv">2</span>, <span class="at">p =</span> p))</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">p_reconexion  =</span> p_values,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">aristas       =</span> <span class="fu">sapply</span>(redes_ws, ecount),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_avg         =</span> <span class="fu">round</span>(<span class="fu">sapply</span>(redes_ws, mean_distance), <span class="dv">2</span>),</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">clustering    =</span> <span class="fu">round</span>(<span class="fu">sapply</span>(redes_ws, transitivity, <span class="at">type =</span> <span class="st">"average"</span>), <span class="dv">2</span>)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  p_reconexion aristas L_avg clustering
+1         0.00     200 12.88       0.50
+2         0.01     200  6.85       0.46
+3         0.05     200  4.66       0.34
+4         0.20     200  3.79       0.17
+5         1.00     200  3.34       0.06</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>)) {</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(redes_ws[[i]], <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.size =</span> <span class="dv">3</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"p = "</span>, p_values[i], <span class="st">"</span><span class="sc">\n</span><span class="st">L = "</span>, <span class="fu">round</span>(<span class="fu">mean_distance</span>(redes_ws[[i]]), <span class="dv">1</span>),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>                     <span class="st">", C = "</span>, <span class="fu">round</span>(<span class="fu">transitivity</span>(redes_ws[[i]], <span class="at">type =</span> <span class="st">"average"</span>), <span class="dv">2</span>)))</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>Con <span class="math inline">\(p = 0\)</span> (retícula regular): clustering alto pero caminos largos.</li>
+<li>Con <span class="math inline">\(p \approx 0.05\)</span> (<strong>pequeño mundo</strong>): unos pocos atajos reducen la longitud de camino a casi un tercio, pero el clustering sigue siendo alto (mucho mayor que en la red aleatoria).</li>
+<li>Con <span class="math inline">\(p = 1\)</span> (prácticamente aleatoria): caminos cortos pero clustering muy bajo.</li>
+</ul>
+<section id="valores-reales-watts-strogatz-1998" class="level3">
+<h3 class="anchored" data-anchor-id="valores-reales-watts-strogatz-1998">Valores reales (Watts &amp; Strogatz, 1998)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Red</th>
+<th><span class="math inline">\(L_{avg}\)</span> real</th>
+<th><span class="math inline">\(L_{avg}\)</span> aleatoria equivalente</th>
+<th><span class="math inline">\(C\)</span> real</th>
+<th><span class="math inline">\(C\)</span> aleatoria equivalente</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Red neuronal de <em>C. elegans</em> (282 neuronas)</td>
+<td>2.65</td>
+<td>2.25</td>
+<td>0.28</td>
+<td>0.05</td>
+</tr>
+<tr class="even">
+<td>Actores de cine</td>
+<td>3.65</td>
+<td>2.99</td>
+<td>0.79</td>
+<td>0.00027</td>
+</tr>
+<tr class="odd">
+<td>Red eléctrica del oeste de EE.UU.</td>
+<td>18.7</td>
+<td>12.4</td>
+<td>0.08</td>
+<td>0.005</td>
+</tr>
+</tbody>
+</table>
+<p>En las tres, la longitud de camino es parecida a la de una red aleatoria con los mismos nodos y aristas, pero el clustering es mucho mayor: son redes de pequeño mundo. Fíjate en que lo importante es la comparación con la red aleatoria equivalente, no el valor absoluto: la red eléctrica tiene <span class="math inline">\(L_{avg} \approx 19\)</span> porque es una red grande y extendida geográficamente.</p>
+</section>
+<section id="ejemplos-en-biología" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplos-en-biología">Ejemplos en Biología</h3>
+<ul>
+<li><strong>Redes de Interacción Proteína-Proteína (PPI)</strong>: las proteínas son los nodos y las interacciones son las aristas. En las PPI, la longitud promedio de camino es corta (unos pocos pasos entre cualquier par de proteínas), en buena parte gracias a los hubs. Esto implica que una perturbación en una proteína puede propagarse rápidamente a muchas otras.</li>
+<li><strong>Redes metabólicas</strong>: Jeong <em>et al.</em> (<em>Nature</em>, 2000) analizaron las redes metabólicas de 43 organismos y encontraron que la distancia media entre metabolitos es de unos 3 pasos, y prácticamente la misma en todos, desde bacterias hasta eucariotas, a pesar de las grandes diferencias de tamaño.</li>
+<li><strong>Redes tróficas</strong>: aunque las especies se agrupen en grupos funcionales, la mayoría de las especies de una red trófica están a solo 2–3 enlaces de distancia (“dos grados de separación”, Williams <em>et al.</em>, <em>PNAS</em> 2002).</li>
+<li><strong>Redes cerebrales</strong>: las redes de conectividad cerebral son a la vez <strong>modulares</strong> (regiones especializadas en distintas funciones) y de <strong>pequeño mundo</strong> (pocas conexiones de larga distancia, a menudo a través de hubs, unen los módulos). Esta combinación permite el procesamiento especializado dentro de cada módulo y una integración rápida de la información entre módulos.</li>
+</ul>
+</section>
+<section id="ejemplo-fuera-de-la-biología-redes-sociales" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplo-fuera-de-la-biología-redes-sociales"><strong>Ejemplo Fuera de la Biología: Redes Sociales</strong></h3>
+<p>En las redes sociales, donde las personas son los nodos y las relaciones sociales son las aristas, las longitudes promedio de camino son cortas. En el famoso experimento de Stanley Milgram (1967), cartas enviadas a un desconocido a través de cadenas de conocidos llegaron a su destino en unos 6 pasos de media: los famosos “seis grados de separación”.</p>
+</section>
+</section>
+<section id="redes-con-longitudes-promedio-de-camino-largas" class="level2">
+<h2 class="anchored" data-anchor-id="redes-con-longitudes-promedio-de-camino-largas">Redes con Longitudes Promedio de Camino Largas</h2>
+<p>Las longitudes de camino largas aparecen cuando la red <strong>no tiene atajos</strong>:</p>
+<ul>
+<li><strong>Redes espaciales o de tipo retícula</strong>: la red eléctrica o la red de carreteras, donde los nodos solo se conectan con otros cercanos en el espacio. Para cruzar la red hay que pasar por muchos nodos intermedios.</li>
+<li><strong>Cadenas y cascadas lineales</strong>: en una ruta metabólica lineal o una cascada de señalización sin ramificaciones, la distancia entre los extremos crece con el número de pasos.</li>
+<li><strong>Redes muy modulares con pocas conexiones entre módulos</strong>: dentro de cada módulo las distancias son cortas, pero para ir de un módulo a otro hay que pasar por las pocas aristas que los unen. Ojo: modularidad y pequeño mundo <strong>no son excluyentes</strong> (el cerebro es ambas cosas); los caminos solo se alargan si los módulos están conectados por muy pocas aristas.</li>
+</ul>
+<p>En general, una longitud de camino corta sugiere un sistema en el que la información (o una perturbación) se propaga rápidamente, y una longitud larga, un sistema más “lento” o segregado.</p>
+</section>
+<section id="diámetro-diameter" class="level2">
+<h2 class="anchored" data-anchor-id="diámetro-diameter">Diámetro (Diameter)</h2>
+<p>El <strong>diámetro de una red</strong> es la mayor de todas las distancias entre pares de nodos. Es decir, de todos los caminos más cortos posibles, el diámetro es la longitud del más largo. Mientras la longitud promedio de camino describe la distancia <em>típica</em>, el diámetro describe el <em>peor caso</em>: cuán “extendida” o “compacta” es la red.</p>
+<p><span class="math display">\[
+\text{diam}(G) = \max_{i \neq j} d(i,j)
+\]</span></p>
+<p>donde <span class="math inline">\(d(i,j)\)</span> es la distancia (camino más corto) entre los nodos <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span>.</p>
+<section id="relación-entre-longitud-promedio-de-camino-y-diámetro" class="level3">
+<h3 class="anchored" data-anchor-id="relación-entre-longitud-promedio-de-camino-y-diámetro"><strong>Relación entre Longitud Promedio de Camino y Diámetro</strong></h3>
+<ul>
+<li><strong>Redes de Pequeño Mundo</strong>: el diámetro suele ser pequeño, porque los atajos acercan incluso a los nodos más alejados.</li>
+<li><strong>Redes tipo retícula o espaciales</strong>: el diámetro es grande, ya que para unir los extremos de la red hay que recorrer muchos nodos intermedios.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="kevin_bacon.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Seis grados de Kevin Bacon: en la red de actores de cine (dos actores están conectados si han actuado en la misma película), casi cualquier actor está a 6 pasos o menos de Kevin Bacon.</figcaption>
+</figure>
 </div>
 </section>
+<section id="cálculo-del-diámetro-en-r" class="level3">
+<h3 class="anchored" data-anchor-id="cálculo-del-diámetro-en-r">Cálculo del Diámetro en R</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Red de escala libre (Barabási-Albert, no dirigida): pocos pasos gracias a los hubs</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>red_ba <span class="ot">&lt;-</span> <span class="fu">sample_pa</span>(<span class="dv">100</span>, <span class="at">m =</span> <span class="dv">2</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Red casi regular (Watts-Strogatz con p muy baja): prácticamente un anillo, sin atajos</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>red_reticula <span class="ot">&lt;-</span> <span class="fu">sample_smallworld</span>(<span class="at">dim =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">100</span>, <span class="at">nei =</span> <span class="dv">2</span>, <span class="at">p =</span> <span class="fl">0.01</span>)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">red      =</span> <span class="fu">c</span>(<span class="st">"Barabási-Albert"</span>, <span class="st">"Casi retícula"</span>),</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">aristas  =</span> <span class="fu">c</span>(<span class="fu">ecount</span>(red_ba), <span class="fu">ecount</span>(red_reticula)),</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">L_avg    =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">mean_distance</span>(red_ba), <span class="fu">mean_distance</span>(red_reticula)), <span class="dv">2</span>),</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">diametro =</span> <span class="fu">c</span>(<span class="fu">diameter</span>(red_ba), <span class="fu">diameter</span>(red_reticula))</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              red aristas L_avg diametro
+1 Barabási-Albert     197  3.01        6
+2   Casi retícula     200  7.85       17</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># El camino más largo de todos (el que define el diámetro)</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>camino_ba  <span class="ot">&lt;-</span> <span class="fu">get_diameter</span>(red_ba)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>camino_ret <span class="ot">&lt;-</span> <span class="fu">get_diameter</span>(red_reticula)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(red_ba, <span class="at">vertex.size =</span> <span class="dv">4</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">ifelse</span>(<span class="fu">V</span>(red_ba) <span class="sc">%in%</span> camino_ba, <span class="st">"red"</span>, <span class="st">"grey80"</span>),</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Barabási-Albert</span><span class="sc">\n</span><span class="st">Diámetro:"</span>, <span class="fu">diameter</span>(red_ba)))</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(red_reticula, <span class="at">layout =</span> layout_in_circle, <span class="at">vertex.size =</span> <span class="dv">4</span>, <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">ifelse</span>(<span class="fu">V</span>(red_reticula) <span class="sc">%in%</span> camino_ret, <span class="st">"red"</span>, <span class="st">"grey80"</span>),</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Casi retícula</span><span class="sc">\n</span><span class="st">Diámetro:"</span>, <span class="fu">diameter</span>(red_reticula)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Con prácticamente el mismo número de aristas, la red de escala libre tiene un diámetro mucho menor: los hubs actúan como atajos. En rojo se muestra el camino más corto más largo de cada red.</p>
 </section>
-<section id="ejemplos-de-redes-con-asortatividad-positiva-y-negativa" class="level2">
-<h2 class="anchored" data-anchor-id="ejemplos-de-redes-con-asortatividad-positiva-y-negativa"><strong>Ejemplos de Redes con Asortatividad Positiva y Negativa</strong></h2>
+</section>
+</section>
+<section id="asortatividad-de-grado-degree-assortativity" class="level1">
+<h1>Asortatividad de Grado (Degree Assortativity)</h1>
+<section id="definición" class="level3">
+<h3 class="anchored" data-anchor-id="definición"><strong>Definición</strong></h3>
+<p>La <strong>asortatividad de grado</strong> mide la tendencia de los nodos a conectarse con otros nodos de grado similar:</p>
+<ul>
+<li><strong>Asortatividad positiva</strong> (<span class="math inline">\(r &gt; 0\)</span>): los hubs se conectan con otros hubs, y los nodos poco conectados con otros nodos poco conectados.</li>
+<li><strong>Asortatividad negativa o disasortatividad</strong> (<span class="math inline">\(r &lt; 0\)</span>): los hubs se conectan preferentemente con nodos de grado bajo (y no entre sí).</li>
+<li><strong>Sin asortatividad</strong> (<span class="math inline">\(r \approx 0\)</span>): el grado de un nodo no dice nada sobre el grado de sus vecinos, como en una red aleatoria.</li>
+</ul>
+</section>
+<section id="ecuación-para-la-asortatividad" class="level3">
+<h3 class="anchored" data-anchor-id="ecuación-para-la-asortatividad"><strong>Ecuación para la Asortatividad</strong></h3>
+<p>La forma más intuitiva de definirla: tomamos cada arista de la red y anotamos el grado de los dos nodos que une. El coeficiente de asortatividad <span class="math inline">\(r\)</span> es simplemente la <strong>correlación de Pearson</strong> entre los grados de los dos extremos de las aristas, y por tanto va de <span class="math inline">\(-1\)</span> a <span class="math inline">\(1\)</span>.</p>
+<p>Escrita con la matriz de adyacencia (Newman, 2002), tiene una forma muy parecida a la de la modularidad:</p>
+<p><span class="math display">\[
+r = \frac{\sum_{ij} \left(A_{ij} - \frac{k_i k_j}{2m}\right) k_i k_j}{\sum_{ij} \left(k_i \delta_{ij} - \frac{k_i k_j}{2m}\right) k_i k_j}
+\]</span></p>
+<p>donde <span class="math inline">\(\delta_{ij} = 1\)</span> si <span class="math inline">\(i = j\)</span> y 0 en caso contrario. El numerador compara, igual que en la modularidad, las aristas observadas (<span class="math inline">\(A_{ij}\)</span>) con las esperadas por azar (<span class="math inline">\(\frac{k_i k_j}{2m}\)</span>), pero ahora ponderadas por el producto de los grados; el denominador normaliza para que <span class="math inline">\(r\)</span> esté entre <span class="math inline">\(-1\)</span> y <span class="math inline">\(1\)</span>.</p>
+</section>
+<section id="ejemplos-en-r" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplos-en-r"><strong>Ejemplos en R</strong></h3>
+<p>Construimos tres redes pequeñas con asortatividad positiva, nula y negativa:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Asortativa: un grupo de 10 nodos todos conectados entre sí (grado alto)</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    unido por UNA arista a un anillo de 20 nodos (grado 2).</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co">#    Los nodos de grado alto se conectan con nodos de grado alto, y los de grado bajo entre sí.</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>g_asort <span class="ot">&lt;-</span> <span class="fu">disjoint_union</span>(<span class="fu">make_full_graph</span>(<span class="dv">10</span>), <span class="fu">make_ring</span>(<span class="dv">20</span>))</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>g_asort <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(g_asort, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>))</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Neutra: red aleatoria Erdős–Rényi (algo más grande, para que r fluctúe menos)</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>g_neutra <span class="ot">&lt;-</span> <span class="fu">sample_gnp</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Disasortativa: 3 "estrellas" (un hub conectado a 9 nodos de grado 1),</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    con los hubs unidos entre sí. Los hubs se conectan sobre todo con nodos de grado bajo.</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>g_disasort <span class="ot">&lt;-</span> <span class="fu">disjoint_union</span>(<span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>),</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>),</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">make_star</span>(<span class="dv">10</span>, <span class="at">mode =</span> <span class="st">"undirected"</span>))</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>g_disasort <span class="ot">&lt;-</span> <span class="fu">add_edges</span>(g_disasort, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">21</span>, <span class="dv">21</span>, <span class="dv">1</span>))</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>redes <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Asortativa =</span> g_asort, <span class="at">Neutra =</span> g_neutra, <span class="at">Disasortativa =</span> g_disasort)</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(redes, <span class="cf">function</span>(g) <span class="fu">round</span>(<span class="fu">assortativity_degree</span>(g), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Asortativa        Neutra Disasortativa 
+         0.96         -0.10         -0.82 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (nombre <span class="cf">in</span> <span class="fu">names</span>(redes)) {</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> redes[[nombre]]</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(g, <span class="at">vertex.size =</span> <span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.6</span> <span class="sc">*</span> <span class="fu">degree</span>(g), <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste0</span>(nombre, <span class="st">"</span><span class="sc">\n</span><span class="st">r = "</span>, <span class="fu">round</span>(<span class="fu">assortativity_degree</span>(g), <span class="dv">2</span>)))</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analisis_topo_2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>El tamaño de cada nodo es proporcional a su grado. En la red asortativa los nodos grandes están juntos y los pequeños juntos; en la disasortativa cada nodo grande está rodeado de nodos pequeños.</p>
+<p>En una red aleatoria concreta, <span class="math inline">\(r\)</span> no es exactamente 0: fluctúa por azar alrededor de 0, y más cuanto más pequeña es la red. Si generamos muchas redes aleatorias, la media sí es prácticamente 0:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>r_aleatorias <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">200</span>, <span class="fu">assortativity_degree</span>(<span class="fu">sample_gnp</span>(<span class="dv">100</span>, <span class="at">p =</span> <span class="fl">0.05</span>)))</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">media =</span> <span class="fu">round</span>(<span class="fu">mean</span>(r_aleatorias), <span class="dv">3</span>), <span class="at">desviacion =</span> <span class="fu">round</span>(<span class="fu">sd</span>(r_aleatorias), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     media desviacion 
+    -0.022      0.063 </code></pre>
+</div>
+</div>
+<p>Podemos comprobar que <span class="math inline">\(r\)</span> es la correlación entre los grados de los extremos de las aristas:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> g_disasort</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>extremos <span class="ot">&lt;-</span> <span class="fu">ends</span>(g, <span class="fu">E</span>(g), <span class="at">names =</span> <span class="cn">FALSE</span>)   <span class="co"># matriz con los dos nodos de cada arista</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">degree</span>(g)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cada arista no dirigida se cuenta en los dos sentidos (i-j y j-i)</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>grado_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(k[extremos[, <span class="dv">1</span>]], k[extremos[, <span class="dv">2</span>]])</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>grado_2 <span class="ot">&lt;-</span> <span class="fu">c</span>(k[extremos[, <span class="dv">2</span>]], k[extremos[, <span class="dv">1</span>]])</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(grado_1, grado_2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.8181818</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">assortativity_degree</span>(g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.8181818</code></pre>
+</div>
+</div>
+</section>
+<section id="asortatividad-en-redes-reales" class="level2">
+<h2 class="anchored" data-anchor-id="asortatividad-en-redes-reales"><strong>Asortatividad en Redes Reales</strong></h2>
+<p>Newman (<em>Phys. Rev.&nbsp;Lett.</em>, 2002) observó un patrón muy llamativo: las <strong>redes sociales</strong> suelen ser asortativas, mientras que las <strong>redes biológicas y tecnológicas</strong> suelen ser disasortativas. Algunos valores aproximados:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Red</th>
+<th>Tipo</th>
+<th><span class="math inline">\(r\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Coautorías científicas (física)</td>
+<td>Social</td>
+<td>+0.36</td>
+</tr>
+<tr class="even">
+<td>Actores de cine</td>
+<td>Social</td>
+<td>+0.21</td>
+</tr>
+<tr class="odd">
+<td>Internet</td>
+<td>Tecnológica</td>
+<td>−0.19</td>
+</tr>
+<tr class="even">
+<td>Interacciones proteína-proteína (levadura)</td>
+<td>Biológica</td>
+<td>−0.16</td>
+</tr>
+<tr class="odd">
+<td>Red metabólica</td>
+<td>Biológica</td>
+<td>−0.24</td>
+</tr>
+<tr class="even">
+<td>Red neuronal de <em>C. elegans</em></td>
+<td>Biológica</td>
+<td>−0.23</td>
+</tr>
+<tr class="odd">
+<td>Red trófica marina</td>
+<td>Biológica</td>
+<td>−0.26</td>
+</tr>
+</tbody>
+</table>
 <section id="asortatividad-positiva" class="level3">
 <h3 class="anchored" data-anchor-id="asortatividad-positiva"><strong>Asortatividad Positiva</strong></h3>
-<p>En redes con asortatividad positiva, los nodos con grados similares tienden a conectarse entre sí. Este patrón fomenta la formación de comunidades o módulos, lo que refuerza la resiliencia y la cohesión de la red.</p>
+<p>En redes con asortatividad positiva, los nodos con grados similares tienden a conectarse entre sí. Los nodos de grado alto forman un “núcleo” muy conectado, lo que hace la red más resistente a la eliminación de hubs (si cae uno, los demás siguen conectados entre sí), aunque también facilita que algo se propague rápidamente por ese núcleo (por ejemplo, una infección entre las personas más sociables).</p>
 <ul>
-<li><p><strong>Redes de Interacción Proteína-Proteína (PPI):</strong><br>
-Puede que hay asortatividad positiva en ciertas ocasiones, por ejemplo en la maquinaria ribosomal, las proteínas ribosómicas suelen agruparse y tienden a tener muchas conexiones entre ellos, para garantizar una síntesis proteica eficiente.</p></li>
-<li><p><strong>Redes Sociales:</strong><br>
-En redes como LinkedIn, las personas con muchas conexiones suelen estar vinculadas a otros usuarios con un número similar de contactos, lo que genera grupos profesionales densamente interconectados.</p></li>
+<li><strong>Redes Sociales</strong>: en redes de coautoría o en redes como LinkedIn, las personas con muchas conexiones suelen estar vinculadas a otras personas con muchos contactos, lo que genera grupos densamente interconectados.</li>
+<li><strong>Dentro de complejos proteicos</strong>: aunque la red PPI en su conjunto es disasortativa, a escala local puede haber zonas asortativas. Por ejemplo, las proteínas ribosómicas tienen muchas interacciones y muchas de ellas son con otras proteínas ribosómicas, para garantizar el ensamblaje y la función del ribosoma.</li>
 </ul>
 </section>
 <section id="asortatividad-negativa" class="level3">
 <h3 class="anchored" data-anchor-id="asortatividad-negativa"><strong>Asortatividad Negativa</strong></h3>
-<p>En redes con asortatividad negativa, los nodos de alto grado tienden a conectarse con nodos de bajo grado. Este patrón es típico de sistemas diseñados para maximizar la eficiencia y la transferencia de recursos o información.</p>
+<p>En redes con asortatividad negativa, los nodos de alto grado tienden a conectarse con nodos de bajo grado, y los hubs evitan conectarse entre sí. Esto genera una estructura de “estrellas” relativamente independientes.</p>
 <ul>
-<li><p><strong>Redes Metabólicas:</strong><br>
-Los metabolitos universales, como el ATP, actúan como hubs al conectar múltiples metabolitos específicos con roles clave en diversas rutas metabólicas. Este diseño asegura que el ATP pueda participar rápidamente en numerosas reacciones bioquímicas.</p></li>
-<li><p><strong>Redes de Transporte:</strong><br>
-En redes aéreas, los aeropuertos internacionales (hubs) están conectados con aeropuertos regionales más pequeños. Esto optimiza el flujo de pasajeros y carga en el sistema global.</p></li>
+<li><strong>Redes de Interacción Proteína-Proteína</strong>: Maslov y Sneppen (<em>Science</em>, 2002) mostraron que, en la red PPI de levadura, los hubs tienden a <em>no</em> interactuar directamente entre sí. Una interpretación es que esto separa los distintos módulos funcionales (cada uno organizado alrededor de su hub) y reduce la propagación de perturbaciones de un módulo a otro.</li>
+<li><strong>Redes de Regulación Génica</strong>: unos pocos factores de transcripción maestros regulan a muchos genes diana, que a su vez regulan a pocos o ningún otro gen.</li>
+<li><strong>Redes Metabólicas</strong>: los metabolitos universales, como el ATP, actúan como hubs al conectar con muchos metabolitos específicos, cada uno de los cuales participa en pocas reacciones.</li>
+<li><strong>Redes de Transporte</strong>: en redes aéreas, los grandes aeropuertos internacionales (hubs) están conectados con muchos aeropuertos regionales más pequeños.</li>
 </ul>
 </section>
 <section id="comparación-en-biología" class="level3">
 <h3 class="anchored" data-anchor-id="comparación-en-biología"><strong>Comparación en Biología</strong></h3>
 <ul>
-<li>La <strong>asortatividad positiva</strong> refuerza la estabilidad dentro de módulos funcionales, como complejos proteicos específicos.<br>
-</li>
-<li>La <strong>asortatividad negativa</strong> mejora la flexibilidad y la integración en sistemas jerárquicos, como en la regulación metabólica o genética.</li>
+<li>La <strong>asortatividad positiva</strong> genera un núcleo de nodos muy conectados entre sí, que refuerza la cohesión dentro de módulos funcionales, como complejos proteicos específicos.</li>
+<li>La <strong>asortatividad negativa</strong>, la más habitual en redes biológicas, separa los hubs entre sí y ayuda a mantener los módulos funcionales relativamente aislados, limitando la propagación de fallos o perturbaciones por la red.</li>
 </ul>
-<p>Ambos patrones reflejan estrategias de diseño adaptativas que optimizan la funcionalidad en redes biológicas y tecnológicas.</p>
 </section>
 </section>
 </section>
@@ -786,13 +933,13 @@ En redes aéreas, los aeropuertos internacionales (hubs) están conectados con a
 <p>Aplicar conceptos de <strong>modularidad</strong>, <strong>densidad de aristas</strong>, <strong>dispersión</strong>, <strong>longitud promedio de camino</strong> y <strong>asortatividad de grado</strong> para analizar la estructura y funcionalidad de redes biológicas utilizando <strong>R</strong> y la librería <strong>igraph</strong>.</p>
 <section id="instrucciones" class="level2">
 <h2 class="anchored" data-anchor-id="instrucciones">Instrucciones</h2>
-<section id="parte-1-creacion-y-visulalizacion" class="level3">
-<h3 class="anchored" data-anchor-id="parte-1-creacion-y-visulalizacion">Parte 1: Creacion y visulalizacion</h3>
+<section id="parte-1-creación-y-visualización" class="level3">
+<h3 class="anchored" data-anchor-id="parte-1-creación-y-visualización">Parte 1: Creación y visualización</h3>
 <ol type="1">
 <li>Crea dos redes en R:
 <ul>
 <li>Una <strong>red modular</strong>, con comunidades internas densas (<code>sample_islands</code>).</li>
-<li>Una <strong>red aleatoria</strong>, sin comunidades claras (<code>sample_gnp</code>).</li>
+<li>Una <strong>red aleatoria</strong> con el <strong>mismo número de nodos y aristas</strong>, sin comunidades claras (<code>sample_gnm</code> y <code>ecount</code>).</li>
 </ul></li>
 <li>Visualiza ambas redes y <strong>describe las diferencias visuales</strong>:
 <ul>
@@ -833,7 +980,7 @@ En redes aéreas, los aeropuertos internacionales (hubs) están conectados con a
 <tr class="odd">
 <td>Dispersión</td>
 <td><code>1 - edge_density(red)</code></td>
-<td>Grado de especificidad</td>
+<td>Proporción de conexiones ausentes</td>
 </tr>
 <tr class="even">
 <td>Longitud promedio de camino</td>
@@ -852,7 +999,16 @@ En redes aéreas, los aeropuertos internacionales (hubs) están conectados con a
 </tr>
 </tbody>
 </table>
-<p>Representa los resultados como una table (data.frame) para comparar valores entre redes.</p>
+<p>Representa los resultados como una tabla (<code>data.frame</code>) para comparar valores entre redes.</p>
+</section>
+<section id="parte-3-interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="parte-3-interpretación">Parte 3: Interpretación</h3>
+<ol type="1">
+<li>¿Qué métricas son iguales en las dos redes? ¿Por qué? (Pista: piensa en cómo las has construido.)</li>
+<li>¿Qué métricas cambian más? Relaciona cada diferencia con lo que ves en los gráficos de la Parte 1.</li>
+<li>¿Es la modularidad de la red aleatoria igual a cero? ¿Por qué no?</li>
+<li>Si la red modular fuera una red de proteínas, ¿qué podrían representar sus comunidades? ¿Qué proteínas elegirías como dianas para interrumpir la comunicación <em>entre</em> módulos?</li>
+</ol>
 
 
 </section>
@@ -861,239 +1017,243 @@ En redes aéreas, los aeropuertos internacionales (hubs) están conectados con a
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-    clipboardModal.on('success', onCopySuccess);
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
         }
-        return container.innerHTML
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      // TODO in 1.5, we should make sure this works without a callout special case
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -1101,185 +1261,161 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
 
 

@@ -1,5 +1,7 @@
 ---
-title: "Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Assortividad"
+title: "Análisis de Grafos y Topología de Redes (II): Modularidad, Densidad, Longitudes Promedio de Camino, Asortatividad"
+execute:
+  message: false
 ---
 
 # Introducción
@@ -23,8 +25,8 @@ $$
 Donde:
 
 -   $Q$ es el valor de modularidad.
--   $m$ es el número total de aristas en la red.
--   $A\_{ij}$ representa la entrada en la posición $(i, j)$ de la matriz de adyacencia de la red, donde $A_{ij} = 1$ si hay una arista entre los nodos $i$ y $j$, y $A_{ij} = 0$ si no la hay.
+-   $m$ es el número total de aristas en la red (lo que en la parte I llamamos $E$).
+-   $A_{ij}$ representa la entrada en la posición $(i, j)$ de la matriz de adyacencia de la red, donde $A_{ij} = 1$ si hay una arista entre los nodos $i$ y $j$, y $A_{ij} = 0$ si no la hay.
 -   $k_i$ es el grado del nodo $i$ (es decir, el número de conexiones que tiene el nodo $i$).
 -   $\delta(c_i, c_j)$ es una función indicadora que es igual a 1 si los nodos $i$ y $j$ pertenecen a la misma comunidad y 0 en caso contrario.
 
@@ -32,11 +34,11 @@ Esta ecuación compara la densidad de enlaces dentro de las comunidades con la d
 
 ### Pasos detallados para calcular la modularidad
 
-1.  **Identificar la estructura de la comunidad**: La red se divide en comunidades o módulos (grupos de nodos densamente conectados entre sí). Esto puede hacerse con algoritmos específicos como el algoritmo de Louvain o el algoritmo de agrupamiento *fast-greedy*, que buscan maximizar la modularidad $Q$ dividiendo la red en comunidades. Veremos mas algoritmos de clusterizacion en la siguiente parte teorica.
+1.  **Identificar la estructura de la comunidad**: La red se divide en comunidades o módulos (grupos de nodos densamente conectados entre sí). Esto puede hacerse con algoritmos específicos como el algoritmo de Louvain o el algoritmo de agrupamiento *fast-greedy*, que buscan maximizar la modularidad $Q$ dividiendo la red en comunidades. Veremos más algoritmos de clusterización en la siguiente parte teórica.
 
 2.  **Calcular la matriz de adyacencia y el grado**: A partir de la estructura de la red, construimos la matriz de adyacencia $A$ y calculamos el grado de cada nodo $k_i$.
 
-3.  **Sumar las diferencias entre enlaces observados y esperados**: Para cada par de nodos $i$ y $j$, se calcula $A_{ij} - \frac{k_i k_j}{2m}$. Este término controla por el grado de los nods $i$ y $j$.
+3.  **Sumar las diferencias entre enlaces observados y esperados**: Para cada par de nodos $i$ y $j$, se calcula $A_{ij} - \frac{k_i k_j}{2m}$. El término $\frac{k_i k_j}{2m}$ es el número de aristas que *esperaríamos* entre $i$ y $j$ si la red fuera aleatoria con los mismos grados: dos nodos con grado alto tienen más probabilidad de estar conectados simplemente por azar. Así, el término controla por el grado de los nodos $i$ y $j$.
 
 4.  **Sumar los valores para los pares dentro de la misma comunidad**: Los valores obtenidos en el paso anterior se suman únicamente para los pares de nodos $(i, j)$ que están dentro de la misma comunidad (esto lo controla la función $\delta(c_i, c_j)$).
 
@@ -44,354 +46,446 @@ Esta ecuación compara la densidad de enlaces dentro de las comunidades con la d
 
 Un valor de $Q$ alto indica una fuerte estructura modular, lo que significa que los nodos están agrupados en comunidades bien definidas. En cambio, un valor bajo o cercano a cero sugiere que los enlaces dentro y entre comunidades no difieren mucho de lo que se esperaría en una red aleatoria.
 
+En la práctica, $Q$ nunca llega a 1 (con $c$ comunidades del mismo tamaño, el máximo es $1 - 1/c$), y en redes reales con comunidades claras suele estar entre 0.3 y 0.7.
+
+### Una forma equivalente (y más fácil de calcular a mano)
+
+Agrupando los términos por comunidad, la ecuación anterior se puede reescribir como:
+
+$$
+Q = \sum_{c} \left[ \frac{L_c}{m} - \left( \frac{d_c}{2m} \right)^2 \right]
+$$
+
+donde $L_c$ es el número de aristas *dentro* de la comunidad $c$ y $d_c$ es la suma de los grados de los nodos de la comunidad $c$. El primer término es la fracción de aristas que caen dentro de la comunidad; el segundo, la fracción que esperaríamos por azar.
+
+**Ejemplo a mano**: dos triángulos unidos por una sola arista ($m = 7$). Si cada triángulo es una comunidad, cada una tiene $L_c = 3$ aristas internas y $d_c = 2 + 2 + 3 = 7$, así que:
+
+$$
+Q = 2 \times \left[ \frac{3}{7} - \left( \frac{7}{14} \right)^2 \right] = 2 \times (0.429 - 0.25) = 0.357
+$$
+
+```{r}
+#| message: false
+library(igraph)
+g_triangulos <- make_graph(~ 1-2, 2-3, 3-1, 4-5, 5-6, 6-4, 3-4)
+plot(g_triangulos, vertex.color = c(1, 1, 1, 2, 2, 2))
+
+# Modularidad para la partición {1,2,3} y {4,5,6}
+modularity(g_triangulos, membership = c(1, 1, 1, 2, 2, 2))
+
+# ¿Y si dividimos la red "mal"? La modularidad baja (incluso puede ser negativa)
+modularity(g_triangulos, membership = c(1, 2, 1, 2, 1, 2))
+```
+
+La modularidad no es solo una propiedad de la red, sino de la red **y** de una partición en comunidades. Los algoritmos de detección de comunidades (Louvain, fast-greedy...) buscan la partición que da la $Q$ más alta.
+
 ## Ejemplo Biológico de Modularidad
 
 En redes de interacción proteína-proteína, la modularidad puede identificar comunidades que corresponden a complejos proteicos funcionales o a proteínas que participan en la misma ruta metabólica. Por ejemplo, en una red de proteínas involucradas en la respuesta inmune, los módulos de alta modularidad pueden corresponder a diferentes mecanismos inmunitarios, como la respuesta inflamatoria o la activación de células T.
 
 ## Código en R para Calcular Modularidad
 
-El siguiente código en R utiliza `igraph` para calcular la modularidad en dos redes con diferentes estructuras:
-
-Aquí tienes un ejemplo en R que crea dos redes: una con alta modularidad y otra con baja modularidad. Este código ilustra la diferencia de modularidad usando comunidades claramente definidas para la red modular, mientras que la red no modular tendrá conexiones distribuidas de manera más uniforme sin comunidades definidas.
+El siguiente código crea dos redes con **el mismo número de nodos y de aristas**: una con comunidades claramente definidas y otra aleatoria. Así, cualquier diferencia en la modularidad se debe a *cómo* están distribuidas las aristas, y no a cuántas hay.
 
 ```{r}
-# Cargamos el paquete igraph
-library(igraph)
-
-# Creamos una red con alta modularidad utilizando la función sample_islands
-# Esta red tendrá 4 comunidades internas con enlaces densos entre nodos dentro de cada comunidad
 set.seed(42)
+
+# Red con alta modularidad: 4 "islas" de 10 nodos, con probabilidad 0.8 de
+# conexión dentro de cada isla y solo 3 aristas entre cada par de islas
 high_modularity_network <- sample_islands(4, 10, 0.8, 3)
 
-# Visualizamos la red de alta modularidad
-plot(high_modularity_network, main = "Red con Alta Modularidad", vertex.color = membership(cluster_louvain(high_modularity_network)), vertex.size = 8, edge.arrow.size = 0.5)
+# Red aleatoria con los mismos nodos y aristas
+low_modularity_network <- sample_gnm(40, ecount(high_modularity_network))
 
-# Calculamos y mostramos la modularidad de la red de alta modularidad
-high_modularity_value <- modularity(cluster_louvain(high_modularity_network))
-cat("Modularidad de la red con alta modularidad:", high_modularity_value, "\n")
+# Detectamos comunidades UNA sola vez por red (Louvain tiene un componente
+# aleatorio: si lo llamamos dos veces, puede dar particiones distintas)
+com_high <- cluster_louvain(high_modularity_network)
+com_low  <- cluster_louvain(low_modularity_network)
 
-# Creamos una red con baja modularidad usando una red aleatoria sin comunidades definidas
-# Usamos la función erdos.renyi.game para crear una red aleatoria
-low_modularity_network <- sample_gnp(40, p = 0.1, directed = FALSE)
+cat("Aristas:", ecount(high_modularity_network), "vs", ecount(low_modularity_network), "\n")
+cat("Modularidad de la red modular:  ", round(modularity(com_high), 3), "con", length(com_high), "comunidades\n")
+cat("Modularidad de la red aleatoria:", round(modularity(com_low), 3), "con", length(com_low), "comunidades\n")
 
-# Visualizamos la red de baja modularidad
-plot(low_modularity_network, main = "Red con Baja Modularidad", vertex.color = membership(cluster_louvain(low_modularity_network)), vertex.size = 8, edge.arrow.size = 0.5)
-
-# Calculamos y mostramos la modularidad de la red de baja modularidad
-low_modularity_value <- modularity(cluster_louvain(low_modularity_network))
-cat("Modularidad de la red con baja modularidad:", low_modularity_value, "\n")
+par(mfrow = c(1, 2), mar = c(1, 1, 2, 1))
+plot(high_modularity_network, vertex.color = membership(com_high), vertex.size = 8, vertex.label = NA,
+     main = paste("Red modular, Q =", round(modularity(com_high), 2)))
+plot(low_modularity_network, vertex.color = membership(com_low), vertex.size = 8, vertex.label = NA,
+     main = paste("Red aleatoria, Q =", round(modularity(com_low), 2)))
+par(mfrow = c(1, 1))
 ```
-
-### Explicación del código
-
-1.  **Red con alta modularidad**:
-    -   Creamos una red usando `sample_islands` que genera "islas" o grupos de nodos con conexiones internas densas y pocas conexiones entre grupos.
-    -   Esto produce comunidades internas bien definidas, lo que incrementa el valor de la modularidad.
-    -   La función `modularity` mide este valor, y deberías obtener un valor de modularidad relativamente alto (cerca de 1, dependiendo de los parámetros de entrada).
-2.  **Red con baja modularidad**:
-    -   Creamos una red aleatoria con la función `sample_gnp`, en la cual los enlaces se distribuyen de manera uniforme y no hay comunidades claras.
-    -   La modularidad para esta red debería ser baja porque no hay agrupamiento natural en comunidades.
-    -   Visualizamos y calculamos la modularidad, la cual debería ser un valor bajo (cercano a cero), indicando una red con baja modularidad.
 
 ### Interpretación de los Resultados
 
--   La **red con alta modularidad** tendrá nodos dentro de cada comunidad (en este caso, cuatro) con conexiones internas fuertes y escasas conexiones con nodos de otras comunidades. Esto resulta en una modularidad alta, ya que $A_{ij}$ dentro de las comunidades es significativamente mayor al esperado.
+-   La **red modular** tiene cuatro comunidades con muchas conexiones internas y muy pocas entre ellas. Louvain recupera exactamente las cuatro islas, y $Q$ es alta (cerca del máximo teórico de $1 - 1/4 = 0.75$).
 
--   La **red con baja modularidad** no tendrá comunidades bien definidas. Las conexiones están distribuidas aleatoriamente, por lo que la diferencia entre el número de enlaces reales y el número esperado será baja, dando como resultado una modularidad baja.
+-   La **red aleatoria** no tiene comunidades "reales" y, sin embargo, ¡Louvain encuentra comunidades y $Q$ no es cero! Esto ocurre porque el algoritmo *busca* la partición que maximiza $Q$, y por puro azar siempre hay grupos de nodos algo más conectados entre sí. Es un efecto especialmente fuerte en redes pequeñas y poco densas (con `sample_gnp(40, p = 0.1)` se obtiene $Q \approx 0.4$).
 
-Este ejemplo permite ver gráficamente y numéricamente cómo las diferentes configuraciones de enlaces afectan el valor de la modularidad.
+::: callout-important
+## ¿Cuándo es "alta" una modularidad?
+
+Un valor de $Q$ por sí solo no dice mucho: hay que compararlo con el que se obtiene en redes aleatorias **del mismo tamaño y densidad**. Si la $Q$ de nuestra red biológica es mucho mayor que la de las redes aleatorias equivalentes, entonces sí podemos decir que tiene estructura modular.
+:::
+
+```{r}
+# Distribución de Q en 100 redes aleatorias equivalentes
+q_random <- replicate(100, modularity(cluster_louvain(sample_gnm(40, ecount(high_modularity_network)))))
+
+hist(q_random, xlim = c(0, 0.8), col = "grey80", main = "Q en redes aleatorias equivalentes",
+     xlab = "Modularidad Q")
+abline(v = modularity(com_high), col = "red", lwd = 3)
+```
+
+La línea roja (la red modular) queda muy lejos de la distribución de las redes aleatorias: su estructura modular no se puede explicar por azar.
 
 # Densidad de Aristas (Edge Density) y Dispersión (Sparsity)
 
-La **densidad de aristas** y la **dispersión** son métricas que reflejan el grado de conectividad de una red. Estas métricas son clave para entender la eficiencia y organización de sistemas de señalización celular, en donde la comunicación precisa y especializada entre moléculas es esencial para coordinar respuestas celulares.
+La **densidad de aristas** y la **dispersión** son métricas que reflejan cuán conectada está una red en relación con lo que *podría* estar.
 
 ## **Densidad de Aristas (Edge Density)**
 
-La densidad en una red de señalización indica cuántas interacciones existen en relación con el total de interacciones posibles. En redes biológicas, particularmente en sistemas de señalización celular, la densidad puede influir en cómo se propagan las señales, en la redundancia de la información y en la posibilidad de regulaciones complejas.
-
--   **Ejemplo en Redes de Señalización**: Vía MAPK (Red Densa): La vía de señalización Mitogen-Activated Protein Kinase (MAPK) es un buen ejemplo de una red densa en el contexto de señalización celular. Esta vía está implicada en la respuesta celular a estímulos como factores de crecimiento, citoquinas y estrés, y se caracteriza por varias capas de interacciones en cascada de proteínas quinasa que activan múltiples proteínas aguas abajo. MAPK tiene una alta redundancia y una conectividad extensa, lo cual significa que si una conexión falla, hay rutas alternativas que permiten la continuidad de la señal. Esto permite una señalización robusta y adaptativa, con la capacidad de responder a múltiples estímulos simultáneamente.
-
-Alta Densidad: La red MAPK tiende a ser densa porque las proteínas dentro de esta vía pueden interactuar con múltiples blancos, y existen circuitos de retroalimentación que amplifican o modulan la señal. Esta interconectividad genera una red con muchas aristas en relación al número de nodos, lo que se refleja en un alto valor de densidad. Esta densidad permite a la vía responder de manera efectiva y rápida, esencial en procesos como la división celular, la diferenciación y la respuesta al estrés.
-
-La densidad ($D$) se calcula de la siguiente manera:
+La densidad indica cuántas interacciones existen en relación con el total de interacciones posibles. En una red no dirigida con $N$ nodos hay $\frac{N(N-1)}{2}$ pares de nodos posibles, así que la densidad ($D$) se calcula como:
 
 $$
-D = \frac{2m}{n(n-1)}
+D = \frac{m}{N(N-1)/2} = \frac{2m}{N(N-1)}
 $$
 
-Donde: - $D$ es la densidad, - $m$ es el número de aristas presentes en la red, - $n$ es el número de nodos.
+Donde:
+
+-   $D$ es la densidad (entre 0 y 1),
+-   $m$ es el número de aristas presentes en la red,
+-   $N$ es el número de nodos.
+
+Una densidad de 1 corresponde a un grafo completo (todos los nodos conectados con todos); una densidad cercana a 0, a una red con muy pocas conexiones.
+
+### Ejemplos biológicos
+
+-   **Complejos proteicos (densos)**: en un complejo como el proteasoma o el complejo del poro nuclear, muchas subunidades interaccionan físicamente entre sí. Si representamos solo las proteínas del complejo, la subred es muy densa ($D$ cercana a 1).
+-   **Cascadas de señalización lineales (dispersas)**: el módulo central de la vía MAPK (Raf → MEK → ERK) es el ejemplo clásico de cascada lineal: cada quinasa activa a la siguiente. Una cadena de $N$ proteínas tiene solo $N-1$ aristas, así que su densidad es $D = 2/N$, muy baja si la cadena es larga. (En la célula real, estas vías tienen además bucles de retroalimentación, proteínas andamio y conexiones con otras vías, que aumentan la densidad.)
+-   **El interactoma humano completo (muy disperso)**: con unas 20.000 proteínas y unas 650.000 interacciones estimadas (ver parte I), la densidad es $D = \frac{2 \times 650000}{20000 \times 19999} \approx 0.003$. Es decir, ¡solo el 0.3% de las interacciones posibles existen! Prácticamente todas las redes biológicas grandes son muy dispersas.
+
+### Cuidado: la densidad depende del tamaño de la red
+
+Usando que el grado medio es $\langle k \rangle = 2m/N$ (parte I), la densidad se puede escribir como:
+
+$$
+D = \frac{\langle k \rangle}{N-1}
+$$
+
+Si cada proteína tiene, de media, el mismo número de interacciones, la densidad **disminuye** a medida que la red crece. Por eso no tiene mucho sentido comparar la densidad de redes de tamaños muy distintos: una red pequeña casi siempre parecerá "más densa". Para comparar redes de distinto tamaño suele ser más útil el grado medio.
 
 ## **Dispersión (Sparsity)**
 
-La dispersión complementa a la densidad y ayuda a entender la organización de redes dispersas, comunes en sistemas de señalización que requieren alta especificidad. La dispersión se calcula como:
+La dispersión es simplemente el complemento de la densidad:
 
 $$
 \text{Dispersión} = 1 - D
 $$
 
-donde $D$ es la densidad de aristas. Una red con alta dispersión indica una arquitectura que favorece interacciones específicas y minimiza la redundancia, lo cual es común en redes de señalización de **cascadas enzimáticas** donde la señal sigue una ruta secuencial, evitando activaciones erróneas.
-
--   **Ejemplo en Rutas de Señalización**:
-
-Vía TGF-beta (Red Dispersa): En contraste al MAPK, la vía de Transforming Growth Factor-beta (TGF-beta) representa una red de señalización más lineal y específica. TGF-beta inicia la señalización mediante la activación de complejos de receptores y la fosforilación de proteínas SMAD, las cuales se translocan al núcleo para regular la transcripción génica. Debido a que esta señalización se desarrolla en un camino relativamente directo, la vía TGF-beta suele tener menos conexiones redundantes entre sus componentes en comparación con MAPK, lo cual resulta en una red con menor densidad.
-
-Baja Densidad (Alta Dispersión): La menor cantidad de interacciones entre nodos en la vía TGF-beta se traduce en una baja densidad de aristas y mayor dispersión. Esto es adecuado para su función de iniciar cambios genéticos específicos sin desencadenar múltiples respuestas o activar rutas cruzadas extensas, permitiendo un control más preciso y limitado. Aunque TGF-beta también puede interactuar con otras vías de señalización, su arquitectura básica suele mostrar menos interconexión y redundancia que MAPK.
+Una red con alta dispersión tiene muy pocas de las conexiones posibles. En redes de señalización, una arquitectura dispersa favorece interacciones **específicas**: la señal sigue rutas concretas y se evitan activaciones erróneas de otras vías. Una arquitectura más densa aporta **redundancia**: si una conexión falla, hay rutas alternativas para la señal.
 
 ## **Cálculo de Densidad y Dispersión en R**
 
-Usaremos código en R para ilustrar cómo estas métricas se aplican a redes con diferentes densidades.
-
 ```{r}
-# Cargamos la librería igraph
-library(igraph)
+set.seed(1)
 
-# Creamos una red dispersa para representar una señalización específica y especializada
+# Una red dispersa (cada nodo conectado con ~10% de los demás) y una densa (~50%)
 sparse_network <- sample_gnp(30, p = 0.1, directed = FALSE)
+dense_network  <- sample_gnp(30, p = 0.5, directed = FALSE)
 
-# Creamos una red densa para representar un sistema de señalización redundante
-dense_network <- sample_gnp(30, p = 0.5, directed = FALSE)
-
-# Calculamos la densidad de cada red
+# Densidad y dispersión
 sparse_density <- edge_density(sparse_network)
-dense_density <- edge_density(dense_network)
+dense_density  <- edge_density(dense_network)
 
-# Calculamos la dispersión
-sparse_sparsity <- 1 - sparse_density
-dense_sparsity <- 1 - dense_density
+cat("Red dispersa: densidad =", round(sparse_density, 3), " dispersión =", round(1 - sparse_density, 3), "\n")
+cat("Red densa:    densidad =", round(dense_density, 3), " dispersión =", round(1 - dense_density, 3), "\n")
 
-# Imprimimos los resultados
-cat("Densidad de la red dispersa (especialización):", sparse_density, "\n")
-cat("Densidad de la red densa (redundancia):", dense_density, "\n")
-cat("Dispersión de la red dispersa:", sparse_sparsity, "\n")
-cat("Dispersión de la red densa:", dense_sparsity, "\n")
+# Comprobamos la fórmula a mano para la red dispersa
+2 * ecount(sparse_network) / (vcount(sparse_network) * (vcount(sparse_network) - 1))
 
-# Visualizamos las redes
-plot(sparse_network, main = "Red Dispersa (Señalización Especializada)", vertex.size = 8, vertex.label = NA)
-plot(dense_network, main = "Red Densa (Señalización Redundante)", vertex.size = 8, vertex.label = NA)
+par(mfrow = c(1, 2), mar = c(1, 1, 2, 1))
+plot(sparse_network, main = "Red Dispersa (especificidad)", vertex.size = 8, vertex.label = NA)
+plot(dense_network,  main = "Red Densa (redundancia)", vertex.size = 8, vertex.label = NA)
+par(mfrow = c(1, 1))
 ```
 
-### **Interpretación del Código**
+Ahora comprobamos que, con el mismo grado medio, la densidad cae al aumentar el tamaño de la red:
 
--   **Red Dispersa**: Representa un sistema de señalización específico, como la señalización de TGF-beta, donde cada proteína interactúa con un número limitado de proteínas. Esto es ideal para asegurar que la señalización siga una ruta secuencial y específica.
+```{r}
+tamanos <- c(50, 100, 500, 1000, 5000)
 
--   **Red Densa**: Modela un sistema de señalización con redundancia, como la vía MAPK. En este sistema, existen múltiples rutas alternativas para la propagación de la señal, aumentando la robustez del sistema y asegurando que la célula pueda responder adecuadamente a estímulos críticos.
+# Redes aleatorias con grado medio 4 (m = 2N aristas) y distinto número de nodos
+densidades <- sapply(tamanos, function(N) edge_density(sample_gnm(N, 2 * N)))
+
+data.frame(nodos = tamanos, grado_medio = 4, densidad = round(densidades, 4))
+```
 
 ## **Aplicaciones de Densidad y Dispersión**
 
-1.  **Redes de Señalización Celular Complejas**: En sistemas como la señalización en células inmunitarias, la densidad puede variar significativamente. Una **densidad alta** puede ser ventajosa para asegurar respuestas rápidas y fuertes, como en la activación de linfocitos T en respuesta a una infección. Sin embargo, la **dispersión alta** también puede ser útil para redes que necesitan especificidad y precisión, como en la regulación de citocinas, donde una señalización muy dispersa evita que células no implicadas respondan erróneamente.
+1.  **Redes de Señalización Celular Complejas**: en sistemas como la señalización en células inmunitarias, una mayor densidad (más rutas alternativas y retroalimentación) puede ser ventajosa para asegurar respuestas rápidas y robustas, como en la activación de linfocitos T ante una infección. Una mayor dispersión es útil cuando se necesita especificidad, como en la señalización por citocinas, donde cada citocina debe activar solo a las células con el receptor adecuado.
 
-2.  **Optimización de Fármacos Basada en la Estructura de la Red**: Las redes densas pueden ofrecer múltiples puntos de intervención farmacológica debido a su redundancia, pero también presentan el desafío de efectos secundarios no deseados. En contraste, redes dispersas ofrecen objetivos específicos, aunque los efectos de los fármacos pueden depender de la precisión con la que se interrumpe una señal en particular.
+2.  **Diseño de Fármacos Basado en la Estructura de la Red**: en una zona densa de la red, inhibir una sola proteína puede tener poco efecto, porque la señal encuentra rutas alternativas (redundancia); a menudo se necesitan combinaciones de fármacos. En una zona dispersa, como una cascada lineal, inhibir un solo punto puede bloquear toda la señal aguas abajo (por ejemplo, los inhibidores de MEK o de BRAF en melanoma), aunque la célula puede acabar "reconectando" la señal por otras vías y generar resistencia.
 
 # Longitudes Promedio de Camino en Redes
 
 ## **Entendiendo la Longitud Promedio de Camino**
 
-La longitud promedio de camino en una red se define como el número promedio de pasos a lo largo de los caminos más cortos para todos los pares de nodos en la red. Es una medida importante de la propiedad de "pequeño mundo" de una red. En redes biológicas, las longitudes promedio de camino cortas suelen indicar una red altamente conectada y eficiente, mientras que las longitudes largas pueden sugerir redes más modulares o segregadas.
+La **distancia** $d(i,j)$ entre dos nodos es el número de aristas del camino más corto que los une. La **longitud promedio de camino** es la media de esas distancias sobre todos los pares de nodos de la red: nos dice cuántos "pasos" hay que dar, típicamente, para ir de un nodo a otro.
 
-Matemáticamente, la longitud promedio de camino $L_{avg}$ para un grafo no dirigido se calcula como:
+Matemáticamente, para un grafo no dirigido con $N$ nodos:
 
 $$
 L_{avg} = \frac{1}{N(N-1)} \sum_{i \neq j} d(i,j)
 $$
 
-donde $d(i,j)$ es el camino más corto entre los nodos $i$ y $j$, y $N$ es el número total de nodos en la red.
-
-## Redes con Longitudes Promedio de Camino Cortas (Redes de Pequeño Mundo)
-
-Las redes de pequeño mundo tienen la característica de una longitud promedio de camino corta, lo que significa que, a pesar del tamaño de la red, cualquier par de nodos puede ser alcanzado en solo unos pocos pasos. Estas redes son comunes en sistemas biológicos y redes sociales, donde los nodos están altamente interconectados.
-
-### **Ejemplo: Redes de Interacción Proteína-Proteína (PPI)**
-
-En las redes de interacción proteína-proteína (PPI), las proteínas son los nodos y las interacciones entre ellas son los bordes. La longitud promedio de camino en una red PPI bien conectada puede ser bastante corta, lo que refleja el alto grado de interconexión entre proteínas en procesos biológicos clave.
-
-**Ejemplo de Código en R:** Aquí tienes un fragmento de código en R que genera una red de pequeño mundo y calcula la longitud promedio de camino.
+En redes que no son conexas, $d(i,j)$ es infinita para nodos en componentes distintas. `mean_distance()` de igraph simplemente ignora esos pares (por defecto, `unconnected = TRUE`).
 
 ```{r}
-# Cargar las bibliotecas necesarias
-library(igraph)
+# Ejemplo pequeño: una cadena de 5 nodos (como una cascada de señalización lineal)
+cadena <- make_ring(5, circular = FALSE)
+plot(cadena)
 
-# Crear una red de pequeño mundo
-small_world_net <- sample_pa(100, m=2)  # Adquisición preferencial, genera propiedades de pequeño mundo
-plot(small_world_net)
-# Calcular la longitud promedio de camino
-average_path_length <- mean_distance(small_world_net)
-average_path_length
+# Matriz de distancias: el elemento [i, j] es d(i, j)
+distances(cadena)
+
+# La media de las distancias fuera de la diagonal es L_avg
+mean_distance(cadena)
 ```
 
-### **Ejemplo: Redes de Regulación Génica**
+En la cadena, ir del nodo 1 al 5 requiere 4 pasos. Si añadimos una sola arista "atajo" entre 1 y 5, la red se convierte en un anillo y la distancia media baja. Este efecto de los atajos es la clave de las redes de pequeño mundo.
 
-En las redes de regulación génica, donde los genes son los nodos y las interacciones regulatorias entre ellos son los bordes, una longitud promedio de camino corta puede indicar que los genes se están regulando de manera eficiente entre sí, a menudo debido a factores de transcripción compartidos o mecanismos co-regulatorios.
+## Redes de Pequeño Mundo (Small-World)
+
+Watts y Strogatz (*Nature*, 1998) describieron que muchas redes reales combinan dos propiedades que parecían incompatibles:
+
+1.  **Longitud promedio de camino corta**, como en una red aleatoria: cualquier par de nodos está a pocos pasos.
+2.  **Coeficiente de clustering alto**, como en una red regular (retícula): los vecinos de un nodo suelen estar conectados entre sí.
+
+Las redes que cumplen ambas se llaman de **pequeño mundo**. Su modelo parte de un anillo regular (cada nodo conectado a sus vecinos más cercanos: clustering alto, caminos largos) y "reconecta" cada arista al azar con probabilidad $p$. Con solo unos pocos atajos, la longitud de camino cae en picado, mientras que el clustering disminuye mucho más despacio:
+
+```{r}
+set.seed(1)
+N <- 100
+
+p_values <- c(0, 0.01, 0.05, 0.2, 1)
+redes_ws <- lapply(p_values, function(p) sample_smallworld(dim = 1, size = N, nei = 2, p = p))
+
+data.frame(
+  p_reconexion  = p_values,
+  aristas       = sapply(redes_ws, ecount),
+  L_avg         = round(sapply(redes_ws, mean_distance), 2),
+  clustering    = round(sapply(redes_ws, transitivity, type = "average"), 2)
+)
+
+par(mfrow = c(1, 3), mar = c(1, 1, 3, 1))
+for (i in c(1, 3, 5)) {
+  plot(redes_ws[[i]], layout = layout_in_circle, vertex.size = 3, vertex.label = NA,
+       main = paste0("p = ", p_values[i], "\nL = ", round(mean_distance(redes_ws[[i]]), 1),
+                     ", C = ", round(transitivity(redes_ws[[i]], type = "average"), 2)))
+}
+par(mfrow = c(1, 1))
+```
+
+-   Con $p = 0$ (retícula regular): clustering alto pero caminos largos.
+-   Con $p \approx 0.05$ (**pequeño mundo**): unos pocos atajos reducen la longitud de camino a casi un tercio, pero el clustering sigue siendo alto (mucho mayor que en la red aleatoria).
+-   Con $p = 1$ (prácticamente aleatoria): caminos cortos pero clustering muy bajo.
+
+### Valores reales (Watts & Strogatz, 1998)
+
+| Red | $L_{avg}$ real | $L_{avg}$ aleatoria equivalente | $C$ real | $C$ aleatoria equivalente |
+|---|---|---|---|---|
+| Red neuronal de *C. elegans* (282 neuronas) | 2.65 | 2.25 | 0.28 | 0.05 |
+| Actores de cine | 3.65 | 2.99 | 0.79 | 0.00027 |
+| Red eléctrica del oeste de EE.UU. | 18.7 | 12.4 | 0.08 | 0.005 |
+
+En las tres, la longitud de camino es parecida a la de una red aleatoria con los mismos nodos y aristas, pero el clustering es mucho mayor: son redes de pequeño mundo. Fíjate en que lo importante es la comparación con la red aleatoria equivalente, no el valor absoluto: la red eléctrica tiene $L_{avg} \approx 19$ porque es una red grande y extendida geográficamente.
+
+### Ejemplos en Biología
+
+-   **Redes de Interacción Proteína-Proteína (PPI)**: las proteínas son los nodos y las interacciones son las aristas. En las PPI, la longitud promedio de camino es corta (unos pocos pasos entre cualquier par de proteínas), en buena parte gracias a los hubs. Esto implica que una perturbación en una proteína puede propagarse rápidamente a muchas otras.
+-   **Redes metabólicas**: Jeong *et al.* (*Nature*, 2000) analizaron las redes metabólicas de 43 organismos y encontraron que la distancia media entre metabolitos es de unos 3 pasos, y prácticamente la misma en todos, desde bacterias hasta eucariotas, a pesar de las grandes diferencias de tamaño.
+-   **Redes tróficas**: aunque las especies se agrupen en grupos funcionales, la mayoría de las especies de una red trófica están a solo 2–3 enlaces de distancia ("dos grados de separación", Williams *et al.*, *PNAS* 2002).
+-   **Redes cerebrales**: las redes de conectividad cerebral son a la vez **modulares** (regiones especializadas en distintas funciones) y de **pequeño mundo** (pocas conexiones de larga distancia, a menudo a través de hubs, unen los módulos). Esta combinación permite el procesamiento especializado dentro de cada módulo y una integración rápida de la información entre módulos.
 
 ### **Ejemplo Fuera de la Biología: Redes Sociales**
 
-En las redes sociales, donde las personas son los nodos y las interacciones sociales son los bordes, las longitudes promedio de camino son a menudo cortas. Por ejemplo, en el famoso experimento de "seis grados de separación", se descubrió que las personas están generalmente conectadas por un promedio de solo 6 grados de separación.
+En las redes sociales, donde las personas son los nodos y las relaciones sociales son las aristas, las longitudes promedio de camino son cortas. En el famoso experimento de Stanley Milgram (1967), cartas enviadas a un desconocido a través de cadenas de conocidos llegaron a su destino en unos 6 pasos de media: los famosos "seis grados de separación".
 
-## Redes con Longitudes Promedio de Camino Largas (Redes Modulares)
+## Redes con Longitudes Promedio de Camino Largas
 
-Por otro lado, las redes con longitudes promedio de camino largas suelen exhibir una estructura modular o jerárquica, donde los clústeres de nodos altamente conectados (módulos) solo están débilmente conectados entre sí. Estas redes suelen ser menos eficientes en cuanto a la transferencia de información.
+Las longitudes de camino largas aparecen cuando la red **no tiene atajos**:
 
-### **Ejemplo Biológico 1: Redes Cerebrales**
+-   **Redes espaciales o de tipo retícula**: la red eléctrica o la red de carreteras, donde los nodos solo se conectan con otros cercanos en el espacio. Para cruzar la red hay que pasar por muchos nodos intermedios.
+-   **Cadenas y cascadas lineales**: en una ruta metabólica lineal o una cascada de señalización sin ramificaciones, la distancia entre los extremos crece con el número de pasos.
+-   **Redes muy modulares con pocas conexiones entre módulos**: dentro de cada módulo las distancias son cortas, pero para ir de un módulo a otro hay que pasar por las pocas aristas que los unen. Ojo: modularidad y pequeño mundo **no son excluyentes** (el cerebro es ambas cosas); los caminos solo se alargan si los módulos están conectados por muy pocas aristas.
 
-En las redes cerebrales, donde las regiones del cerebro son los nodos y las conexiones funcionales o anatómicas entre ellas son los bordes, la red podria hipotéticamente tener una longitud promedio de camino más larga. La estructura modular del cerebro, con regiones distintas para funciones cognitivas diferentes, contribuye a una mayor longitud de camino entre regiones distantes.
-
-**Ejemplo de Código en R:** Aquí tienes un ejemplo de cómo generar una red modular y calcular su longitud promedio de camino.
-
-```{r}
-# Generar una red modular (utilizando el modelo de Watts-Strogatz para redes de pequeño mundo)
-modular_net <- sample_smallworld(1, 100, 4, 0.07)  # Probabilidad de reconfiguración baja
-plot(modular_net)
-# Calcular la longitud promedio de camino
-average_path_length_modular <- mean_distance(modular_net)
-average_path_length_modular
-```
-
-### **Ejemplo Biológico 2: Redes Ecológicas**
-
-En las redes ecológicas (como las redes tróficas), donde las especies son los nodos y las relaciones de alimentación son los bordes, la red suele tener una longitud promedio de camino más larga. Las especies a menudo se agrupan en grupos funcionales, y las interacciones dentro de estos grupos son mucho más frecuentes que las interacciones entre grupos.
-
-### **Ejemplo Fuera de la Biología: Red de Internet**
-
-En la topología física de Internet, donde los routers y servidores son los nodos, la red puede exhibir una longitud promedio de camino más larga. A pesar de la vasta cantidad de conexiones, la red suele estar organizada de manera modular, donde diferentes regiones o subredes están más conectadas entre sí, lo que lleva a caminos más largos entre nodos distantes.
-
-La longitud promedio de camino es una característica fundamental de las redes que puede revelar propiedades estructurales importantes. Las longitudes promedio de camino cortas sugieren un sistema eficiente y conectado, mientras que las largas indican una estructura más modular o jerárquica. Comprender cómo funciona la longitud promedio de camino en redes biológicas y no biológicas puede proporcionar valiosos conocimientos sobre su dinámica, conectividad y robustez.
+En general, una longitud de camino corta sugiere un sistema en el que la información (o una perturbación) se propaga rápidamente, y una longitud larga, un sistema más "lento" o segregado.
 
 ## Diámetro (Diameter)
 
-El **diámetro de una red** es la longitud del camino más corto entre nodos mas largo entre cualquier par de nodos en la red. Es decir, el diámetro es el valor máximo de las distancias más cortas $d(i,j)$ entre nodos $i$ y $j$. Esta medida es importante porque da una idea de cuán "extendida" o "compacta" es la red en términos de conectividad.
-
-El diámetro $D$ de una red se calcula como:
+El **diámetro de una red** es la mayor de todas las distancias entre pares de nodos. Es decir, de todos los caminos más cortos posibles, el diámetro es la longitud del más largo. Mientras la longitud promedio de camino describe la distancia *típica*, el diámetro describe el *peor caso*: cuán "extendida" o "compacta" es la red.
 
 $$
-D = \max_{i \neq j} d(i,j)
+\text{diam}(G) = \max_{i \neq j} d(i,j)
 $$
 
-donde $d(i,j)$ es la distancia más corta entre los nodos $i$ y $j$.
+donde $d(i,j)$ es la distancia (camino más corto) entre los nodos $i$ y $j$.
 
 ### **Relación entre Longitud Promedio de Camino y Diámetro**
 
--   **Redes con Longitud Promedio de Camino Corta (Pequeño Mundo)**: En redes de pequeño mundo, el diámetro suele ser relativamente pequeño debido a la alta conectividad, lo que permite que cualquier par de nodos esté cerca el uno del otro.
--   **Redes con Longitud Promedio de Camino Larga (Modulares)**: En redes modulares, el diámetro suele ser más largo, ya que los nodos dentro de un módulo están bien conectados, pero los módulos en sí mismos tienen una menor conectividad, lo que aumenta la distancia entre nodos de diferentes módulos.
+-   **Redes de Pequeño Mundo**: el diámetro suele ser pequeño, porque los atajos acercan incluso a los nodos más alejados.
+-   **Redes tipo retícula o espaciales**: el diámetro es grande, ya que para unir los extremos de la red hay que recorrer muchos nodos intermedios.
 
-![six degrees of Kevin Bacon](kevin_bacon.png){width=80%}
+![Seis grados de Kevin Bacon: en la red de actores de cine (dos actores están conectados si han actuado en la misma película), casi cualquier actor está a 6 pasos o menos de Kevin Bacon.](kevin_bacon.png){width="80%"}
 
-
-### Cálculo del Diámetro en Redes de R
-
-Aquí te muestro cómo calcular el diámetro de la red utilizando R, tanto para redes de pequeño mundo como para redes modulares.
+### Cálculo del Diámetro en R
 
 ```{r}
-library(igraph)
+set.seed(2)
 
-# Generar una red de pequeño mundo (preferential attachment) con 100 nodos y 2 conexiones por nodo
-small_world_net <- sample_pa(100, m = 2)
+# Red de escala libre (Barabási-Albert, no dirigida): pocos pasos gracias a los hubs
+red_ba <- sample_pa(100, m = 2, directed = FALSE)
 
-# Calcular el diámetro de la red de pequeño mundo
-diameter_small_world <- diameter(small_world_net)
-cat("Diámetro de la red de pequeño mundo: ", diameter_small_world, "\n")
+# Red casi regular (Watts-Strogatz con p muy baja): prácticamente un anillo, sin atajos
+red_reticula <- sample_smallworld(dim = 1, size = 100, nei = 2, p = 0.01)
 
-# Generar una red modular (modelo de Watts-Strogatz) con 100 nodos, 4 vecinos por nodo, y probabilidad de reconexión baja (0.01)
-modular_net <- sample_smallworld(1, 100, 4, 0.01)
+data.frame(
+  red      = c("Barabási-Albert", "Casi retícula"),
+  aristas  = c(ecount(red_ba), ecount(red_reticula)),
+  L_avg    = round(c(mean_distance(red_ba), mean_distance(red_reticula)), 2),
+  diametro = c(diameter(red_ba), diameter(red_reticula))
+)
 
-# Calcular el diámetro de la red modular
-diameter_modular <- diameter(modular_net)
-cat("Diámetro de la red modular: ", diameter_modular, "\n")
+# El camino más largo de todos (el que define el diámetro)
+camino_ba  <- get_diameter(red_ba)
+camino_ret <- get_diameter(red_reticula)
 
-# Graficar ambas redes
-plot(small_world_net, main = paste("Red de Pequeño Mundo\nDiámetro: ", diameter_small_world), vertex.size = 5, vertex.label = NA)
-plot(modular_net, main = paste("Red Modular\nDiámetro: ", diameter_modular), vertex.size = 5, vertex.label = NA)
-
+par(mfrow = c(1, 2), mar = c(1, 1, 3, 1))
+plot(red_ba, vertex.size = 4, vertex.label = NA,
+     vertex.color = ifelse(V(red_ba) %in% camino_ba, "red", "grey80"),
+     main = paste("Barabási-Albert\nDiámetro:", diameter(red_ba)))
+plot(red_reticula, layout = layout_in_circle, vertex.size = 4, vertex.label = NA,
+     vertex.color = ifelse(V(red_reticula) %in% camino_ret, "red", "grey80"),
+     main = paste("Casi retícula\nDiámetro:", diameter(red_reticula)))
+par(mfrow = c(1, 1))
 ```
 
-### **Relación entre Diámetro y Propiedades de Red**
-
--   **Redes de Pequeño Mundo**: Las redes de pequeño mundo tienen un diámetro bajo, lo que significa que las distancias más largas entre los nodos son pequeñas, lo que las hace más eficientes en términos de conectividad.
--   **Redes Modulares**: Las redes modulares tienen un diámetro mayor porque los módulos son menos interdependientes, lo que genera distancias más largas entre nodos de diferentes módulos.
+Con prácticamente el mismo número de aristas, la red de escala libre tiene un diámetro mucho menor: los hubs actúan como atajos. En rojo se muestra el camino más corto más largo de cada red.
 
 # Asortatividad de Grado (Degree Assortativity)
 
-### **Definiciones**
+### **Definición**
 
--   **Asortatividad de Grado (Degree Assortativity):** Mide la tendencia de los nodos a conectarse con otros nodos de grado similar.
+La **asortatividad de grado** mide la tendencia de los nodos a conectarse con otros nodos de grado similar:
 
-##### **Ecuación para la Asortatividad:**
+-   **Asortatividad positiva** ($r > 0$): los hubs se conectan con otros hubs, y los nodos poco conectados con otros nodos poco conectados.
+-   **Asortatividad negativa o disasortatividad** ($r < 0$): los hubs se conectan preferentemente con nodos de grado bajo (y no entre sí).
+-   **Sin asortatividad** ($r \approx 0$): el grado de un nodo no dice nada sobre el grado de sus vecinos, como en una red aleatoria.
+
+### **Ecuación para la Asortatividad**
+
+La forma más intuitiva de definirla: tomamos cada arista de la red y anotamos el grado de los dos nodos que une. El coeficiente de asortatividad $r$ es simplemente la **correlación de Pearson** entre los grados de los dos extremos de las aristas, y por tanto va de $-1$ a $1$.
+
+Escrita con la matriz de adyacencia (Newman, 2002), tiene una forma muy parecida a la de la modularidad:
 
 $$
-r = \frac{\sum_{ij} (A_{ij} - \frac{k_i k_j}{2m}) k_i k_j}{\sum_{ij} (k_i^2 - \frac{k_i^2}{2m})}
+r = \frac{\sum_{ij} \left(A_{ij} - \frac{k_i k_j}{2m}\right) k_i k_j}{\sum_{ij} \left(k_i \delta_{ij} - \frac{k_i k_j}{2m}\right) k_i k_j}
 $$
 
-```{R}
+donde $\delta_{ij} = 1$ si $i = j$ y 0 en caso contrario. El numerador compara, igual que en la modularidad, las aristas observadas ($A_{ij}$) con las esperadas por azar ($\frac{k_i k_j}{2m}$), pero ahora ponderadas por el producto de los grados; el denominador normaliza para que $r$ esté entre $-1$ y $1$.
 
+### **Ejemplos en R**
 
-# Number of nodes (high assortativity)
+Construimos tres redes pequeñas con asortatividad positiva, nula y negativa:
 
+```{r}
 set.seed(123)
-n_nodes <- 25
 
-# Create a random degree sequence where high-degree nodes have higher probability of being connected
-degree_sequence <- sample(1:20, n_nodes, replace = TRUE)
+# 1. Asortativa: un grupo de 10 nodos todos conectados entre sí (grado alto)
+#    unido por UNA arista a un anillo de 20 nodos (grado 2).
+#    Los nodos de grado alto se conectan con nodos de grado alto, y los de grado bajo entre sí.
+g_asort <- disjoint_union(make_full_graph(10), make_ring(20))
+g_asort <- add_edges(g_asort, c(1, 11))
 
-# Create an empty list for storing edges
-edges <- list()
+# 2. Neutra: red aleatoria Erdős–Rényi (algo más grande, para que r fluctúe menos)
+g_neutra <- sample_gnp(100, p = 0.05)
 
-# Create an assortative network by manually connecting nodes with similar degrees
-for (i in 1:(n_nodes - 1)) {
-  for (j in (i + 1):n_nodes) {
-    # Only create an edge if degrees are similar (within a certain range)
-    if (abs(degree_sequence[i] - degree_sequence[j]) <= 2) {
-      edges <- append(edges, list(c(i, j)))
-    }
-  }
+# 3. Disasortativa: 3 "estrellas" (un hub conectado a 9 nodos de grado 1),
+#    con los hubs unidos entre sí. Los hubs se conectan sobre todo con nodos de grado bajo.
+g_disasort <- disjoint_union(make_star(10, mode = "undirected"),
+                             make_star(10, mode = "undirected"),
+                             make_star(10, mode = "undirected"))
+g_disasort <- add_edges(g_disasort, c(1, 11, 11, 21, 21, 1))
+
+redes <- list(Asortativa = g_asort, Neutra = g_neutra, Disasortativa = g_disasort)
+sapply(redes, function(g) round(assortativity_degree(g), 2))
+
+par(mfrow = c(1, 3), mar = c(1, 1, 3, 1))
+for (nombre in names(redes)) {
+  g <- redes[[nombre]]
+  plot(g, vertex.size = 3 + 0.6 * degree(g), vertex.label = NA,
+       main = paste0(nombre, "\nr = ", round(assortativity_degree(g), 2)))
 }
-
-# Create the final graph with the new edges
-g_assortative <- graph_from_edgelist(do.call(rbind, edges), directed = FALSE)
-
-# Calculate assortativity based on degree
-assortativity_coeff <- assortativity_degree(g_assortative)
-cat("Assortativity coefficient:", assortativity_coeff, "\n")
-
-# Plot the network
-plot(g_assortative, main = paste("Random Network with High Assortativity\nAssortativity: ", round(assortativity_coeff, 3)), vertex.size = 10, vertex.label = NA, edge.arrow.size = 0.5)
-
-
-# Create a random graph with low assortativity using Erdős–Rényi model
-low_assortativity_net <- sample_gnp(n = n_nodes, p = 0.2, directed = FALSE)
-
-# Calculate the assortativity based on degree
-assortativity_coeff <- assortativity_degree(low_assortativity_net)
-cat("Assortativity coefficient (should be low):", assortativity_coeff, "\n")
-
-# Plot the network
-plot(low_assortativity_net, main = paste("Random Network with Low Assortativity\nAssortativity: ", round(assortativity_coeff, 3)), 
-     vertex.size = 15, vertex.label = NA, edge.arrow.size = 0.5)
-
+par(mfrow = c(1, 1))
 ```
-## **Ejemplos de Redes con Asortatividad Positiva y Negativa**
+
+El tamaño de cada nodo es proporcional a su grado. En la red asortativa los nodos grandes están juntos y los pequeños juntos; en la disasortativa cada nodo grande está rodeado de nodos pequeños.
+
+En una red aleatoria concreta, $r$ no es exactamente 0: fluctúa por azar alrededor de 0, y más cuanto más pequeña es la red. Si generamos muchas redes aleatorias, la media sí es prácticamente 0:
+
+```{r}
+r_aleatorias <- replicate(200, assortativity_degree(sample_gnp(100, p = 0.05)))
+c(media = round(mean(r_aleatorias), 3), desviacion = round(sd(r_aleatorias), 3))
+```
+
+Podemos comprobar que $r$ es la correlación entre los grados de los extremos de las aristas:
+
+```{r}
+g <- g_disasort
+extremos <- ends(g, E(g), names = FALSE)   # matriz con los dos nodos de cada arista
+k <- degree(g)
+
+# Cada arista no dirigida se cuenta en los dos sentidos (i-j y j-i)
+grado_1 <- c(k[extremos[, 1]], k[extremos[, 2]])
+grado_2 <- c(k[extremos[, 2]], k[extremos[, 1]])
+
+cor(grado_1, grado_2)
+assortativity_degree(g)
+```
+
+## **Asortatividad en Redes Reales**
+
+Newman (*Phys. Rev. Lett.*, 2002) observó un patrón muy llamativo: las **redes sociales** suelen ser asortativas, mientras que las **redes biológicas y tecnológicas** suelen ser disasortativas. Algunos valores aproximados:
+
+| Red | Tipo | $r$ |
+|---|---|---|
+| Coautorías científicas (física) | Social | +0.36 |
+| Actores de cine | Social | +0.21 |
+| Internet | Tecnológica | −0.19 |
+| Interacciones proteína-proteína (levadura) | Biológica | −0.16 |
+| Red metabólica | Biológica | −0.24 |
+| Red neuronal de *C. elegans* | Biológica | −0.23 |
+| Red trófica marina | Biológica | −0.26 |
 
 ### **Asortatividad Positiva**
-En redes con asortatividad positiva, los nodos con grados similares tienden a conectarse entre sí. Este patrón fomenta la formación de comunidades o módulos, lo que refuerza la resiliencia y la cohesión de la red. 
 
-- **Redes de Interacción Proteína-Proteína (PPI):**  
-  Puede que hay asortatividad positiva en ciertas ocasiones, por ejemplo en la maquinaria ribosomal, las proteínas ribosómicas suelen agruparse y tienden a tener muchas conexiones entre ellos, para garantizar una síntesis proteica eficiente.  
-   
-- **Redes Sociales:**  
-  En redes como LinkedIn, las personas con muchas conexiones suelen estar vinculadas a otros usuarios con un número similar de contactos, lo que genera grupos profesionales densamente interconectados.
+En redes con asortatividad positiva, los nodos con grados similares tienden a conectarse entre sí. Los nodos de grado alto forman un "núcleo" muy conectado, lo que hace la red más resistente a la eliminación de hubs (si cae uno, los demás siguen conectados entre sí), aunque también facilita que algo se propague rápidamente por ese núcleo (por ejemplo, una infección entre las personas más sociables).
+
+-   **Redes Sociales**: en redes de coautoría o en redes como LinkedIn, las personas con muchas conexiones suelen estar vinculadas a otras personas con muchos contactos, lo que genera grupos densamente interconectados.
+-   **Dentro de complejos proteicos**: aunque la red PPI en su conjunto es disasortativa, a escala local puede haber zonas asortativas. Por ejemplo, las proteínas ribosómicas tienen muchas interacciones y muchas de ellas son con otras proteínas ribosómicas, para garantizar el ensamblaje y la función del ribosoma.
 
 ### **Asortatividad Negativa**
-En redes con asortatividad negativa, los nodos de alto grado tienden a conectarse con nodos de bajo grado. Este patrón es típico de sistemas diseñados para maximizar la eficiencia y la transferencia de recursos o información.
 
-- **Redes Metabólicas:**  
-  Los metabolitos universales, como el ATP, actúan como hubs al conectar múltiples metabolitos específicos con roles clave en diversas rutas metabólicas. Este diseño asegura que el ATP pueda participar rápidamente en numerosas reacciones bioquímicas.  
+En redes con asortatividad negativa, los nodos de alto grado tienden a conectarse con nodos de bajo grado, y los hubs evitan conectarse entre sí. Esto genera una estructura de "estrellas" relativamente independientes.
 
-- **Redes de Transporte:**  
-  En redes aéreas, los aeropuertos internacionales (hubs) están conectados con aeropuertos regionales más pequeños. Esto optimiza el flujo de pasajeros y carga en el sistema global.
-
+-   **Redes de Interacción Proteína-Proteína**: Maslov y Sneppen (*Science*, 2002) mostraron que, en la red PPI de levadura, los hubs tienden a *no* interactuar directamente entre sí. Una interpretación es que esto separa los distintos módulos funcionales (cada uno organizado alrededor de su hub) y reduce la propagación de perturbaciones de un módulo a otro.
+-   **Redes de Regulación Génica**: unos pocos factores de transcripción maestros regulan a muchos genes diana, que a su vez regulan a pocos o ningún otro gen.
+-   **Redes Metabólicas**: los metabolitos universales, como el ATP, actúan como hubs al conectar con muchos metabolitos específicos, cada uno de los cuales participa en pocas reacciones.
+-   **Redes de Transporte**: en redes aéreas, los grandes aeropuertos internacionales (hubs) están conectados con muchos aeropuertos regionales más pequeños.
 
 ### **Comparación en Biología**
-- La **asortatividad positiva** refuerza la estabilidad dentro de módulos funcionales, como complejos proteicos específicos.  
-- La **asortatividad negativa** mejora la flexibilidad y la integración en sistemas jerárquicos, como en la regulación metabólica o genética.  
 
-Ambos patrones reflejan estrategias de diseño adaptativas que optimizan la funcionalidad en redes biológicas y tecnológicas.
+-   La **asortatividad positiva** genera un núcleo de nodos muy conectados entre sí, que refuerza la cohesión dentro de módulos funcionales, como complejos proteicos específicos.
+-   La **asortatividad negativa**, la más habitual en redes biológicas, separa los hubs entre sí y ayuda a mantener los módulos funcionales relativamente aislados, limitando la propagación de fallos o perturbaciones por la red.
 
 # Ejercicio
 
@@ -399,11 +493,11 @@ Aplicar conceptos de **modularidad**, **densidad de aristas**, **dispersión**, 
 
 ## Instrucciones
 
-### Parte 1: Creacion y visulalizacion
+### Parte 1: Creación y visualización
 
 1. Crea dos redes en R:
    - Una **red modular**, con comunidades internas densas (`sample_islands`).
-   - Una **red aleatoria**, sin comunidades claras (`sample_gnp`).
+   - Una **red aleatoria** con el **mismo número de nodos y aristas**, sin comunidades claras (`sample_gnm` y `ecount`).
 
 2. Visualiza ambas redes y **describe las diferencias visuales**:
    - Conectividad
@@ -421,9 +515,16 @@ Calcula las siguientes métricas para ambas redes:
 | --------------------------- | ---------------------------------- | ----------------------------------------- |
 | Modularidad                 | `modularity(cluster_louvain(red))` | Evalúa la existencia de comunidades       |
 | Densidad                    | `edge_density(red)`                | Proporción de conexiones existentes       |
-| Dispersión                  | `1 - edge_density(red)`            | Grado de especificidad                    |
+| Dispersión                  | `1 - edge_density(red)`            | Proporción de conexiones ausentes         |
 | Longitud promedio de camino | `mean_distance(red)`               | Eficiencia en la comunicación             |
 | Diámetro                    | `diameter(red)`                    | Máxima distancia entre nodos              |
 | Asortatividad               | `assortativity_degree(red)`        | Tendencia de nodos similares a conectarse |
 
-Representa los resultados como una table (data.frame) para comparar valores entre redes.
+Representa los resultados como una tabla (`data.frame`) para comparar valores entre redes.
+
+### Parte 3: Interpretación
+
+1. ¿Qué métricas son iguales en las dos redes? ¿Por qué? (Pista: piensa en cómo las has construido.)
+2. ¿Qué métricas cambian más? Relaciona cada diferencia con lo que ves en los gráficos de la Parte 1.
+3. ¿Es la modularidad de la red aleatoria igual a cero? ¿Por qué no?
+4. Si la red modular fuera una red de proteínas, ¿qué podrían representar sus comunidades? ¿Qué proteínas elegirías como dianas para interrumpir la comunicación *entre* módulos?

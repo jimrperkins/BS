@@ -1,0 +1,57 @@
+---
+title: "Solución — Ejercicio: Red modular vs. red aleatoria"
+subtitle: "Análisis de grafos y topología de redes (II)"
+search: false
+execute:
+  warning: false
+  message: false
+---
+
+## Parte 1: Creación y visualización
+
+```{r parte1, fig.width=10, fig.height=5}
+library(igraph)
+set.seed(1)
+
+red_modular   <- sample_islands(4, 10, 0.8, 3)
+red_aleatoria <- sample_gnm(40, ecount(red_modular))
+
+par(mfrow = c(1, 2), mar = c(1, 1, 2, 1))
+plot(red_modular, vertex.label = NA, vertex.size = 6, main = "Red modular")
+plot(red_aleatoria, vertex.label = NA, vertex.size = 6, main = "Red aleatoria")
+```
+
+**Diferencias visuales:** en la red modular se distinguen claramente cuatro grupos de nodos muy conectados entre sí, unidos por pocas aristas. En la red aleatoria las aristas están repartidas de forma uniforme: no se ven grupos, es una sola "bola" de nodos.
+
+## Parte 2: Métricas
+
+```{r parte2}
+tabla <- data.frame(
+  propiedad = c("Modularidad", "Densidad", "Dispersión", "Longitud promedio", "Diámetro", "Asortatividad"),
+  modular = c(modularity(cluster_louvain(red_modular)),
+              edge_density(red_modular),
+              1 - edge_density(red_modular),
+              mean_distance(red_modular),
+              diameter(red_modular),
+              assortativity_degree(red_modular)),
+  aleatoria = c(modularity(cluster_louvain(red_aleatoria)),
+                edge_density(red_aleatoria),
+                1 - edge_density(red_aleatoria),
+                mean_distance(red_aleatoria),
+                diameter(red_aleatoria),
+                assortativity_degree(red_aleatoria))
+)
+tabla$modular   <- round(tabla$modular, 3)
+tabla$aleatoria <- round(tabla$aleatoria, 3)
+tabla
+```
+
+## Parte 3: Interpretación
+
+1.  **Densidad y dispersión son iguales** en las dos redes porque las hemos construido con el mismo número de nodos y de aristas, y la densidad solo depende de eso. Por eso sirve de "control": las demás diferencias se deben a *cómo* están colocadas las aristas, no a cuántas hay.
+
+2.  **Lo que más cambia es la modularidad** (≈ 0.64 frente a ≈ 0.2–0.25), que refleja los cuatro grupos que se ven en el gráfico. La **longitud promedio de camino y el diámetro** son algo mayores en la red modular: para ir de una isla a otra hay que pasar por las pocas aristas que las unen. La **asortatividad** es pequeña en las dos y no muestra un patrón claro: mide otra cosa (si los nodos se conectan con otros de grado similar), y en redes tan pequeñas fluctúa bastante por azar.
+
+3.  **La modularidad de la red aleatoria no es cero** porque Louvain *busca* la partición con la $Q$ más alta, y por azar siempre hay grupos de nodos algo más conectados entre sí. Por eso, para decir que una red es modular hay que comparar su $Q$ con la de redes aleatorias del mismo tamaño y densidad.
+
+4.  **En una red de proteínas**, las comunidades podrían ser complejos proteicos o grupos de proteínas que participan en la misma ruta o proceso biológico. Para interrumpir la comunicación *entre* módulos, elegiríamos las proteínas que participan en las pocas aristas entre islas: son las que tienen mayor **betweenness** (centralidad de intermediación, parte I), porque casi todos los caminos más cortos entre módulos pasan por ellas.
